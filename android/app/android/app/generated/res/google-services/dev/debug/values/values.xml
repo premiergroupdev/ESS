@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="default_web_client_id" translatable="false">774011643451-0gteb5kqp43j6kfe6did7qg2ths7sgff.apps.googleusercontent.com</string>
+    <string name="gcm_defaultSenderId" translatable="false">774011643451</string>
+    <string name="google_api_key" translatable="false">AIzaSyCD2SqHTJ2HsDklYeVN0ei4KFv2xKUMQHs</string>
+    <string name="google_app_id" translatable="false">1:774011643451:android:670b06c3a0e0f7e2a29e1e</string>
+    <string name="google_crash_reporting_api_key" translatable="false">AIzaSyCD2SqHTJ2HsDklYeVN0ei4KFv2xKUMQHs</string>
+    <string name="google_storage_bucket" translatable="false">ess-portal-d4c51.appspot.com</string>
+    <string name="project_id" translatable="false">ess-portal-d4c51</string>
+</resources>

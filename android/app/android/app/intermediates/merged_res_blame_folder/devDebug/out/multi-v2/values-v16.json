@@ -1,0 +1,38 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.premiergroup.ess.app-mergeDevDebugResources-63:/values-v16/values-v16.xml",
+            "map": [
+                {
+                    "source": "/Users/premiersalesprivateltd/.gradle/caches/transforms-3/08e417261df19eb46333b2bb4b3d284a/transformed/appcompat-1.2.0/res/values-v16/values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endLines": "5",
+                        "endColumns": "12",
+                        "endOffsets": "223"
+                    },
+                    "to": {
+                        "startLines": "3",
+                        "startColumns": "4",
+                        "startOffsets": "121",
+                        "endLines": "6",
+                        "endColumns": "12",
+                        "endOffsets": "289"
+                    }
+                },
+                {
+                    "source": "/Users/premiersalesprivateltd/.gradle/caches/transforms-3/e08a88c1f6c54d1ccd40606ff9f443f4/transformed/core-1.10.1/res/values-v16/values-v16.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "65",
+                        "endOffsets": "116"
+                    }
+                }
+            ]
+        }
+    ]
+}

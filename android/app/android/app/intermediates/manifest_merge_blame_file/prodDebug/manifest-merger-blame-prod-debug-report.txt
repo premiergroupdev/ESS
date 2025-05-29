@@ -1,0 +1,527 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="com.premiergroup.ess"
+4    android:versionCode="35"
+5    android:versionName="35.0.0" >
+6
+7    <uses-sdk
+8        android:minSdkVersion="21"
+9        android:targetSdkVersion="34" />
+10    <!--
+11         Flutter needs it to communicate with the running application
+12         to allow setting breakpoints, to provide hot reload, etc.
+13    -->
+14    <uses-permission android:name="android.permission.INTERNET" />
+14-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:11:5-66
+14-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:11:22-64
+15    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+15-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:8:5-78
+15-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:8:22-76
+16    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+16-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:9:5-80
+16-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:9:22-78
+17    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+17-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:10:5-81
+17-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:10:22-78
+18    <uses-permission android:name="android.permission.USE_BIOMETRIC" />
+18-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:12:5-71
+18-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:12:22-69
+19    <uses-permission android:name="android.permission.USE_FINGERPRINT" />
+19-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:13:5-73
+19-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:13:22-71
+20    <uses-permission android:name="android.permission.CALL_PHONE" />
+20-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:14:5-68
+20-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:14:22-66
+21    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+21-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:15:5-79
+21-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:15:22-76
+22    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+22-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:16:5-80
+22-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:16:22-78
+23    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+23-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:17:5-79
+23-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:17:22-77
+24    <uses-permission android:name="android.permission.CAMERA" />
+24-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:18:5-64
+24-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:18:22-62
+25    <uses-permission android:name="android.permission.WAKE_LOCK" />
+25-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:19:5-67
+25-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:19:22-65
+26    <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY" />
+26-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:20:5-85
+26-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:20:22-82
+27
+28    <uses-feature
+28-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:23:5-89
+29        android:name="android.hardware.fingerprint"
+29-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:23:19-62
+30        android:required="false" />
+30-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:23:63-87
+31    <uses-feature
+31-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:24:5-82
+32        android:name="android.hardware.face"
+32-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:24:19-55
+33        android:required="false" /> <!-- Permissions options for the `notification` group -->
+33-->/Volumes/Mac Online/flutterprojects/updated_ess/android/app/src/main/AndroidManifest.xml:24:56-80
+34    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+34-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:13:5-77
+34-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:13:22-74
+35    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+35-->[:geolocator_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/geolocator_android-4.1.7/android/android/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:5-77
+35-->[:geolocator_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/geolocator_android-4.1.7/android/android/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:9:22-74
+36    <uses-permission android:name="android.permission.VIBRATE" />
+36-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:10:5-66
+36-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:10:22-63
+37    <uses-permission android:name="android.permission.USE_FULL_SCREEN_INTENT" />
+37-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-81
+37-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:11:22-78
+38    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+38-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:5-79
+38-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:12:22-76
+39
+40    <queries>
+40-->[:file_picker] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/file_picker-5.2.10/android/android/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-17:15
+41        <intent>
+41-->[:file_picker] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/file_picker-5.2.10/android/android/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:18
+42            <action android:name="android.intent.action.GET_CONTENT" />
+42-->[:file_picker] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/file_picker-5.2.10/android/android/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-72
+42-->[:file_picker] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/file_picker-5.2.10/android/android/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:13:21-69
+43
+44            <data android:mimeType="*/*" />
+44-->[:file_picker] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/file_picker-5.2.10/android/android/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-44
+44-->[:file_picker] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/file_picker-5.2.10/android/android/file_picker/intermediates/merged_manifest/debug/AndroidManifest.xml:15:19-41
+45        </intent>
+46        <!-- Needs to be explicitly declared on Android R+ -->
+47        <package android:name="com.google.android.apps.maps" />
+47-->[com.google.android.gms:play-services-maps:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/6e659a9b602baa143bb583371ca0b8d3/transformed/jetified-play-services-maps-18.1.0/AndroidManifest.xml:33:9-64
+47-->[com.google.android.gms:play-services-maps:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/6e659a9b602baa143bb583371ca0b8d3/transformed/jetified-play-services-maps-18.1.0/AndroidManifest.xml:33:18-61
+48    </queries>
+49
+50    <uses-feature
+50-->[:flutter_phone_direct_caller] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_phone_direct_caller-2.1.1/android/android/flutter_phone_direct_caller/intermediates/merged_manifest/debug/AndroidManifest.xml:11:5-13:36
+51        android:name="android.hardware.telephony"
+51-->[:flutter_phone_direct_caller] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_phone_direct_caller-2.1.1/android/android/flutter_phone_direct_caller/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-50
+52        android:required="false" />
+52-->[:flutter_phone_direct_caller] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_phone_direct_caller-2.1.1/android/android/flutter_phone_direct_caller/intermediates/merged_manifest/debug/AndroidManifest.xml:13:9-33
+53    <uses-feature
+53-->[com.google.android.gms:play-services-maps:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/6e659a9b602baa143bb583371ca0b8d3/transformed/jetified-play-services-maps-18.1.0/AndroidManifest.xml:26:5-28:35
+54        android:glEsVersion="0x00020000"
+54-->[com.google.android.gms:play-services-maps:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/6e659a9b602baa143bb583371ca0b8d3/transformed/jetified-play-services-maps-18.1.0/AndroidManifest.xml:27:9-41
+55        android:required="true" /> <!-- Required by older versions of Google Play services to create IID tokens -->
+55-->[com.google.android.gms:play-services-maps:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/6e659a9b602baa143bb583371ca0b8d3/transformed/jetified-play-services-maps-18.1.0/AndroidManifest.xml:28:9-32
+56    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+56-->[com.google.firebase:firebase-iid:21.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/a3b77458cf534c54458d65e467a68353/transformed/jetified-firebase-iid-21.1.0/AndroidManifest.xml:26:5-82
+56-->[com.google.firebase:firebase-iid:21.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/a3b77458cf534c54458d65e467a68353/transformed/jetified-firebase-iid-21.1.0/AndroidManifest.xml:26:22-79
+57
+58    <permission
+58-->[androidx.core:core:1.10.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e08a88c1f6c54d1ccd40606ff9f443f4/transformed/core-1.10.1/AndroidManifest.xml:22:5-24:47
+59        android:name="com.premiergroup.ess.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION"
+59-->[androidx.core:core:1.10.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e08a88c1f6c54d1ccd40606ff9f443f4/transformed/core-1.10.1/AndroidManifest.xml:23:9-81
+60        android:protectionLevel="signature" />
+60-->[androidx.core:core:1.10.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e08a88c1f6c54d1ccd40606ff9f443f4/transformed/core-1.10.1/AndroidManifest.xml:24:9-44
+61
+62    <uses-permission android:name="com.premiergroup.ess.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION" />
+62-->[androidx.core:core:1.10.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e08a88c1f6c54d1ccd40606ff9f443f4/transformed/core-1.10.1/AndroidManifest.xml:26:5-97
+62-->[androidx.core:core:1.10.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e08a88c1f6c54d1ccd40606ff9f443f4/transformed/core-1.10.1/AndroidManifest.xml:26:22-94
+63
+64    <application
+65        android:name="android.app.Application"
+66        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
+66-->[androidx.core:core:1.10.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e08a88c1f6c54d1ccd40606ff9f443f4/transformed/core-1.10.1/AndroidManifest.xml:28:18-86
+67        android:debuggable="true"
+68        android:icon="@mipmap/ic_launcher"
+69        android:label="Ess" >
+70        <meta-data
+71            android:name="com.google.android.gms.location.LocationServices"
+72            android:value="true" />
+73
+74        <service
+75            android:name="dev.fluttercommunity.plus.android_alarm_manager.AlarmService"
+76            android:exported="true"
+77            android:permission="android.permission.BIND_JOB_SERVICE" />
+78
+79        <!-- Main activity configuration -->
+80        <activity
+81            android:name="com.premiergroup.ess.MainActivity"
+82            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+83            android:exported="true"
+84            android:hardwareAccelerated="true"
+85            android:launchMode="singleTop"
+86            android:showWhenLocked="true"
+87            android:theme="@style/LaunchTheme"
+88            android:turnScreenOn="true"
+89            android:windowSoftInputMode="adjustResize" >
+90
+91            <!-- Meta-data -->
+92            <meta-data
+93                android:name="com.google.android.geo.API_KEY"
+94                android:value="YOUR_API_KEY" />
+95            <meta-data
+96                android:name="io.flutter.embedding.android.NormalTheme"
+97                android:resource="@style/NormalTheme" />
+98            <meta-data
+99                android:name="io.flutter.embedding.android.SplashScreenDrawable"
+100                android:resource="@drawable/launch_background" />
+101            <meta-data
+102                android:name="com.google.firebase.messaging.default_notification_channel_id"
+103                android:value="premierEss" />
+104
+105            <intent-filter>
+106                <action android:name="android.intent.action.MAIN" />
+107
+108                <category android:name="android.intent.category.LAUNCHER" />
+109            </intent-filter>
+110        </activity>
+111
+112        <meta-data
+113            android:name="com.google.android.geo.API_KEY"
+114            android:value="AIzaSyAdsDlFIxAwsDkXKt7wesv7XRmj3qN3RaY" />
+115        <meta-data
+116            android:name="flutterEmbedding"
+117            android:value="2" />
+118
+119        <service
+119-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:16:9-19:72
+120            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingBackgroundService"
+120-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-107
+121            android:exported="false"
+121-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-37
+122            android:permission="android.permission.BIND_JOB_SERVICE" />
+122-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:19:13-69
+123        <service
+123-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:20:9-26:19
+124            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingService"
+124-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-97
+125            android:exported="false" >
+125-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:22:13-37
+126            <intent-filter>
+126-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-25:29
+127                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+127-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:17-78
+127-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:25-75
+128            </intent-filter>
+129        </service>
+130
+131        <receiver
+131-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:28:9-35:20
+132            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingReceiver"
+132-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:29:13-98
+133            android:exported="true"
+133-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:30:13-36
+134            android:permission="com.google.android.c2dm.permission.SEND" >
+134-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:31:13-73
+135            <intent-filter>
+135-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:32:13-34:29
+136                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+136-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:17-81
+136-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:25-78
+137            </intent-filter>
+138        </receiver>
+139
+140        <service
+140-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:37:9-41:19
+141            android:name="com.google.firebase.components.ComponentDiscoveryService"
+141-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:37:18-89
+142            android:directBootAware="true"
+142-->[com.google.firebase:firebase-common:20.3.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e7b0544246cc1c08faf76c7da90db5d6/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:34:13-43
+143            android:exported="false" >
+143-->[com.google.firebase:firebase-iid:21.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/a3b77458cf534c54458d65e467a68353/transformed/jetified-firebase-iid-21.1.0/AndroidManifest.xml:31:13-37
+144            <meta-data
+144-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:38:13-40:85
+145                android:name="com.google.firebase.components:io.flutter.plugins.firebase.messaging.FlutterFirebaseAppRegistrar"
+145-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:39:17-128
+146                android:value="com.google.firebase.components.ComponentRegistrar" />
+146-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:40:17-82
+147            <meta-data
+147-->[:cloud_firestore] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/cloud_firestore-4.4.0/android/android/cloud_firestore/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+148                android:name="com.google.firebase.components:io.flutter.plugins.firebase.firestore.FlutterFirebaseFirestoreRegistrar"
+148-->[:cloud_firestore] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/cloud_firestore-4.4.0/android/android/cloud_firestore/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-134
+149                android:value="com.google.firebase.components.ComponentRegistrar" />
+149-->[:cloud_firestore] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/cloud_firestore-4.4.0/android/android/cloud_firestore/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+150            <meta-data
+150-->[:firebase_core] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_core-2.5.0/android/android/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-13:85
+151                android:name="com.google.firebase.components:io.flutter.plugins.firebase.core.FlutterFirebaseCoreRegistrar"
+151-->[:firebase_core] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_core-2.5.0/android/android/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:12:17-124
+152                android:value="com.google.firebase.components.ComponentRegistrar" />
+152-->[:firebase_core] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_core-2.5.0/android/android/firebase_core/intermediates/merged_manifest/debug/AndroidManifest.xml:13:17-82
+153            <meta-data
+153-->[com.google.firebase:firebase-iid:21.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/a3b77458cf534c54458d65e467a68353/transformed/jetified-firebase-iid-21.1.0/AndroidManifest.xml:32:13-34:85
+154                android:name="com.google.firebase.components:com.google.firebase.iid.Registrar"
+154-->[com.google.firebase:firebase-iid:21.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/a3b77458cf534c54458d65e467a68353/transformed/jetified-firebase-iid-21.1.0/AndroidManifest.xml:33:17-96
+155                android:value="com.google.firebase.components.ComponentRegistrar" />
+155-->[com.google.firebase:firebase-iid:21.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/a3b77458cf534c54458d65e467a68353/transformed/jetified-firebase-iid-21.1.0/AndroidManifest.xml:34:17-82
+156            <meta-data
+156-->[com.google.firebase:firebase-messaging:23.1.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/0f38cdc3e403f563811eeb8f9fc1297a/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:55:13-57:85
+157                android:name="com.google.firebase.components:com.google.firebase.messaging.FirebaseMessagingRegistrar"
+157-->[com.google.firebase:firebase-messaging:23.1.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/0f38cdc3e403f563811eeb8f9fc1297a/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:56:17-119
+158                android:value="com.google.firebase.components.ComponentRegistrar" />
+158-->[com.google.firebase:firebase-messaging:23.1.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/0f38cdc3e403f563811eeb8f9fc1297a/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:57:17-82
+159            <meta-data
+159-->[com.google.firebase:firebase-firestore:24.4.2] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/fbbec147295b23a348dcff54e5dde3a5/transformed/jetified-firebase-firestore-24.4.2/AndroidManifest.xml:19:13-21:85
+160                android:name="com.google.firebase.components:com.google.firebase.firestore.FirestoreRegistrar"
+160-->[com.google.firebase:firebase-firestore:24.4.2] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/fbbec147295b23a348dcff54e5dde3a5/transformed/jetified-firebase-firestore-24.4.2/AndroidManifest.xml:20:17-111
+161                android:value="com.google.firebase.components.ComponentRegistrar" />
+161-->[com.google.firebase:firebase-firestore:24.4.2] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/fbbec147295b23a348dcff54e5dde3a5/transformed/jetified-firebase-firestore-24.4.2/AndroidManifest.xml:21:17-82
+162            <meta-data
+162-->[com.google.firebase:firebase-installations:17.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/b46420a506bc5b0fcd910ec7d9f91fec/transformed/jetified-firebase-installations-17.1.0/AndroidManifest.xml:17:13-19:85
+163                android:name="com.google.firebase.components:com.google.firebase.installations.FirebaseInstallationsRegistrar"
+163-->[com.google.firebase:firebase-installations:17.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/b46420a506bc5b0fcd910ec7d9f91fec/transformed/jetified-firebase-installations-17.1.0/AndroidManifest.xml:18:17-127
+164                android:value="com.google.firebase.components.ComponentRegistrar" />
+164-->[com.google.firebase:firebase-installations:17.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/b46420a506bc5b0fcd910ec7d9f91fec/transformed/jetified-firebase-installations-17.1.0/AndroidManifest.xml:19:17-82
+165            <meta-data
+165-->[com.google.firebase:firebase-datatransport:18.1.7] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/43a215610dca8c4b9dc984aab46492b9/transformed/jetified-firebase-datatransport-18.1.7/AndroidManifest.xml:27:13-29:85
+166                android:name="com.google.firebase.components:com.google.firebase.datatransport.TransportRegistrar"
+166-->[com.google.firebase:firebase-datatransport:18.1.7] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/43a215610dca8c4b9dc984aab46492b9/transformed/jetified-firebase-datatransport-18.1.7/AndroidManifest.xml:28:17-115
+167                android:value="com.google.firebase.components.ComponentRegistrar" />
+167-->[com.google.firebase:firebase-datatransport:18.1.7] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/43a215610dca8c4b9dc984aab46492b9/transformed/jetified-firebase-datatransport-18.1.7/AndroidManifest.xml:29:17-82
+168        </service>
+169
+170        <provider
+170-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:43:9-47:38
+171            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingInitProvider"
+171-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:44:13-102
+172            android:authorities="com.premiergroup.ess.flutterfirebasemessaginginitprovider"
+172-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:45:13-88
+173            android:exported="false"
+173-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:46:13-37
+174            android:initOrder="99" />
+174-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:47:13-35
+175
+176        <service
+176-->[:geolocator_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/geolocator_android-4.1.7/android/android/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:9-16:56
+177            android:name="com.baseflow.geolocator.GeolocatorLocationService"
+177-->[:geolocator_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/geolocator_android-4.1.7/android/android/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-77
+178            android:enabled="true"
+178-->[:geolocator_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/geolocator_android-4.1.7/android/android/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-35
+179            android:exported="false"
+179-->[:geolocator_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/geolocator_android-4.1.7/android/android/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-37
+180            android:foregroundServiceType="location" />
+180-->[:geolocator_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/geolocator_android-4.1.7/android/android/geolocator_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-53
+181
+182        <receiver
+182-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:15:9-17:40
+183            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
+183-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-97
+184            android:exported="false" />
+184-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-37
+185        <receiver
+185-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:18:9-27:20
+186            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
+186-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:19:13-101
+187            android:exported="false" >
+187-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-37
+188            <intent-filter>
+188-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-26:29
+189                <action android:name="android.intent.action.BOOT_COMPLETED" />
+189-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:22:17-79
+189-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:22:25-76
+190                <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
+190-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:23:17-84
+190-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:23:25-81
+191                <action android:name="android.intent.action.QUICKBOOT_POWERON" />
+191-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:24:17-82
+191-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:24:25-79
+192                <action android:name="com.htc.intent.action.QUICKBOOT_POWERON" />
+192-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:25:17-82
+192-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:25:25-79
+193            </intent-filter>
+194        </receiver>
+195
+196        <service
+196-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:14:9-17:39
+197            android:name="id.flutter.flutter_background_service.BackgroundService"
+197-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-83
+198            android:enabled="true"
+198-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-35
+199            android:exported="true" />
+199-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-36
+200
+201        <receiver
+201-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:19:9-22:39
+202            android:name="id.flutter.flutter_background_service.WatchdogReceiver"
+202-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:20:13-82
+203            android:enabled="true"
+203-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:21:13-35
+204            android:exported="true" />
+204-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:22:13-36
+205        <receiver
+205-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:23:9-30:20
+206            android:name="id.flutter.flutter_background_service.BootReceiver"
+206-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:24:13-78
+207            android:enabled="true"
+207-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:25:13-35
+208            android:exported="true" >
+208-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:26:13-36
+209            <intent-filter>
+209-->[:flutter_background_service] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_background_service-0.1.7/android/android/flutter_background_service/intermediates/merged_manifest/debug/AndroidManifest.xml:27:13-29:29
+210                <action android:name="android.intent.action.BOOT_COMPLETED" />
+210-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:22:17-79
+210-->[:flutter_local_notifications] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/flutter_local_notifications-9.1.4/android/android/flutter_local_notifications/intermediates/merged_manifest/debug/AndroidManifest.xml:22:25-76
+211            </intent-filter>
+212        </receiver>
+213
+214        <provider
+214-->[:image_picker_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/image_picker_android-0.8.5+6/android/android/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-18:20
+215            android:name="io.flutter.plugins.imagepicker.ImagePickerFileProvider"
+215-->[:image_picker_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/image_picker_android-0.8.5+6/android/android/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-82
+216            android:authorities="com.premiergroup.ess.flutter.image_provider"
+216-->[:image_picker_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/image_picker_android-0.8.5+6/android/android/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-74
+217            android:exported="false"
+217-->[:image_picker_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/image_picker_android-0.8.5+6/android/android/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-37
+218            android:grantUriPermissions="true" >
+218-->[:image_picker_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/image_picker_android-0.8.5+6/android/android/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:14:13-47
+219            <meta-data
+219-->[:image_picker_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/image_picker_android-0.8.5+6/android/android/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-17:75
+220                android:name="android.support.FILE_PROVIDER_PATHS"
+220-->[:image_picker_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/image_picker_android-0.8.5+6/android/android/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:16:17-67
+221                android:resource="@xml/flutter_image_picker_file_paths" />
+221-->[:image_picker_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/image_picker_android-0.8.5+6/android/android/image_picker_android/intermediates/merged_manifest/debug/AndroidManifest.xml:17:17-72
+222        </provider>
+223
+224        <activity
+224-->[:url_launcher_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.38/android/android/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:10:9-13:74
+225            android:name="io.flutter.plugins.urllauncher.WebViewActivity"
+225-->[:url_launcher_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.38/android/android/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:11:13-74
+226            android:exported="false"
+226-->[:url_launcher_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.38/android/android/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:12:13-37
+227            android:theme="@android:style/Theme.NoTitleBar.Fullscreen" />
+227-->[:url_launcher_android] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/url_launcher_android-6.0.38/android/android/url_launcher_android/intermediates/merged_manifest/debug/AndroidManifest.xml:13:13-71
+228
+229        <service
+229-->[:background_location] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/background_location-0.11.8/android/android/background_location/intermediates/merged_manifest/debug/AndroidManifest.xml:14:9-19:37
+230            android:name="com.almoullim.background_location.LocationUpdatesService"
+230-->[:background_location] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/background_location-0.11.8/android/android/background_location/intermediates/merged_manifest/debug/AndroidManifest.xml:15:13-84
+231            android:enabled="true"
+231-->[:background_location] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/background_location-0.11.8/android/android/background_location/intermediates/merged_manifest/debug/AndroidManifest.xml:16:13-35
+232            android:exported="false"
+232-->[:background_location] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/background_location-0.11.8/android/android/background_location/intermediates/merged_manifest/debug/AndroidManifest.xml:17:13-37
+233            android:foregroundServiceType="location"
+233-->[:background_location] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/background_location-0.11.8/android/android/background_location/intermediates/merged_manifest/debug/AndroidManifest.xml:18:13-53
+234            android:permission="" /> <!-- Needs to be explicitly declared on P+ -->
+234-->[:background_location] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/background_location-0.11.8/android/android/background_location/intermediates/merged_manifest/debug/AndroidManifest.xml:19:13-34
+235        <uses-library
+235-->[com.google.android.gms:play-services-maps:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/6e659a9b602baa143bb583371ca0b8d3/transformed/jetified-play-services-maps-18.1.0/AndroidManifest.xml:39:9-41:40
+236            android:name="org.apache.http.legacy"
+236-->[com.google.android.gms:play-services-maps:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/6e659a9b602baa143bb583371ca0b8d3/transformed/jetified-play-services-maps-18.1.0/AndroidManifest.xml:40:13-50
+237            android:required="false" />
+237-->[com.google.android.gms:play-services-maps:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/6e659a9b602baa143bb583371ca0b8d3/transformed/jetified-play-services-maps-18.1.0/AndroidManifest.xml:41:13-37
+238
+239        <receiver
+239-->[com.google.firebase:firebase-messaging:23.1.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/0f38cdc3e403f563811eeb8f9fc1297a/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:31:9-38:20
+240            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+240-->[com.google.firebase:firebase-messaging:23.1.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/0f38cdc3e403f563811eeb8f9fc1297a/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:32:13-78
+241            android:exported="true"
+241-->[com.google.firebase:firebase-messaging:23.1.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/0f38cdc3e403f563811eeb8f9fc1297a/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:33:13-36
+242            android:permission="com.google.android.c2dm.permission.SEND" >
+242-->[com.google.firebase:firebase-messaging:23.1.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/0f38cdc3e403f563811eeb8f9fc1297a/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:34:13-73
+243            <intent-filter>
+243-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:32:13-34:29
+244                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+244-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:17-81
+244-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:33:25-78
+245            </intent-filter>
+246        </receiver>
+247        <!--
+248             FirebaseMessagingService performs security checks at runtime,
+249             but set to not exported to explicitly avoid allowing another app to call it.
+250        -->
+251        <service
+251-->[com.google.firebase:firebase-messaging:23.1.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/0f38cdc3e403f563811eeb8f9fc1297a/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:44:9-51:19
+252            android:name="com.google.firebase.messaging.FirebaseMessagingService"
+252-->[com.google.firebase:firebase-messaging:23.1.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/0f38cdc3e403f563811eeb8f9fc1297a/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:45:13-82
+253            android:directBootAware="true"
+253-->[com.google.firebase:firebase-messaging:23.1.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/0f38cdc3e403f563811eeb8f9fc1297a/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:46:13-43
+254            android:exported="false" >
+254-->[com.google.firebase:firebase-messaging:23.1.1] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/0f38cdc3e403f563811eeb8f9fc1297a/transformed/jetified-firebase-messaging-23.1.1/AndroidManifest.xml:47:13-37
+255            <intent-filter android:priority="-500" >
+255-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:23:13-25:29
+256                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+256-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:17-78
+256-->[:firebase_messaging] /Users/premiersalesprivateltd/.pub-cache/hosted/pub.dev/firebase_messaging-14.2.2/android/android/firebase_messaging/intermediates/merged_manifest/debug/AndroidManifest.xml:24:25-75
+257            </intent-filter>
+258        </service>
+259
+260        <provider
+260-->[com.google.firebase:firebase-common:20.3.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e7b0544246cc1c08faf76c7da90db5d6/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:25:9-30:39
+261            android:name="com.google.firebase.provider.FirebaseInitProvider"
+261-->[com.google.firebase:firebase-common:20.3.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e7b0544246cc1c08faf76c7da90db5d6/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:26:13-77
+262            android:authorities="com.premiergroup.ess.firebaseinitprovider"
+262-->[com.google.firebase:firebase-common:20.3.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e7b0544246cc1c08faf76c7da90db5d6/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:27:13-72
+263            android:directBootAware="true"
+263-->[com.google.firebase:firebase-common:20.3.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e7b0544246cc1c08faf76c7da90db5d6/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:28:13-43
+264            android:exported="false"
+264-->[com.google.firebase:firebase-common:20.3.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e7b0544246cc1c08faf76c7da90db5d6/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:29:13-37
+265            android:initOrder="100" />
+265-->[com.google.firebase:firebase-common:20.3.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e7b0544246cc1c08faf76c7da90db5d6/transformed/jetified-firebase-common-20.3.0/AndroidManifest.xml:30:13-36
+266
+267        <activity
+267-->[com.google.android.gms:play-services-base:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/c7510aba5a4ae9ca25fe7723b350784f/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:9-22:45
+268            android:name="com.google.android.gms.common.api.GoogleApiActivity"
+268-->[com.google.android.gms:play-services-base:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/c7510aba5a4ae9ca25fe7723b350784f/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:20:19-85
+269            android:exported="false"
+269-->[com.google.android.gms:play-services-base:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/c7510aba5a4ae9ca25fe7723b350784f/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:22:19-43
+270            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
+270-->[com.google.android.gms:play-services-base:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/c7510aba5a4ae9ca25fe7723b350784f/transformed/jetified-play-services-base-18.1.0/AndroidManifest.xml:21:19-78
+271
+272        <meta-data
+272-->[com.google.android.gms:play-services-basement:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/63fcaa790d805f2034a57f790b974285/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:21:9-23:69
+273            android:name="com.google.android.gms.version"
+273-->[com.google.android.gms:play-services-basement:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/63fcaa790d805f2034a57f790b974285/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:22:13-58
+274            android:value="@integer/google_play_services_version" />
+274-->[com.google.android.gms:play-services-basement:18.1.0] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/63fcaa790d805f2034a57f790b974285/transformed/jetified-play-services-basement-18.1.0/AndroidManifest.xml:23:13-66
+275
+276        <uses-library
+276-->[androidx.window:window:1.0.0-beta04] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/eda6f47b7e906540b168048d0be731fb/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:25:9-27:40
+277            android:name="androidx.window.extensions"
+277-->[androidx.window:window:1.0.0-beta04] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/eda6f47b7e906540b168048d0be731fb/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:26:13-54
+278            android:required="false" />
+278-->[androidx.window:window:1.0.0-beta04] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/eda6f47b7e906540b168048d0be731fb/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:27:13-37
+279        <uses-library
+279-->[androidx.window:window:1.0.0-beta04] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/eda6f47b7e906540b168048d0be731fb/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:28:9-30:40
+280            android:name="androidx.window.sidecar"
+280-->[androidx.window:window:1.0.0-beta04] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/eda6f47b7e906540b168048d0be731fb/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:29:13-51
+281            android:required="false" />
+281-->[androidx.window:window:1.0.0-beta04] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/eda6f47b7e906540b168048d0be731fb/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml:30:13-37
+282
+283        <service
+283-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/847cd31981874d5dd82485ae6a8a4b62/transformed/jetified-transport-backend-cct-3.1.8/AndroidManifest.xml:28:9-34:19
+284            android:name="com.google.android.datatransport.runtime.backends.TransportBackendDiscovery"
+284-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/847cd31981874d5dd82485ae6a8a4b62/transformed/jetified-transport-backend-cct-3.1.8/AndroidManifest.xml:29:13-103
+285            android:exported="false" >
+285-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/847cd31981874d5dd82485ae6a8a4b62/transformed/jetified-transport-backend-cct-3.1.8/AndroidManifest.xml:30:13-37
+286            <meta-data
+286-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/847cd31981874d5dd82485ae6a8a4b62/transformed/jetified-transport-backend-cct-3.1.8/AndroidManifest.xml:31:13-33:39
+287                android:name="backend:com.google.android.datatransport.cct.CctBackendFactory"
+287-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/847cd31981874d5dd82485ae6a8a4b62/transformed/jetified-transport-backend-cct-3.1.8/AndroidManifest.xml:32:17-94
+288                android:value="cct" />
+288-->[com.google.android.datatransport:transport-backend-cct:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/847cd31981874d5dd82485ae6a8a4b62/transformed/jetified-transport-backend-cct-3.1.8/AndroidManifest.xml:33:17-36
+289        </service>
+290        <service
+290-->[com.google.android.datatransport:transport-runtime:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e0f885b5fe9b2b062ac26b3df607c0ed/transformed/jetified-transport-runtime-3.1.8/AndroidManifest.xml:26:9-30:19
+291            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.JobInfoSchedulerService"
+291-->[com.google.android.datatransport:transport-runtime:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e0f885b5fe9b2b062ac26b3df607c0ed/transformed/jetified-transport-runtime-3.1.8/AndroidManifest.xml:27:13-117
+292            android:exported="false"
+292-->[com.google.android.datatransport:transport-runtime:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e0f885b5fe9b2b062ac26b3df607c0ed/transformed/jetified-transport-runtime-3.1.8/AndroidManifest.xml:28:13-37
+293            android:permission="android.permission.BIND_JOB_SERVICE" >
+293-->[com.google.android.datatransport:transport-runtime:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e0f885b5fe9b2b062ac26b3df607c0ed/transformed/jetified-transport-runtime-3.1.8/AndroidManifest.xml:29:13-69
+294        </service>
+295
+296        <receiver
+296-->[com.google.android.datatransport:transport-runtime:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e0f885b5fe9b2b062ac26b3df607c0ed/transformed/jetified-transport-runtime-3.1.8/AndroidManifest.xml:32:9-34:40
+297            android:name="com.google.android.datatransport.runtime.scheduling.jobscheduling.AlarmManagerSchedulerBroadcastReceiver"
+297-->[com.google.android.datatransport:transport-runtime:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e0f885b5fe9b2b062ac26b3df607c0ed/transformed/jetified-transport-runtime-3.1.8/AndroidManifest.xml:33:13-132
+298            android:exported="false" /> <!-- The activities will be merged into the manifest of the hosting app. -->
+298-->[com.google.android.datatransport:transport-runtime:3.1.8] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/e0f885b5fe9b2b062ac26b3df607c0ed/transformed/jetified-transport-runtime-3.1.8/AndroidManifest.xml:34:13-37
+299        <activity
+299-->[com.google.android.play:core-common:2.0.3] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/d0d4b29d881adf84b57bbfeca62c963f/transformed/jetified-core-common-2.0.3/AndroidManifest.xml:14:9-18:65
+300            android:name="com.google.android.play.core.common.PlayCoreDialogWrapperActivity"
+300-->[com.google.android.play:core-common:2.0.3] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/d0d4b29d881adf84b57bbfeca62c963f/transformed/jetified-core-common-2.0.3/AndroidManifest.xml:15:13-93
+301            android:exported="false"
+301-->[com.google.android.play:core-common:2.0.3] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/d0d4b29d881adf84b57bbfeca62c963f/transformed/jetified-core-common-2.0.3/AndroidManifest.xml:16:13-37
+302            android:stateNotNeeded="true"
+302-->[com.google.android.play:core-common:2.0.3] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/d0d4b29d881adf84b57bbfeca62c963f/transformed/jetified-core-common-2.0.3/AndroidManifest.xml:17:13-42
+303            android:theme="@style/Theme.PlayCore.Transparent" />
+303-->[com.google.android.play:core-common:2.0.3] /Users/premiersalesprivateltd/.gradle/caches/transforms-3/d0d4b29d881adf84b57bbfeca62c963f/transformed/jetified-core-common-2.0.3/AndroidManifest.xml:18:13-62
+304    </application>
+305
+306</manifest>

@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.premiergroup.ess.app-mergeProdDebugResources-63:/values-watch-v20/values-watch-v20.xml",
+            "map": [
+                {
+                    "source": "/Users/premiersalesprivateltd/.gradle/caches/transforms-3/08e417261df19eb46333b2bb4b3d284a/transformed/appcompat-1.2.0/res/values-watch-v20/values-watch-v20.xml",
+                    "from": {
+                        "startLines": "2,5,8",
+                        "startColumns": "4,4,4",
+                        "startOffsets": "55,214,385",
+                        "endLines": "4,7,10",
+                        "endColumns": "12,12,12",
+                        "endOffsets": "209,380,553"
+                    }
+                }
+            ]
+        }
+    ]
+}
