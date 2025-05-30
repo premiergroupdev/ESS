@@ -44,7 +44,7 @@ dependencies:
   image_picker: ^1.1.1
   hexcolor: ^3.0.1
   google_fonts: ^6.1.0
-  cherry_toast:
+  cherry_toast: ^1.7.0
 #  slide_digital_clock:
   horizontal_data_table: ^4.1.4
   geolocator: ^10.1.0
