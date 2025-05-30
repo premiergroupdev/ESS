@@ -78,7 +78,7 @@ class _DashboardViewState extends State<DashboardView> {
             body:
 
               SingleChildScrollView(
-
+                physics: ClampingScrollPhysics(),
                 child: Column(
                 children: [
                   CustomHeader(
@@ -561,7 +561,7 @@ Widget leavesCart(BuildContext context, String title, String count, String icon)
     builder: (context, constraints) {
       return Container(
         width: screenWidth * 0.28, // adjust as per design
-        height: screenHeight * 0.16, // relative height
+        //height: screenHeight * 0.16, // relative height
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [AppColors.primary, AppColors.secondary],
@@ -711,12 +711,8 @@ class CustomHeader extends StatelessWidget {
     return Stack(
       children: [
 
-        Transform.translate(
-          offset: Offset(0, 0), // Move upward to fill gap
-          child: Transform.rotate(
-            angle: 0,
-            child: Container(
-              height: 200,
+        Container(
+              height: 220,
               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
@@ -730,8 +726,8 @@ class CustomHeader extends StatelessWidget {
                   BoxShadow(
                     color: Colors.black.withOpacity(0.3),
                     spreadRadius: 3,
-                    blurRadius: 7,
-                    offset: Offset(4, 4),
+                    blurRadius: 13,
+                    offset: Offset(0, 4),
                   ),
                 ],
                 borderRadius: BorderRadius.only(
@@ -740,8 +736,7 @@ class CustomHeader extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-        ),
+
 
         // Header content
         Padding(
@@ -816,7 +811,9 @@ Padding(
           ),
           SizedBox(height: 10),
           Container(
+            
             height: 85,
+
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               physics: BouncingScrollPhysics(),
@@ -827,7 +824,8 @@ Padding(
 
                   Container(
 
-                  width: 90,
+width: 120,
+                    padding: EdgeInsets.all(8),
                   margin: EdgeInsets.only(right: 10),
                   decoration: BoxDecoration(
                     color: Colors.blue[50],

@@ -124,7 +124,7 @@ class _LoginViewState extends State<LoginView> {
                           ),
                         ],
                       ),
-                      Spacer(),
+                    //  Spacer(),
                       Image.asset(
                         Assets.imagesPremierlogo,
                         width: context.screenSize().width,
@@ -135,7 +135,7 @@ class _LoginViewState extends State<LoginView> {
                         style: TextStyling.text16.copyWith(color: AppColors.darkGrey),
                         textAlign: TextAlign.center,
                       ),
-                      Spacer(),
+                     // Spacer(),
                       Column(
                         children: [
                           MainInputField(
@@ -249,7 +249,8 @@ class _LoginViewState extends State<LoginView> {
                             ],
                           ),
                         ),
-                      Spacer(),
+                     VerticalSpacing(10),
+                     // Spacer(),
                       if (widget.msg == null)
                         MainButton(
                           text: "Log In",

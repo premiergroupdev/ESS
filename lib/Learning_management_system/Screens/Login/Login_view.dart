@@ -102,7 +102,7 @@ class Login_learning_management extends StatelessWidget {
                                             CusTextField(
 
                                               controller: viewModel.emailcontroller,
-                                              labelText: 'Email',
+                                              labelText: 'Username',
                                               prefixIcon: Icon(Icons.email),),
                                             SizedBox(height: 15,),
                                             CusTextField(controller: viewModel.passwordcontroller,
