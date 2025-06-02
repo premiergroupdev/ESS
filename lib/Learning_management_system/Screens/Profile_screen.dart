@@ -186,37 +186,26 @@ class ProfilePic extends StatelessWidget {
             fit: StackFit.expand,
             clipBehavior: Clip.none,
             children: [
-              ClipOval(
-                child: Image.asset(
-                  "assets/images/personn.png",
-                  width: 100, // Set the desired width
-                  height: 100, // Set the desired height
-                  fit: BoxFit.cover, // Ensure the image scales properly
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.blue.shade50, // 🔹 Change to your desired background color
+                  shape: BoxShape.circle, // Ensures it stays circular
                 ),
-              ),
-              Positioned(
-                right: -16,
-                bottom: 0,
-                child: SizedBox(
-                  height: 46,
-                  width: 46,
-                  child: TextButton(
-                    style: TextButton.styleFrom(
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(50),
-                        side: const BorderSide(color: Colors.white),
-                      ),
-                      backgroundColor: const Color(0xFFF5F6F9),
-                    ),
-                    onPressed: () {},
-                    child: SvgPicture.string(cameraIcon),
+                child: ClipOval(
+                  child: Image.asset(
+                    "assets/images/personn.png",
+                    width: 100,
+                    height: 100,
+                    fit: BoxFit.cover,
                   ),
                 ),
-              )
+              ),
+              // Uncomment below if needed
+              // Positioned(...),
             ],
           ),
         ),
+
         SizedBox(height: 20,),
         Text(lmsUserData.member_name.toString(), style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold, color: Colors.black),),
         SizedBox(height: 5,),
