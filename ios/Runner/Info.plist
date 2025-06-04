@@ -7,7 +7,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-    <string>We need access to your photo library to allow you to select and upload photos for your loan application, such as a photo of your identification or supporting documents.</string>
+    <string>We require access to your photo library so you can upload necessary documents or identification photos as part of your form submission process.</string>
 	<key>CFBundleDisplayName</key>
 	<string>$(PRODUCT_NAME)</string>
 	<key>CFBundleExecutable</key>
