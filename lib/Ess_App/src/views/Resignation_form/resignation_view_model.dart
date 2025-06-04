@@ -17,7 +17,11 @@ class ResignationViewModel extends ReactiveViewModel with  AuthViewModel, ApiVie
 
   List<String> capexForList = ["Self", "For Employee"];
   int capexForIndex = 0;
+  final formKey = GlobalKey<FormState>();
 String  result ='';
+bool imageError=false;
+  bool regionDropdownError = false;
+  bool branchDropdownError = false;
   var _imageFile;
   String imagepath = "";
   ImagePicker picker = ImagePicker();

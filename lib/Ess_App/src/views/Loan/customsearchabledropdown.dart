@@ -178,12 +178,13 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown>
       });
     }
     return  Column(
+
       children: [
         Stack(
           children: [
 
             Container(
-
+           height: 35,
               decoration: widget.decoration,
               child:
               TextButton(
@@ -193,8 +194,10 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown>
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap, // Tap target size
                 ),
                 child: Padding(
-                  padding: widget.padding?? EdgeInsets.all(5.0),
+                  padding: widget.padding?? EdgeInsets.all(0.0),
                   child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
 
                       widget.prefixIcon?? Container(),
@@ -214,7 +217,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown>
                                         borderRadius:  BorderRadius.all(Radius.circular(5.0),)
                                     ),
                                     child: Padding(
-                                      padding: const EdgeInsets.fromLTRB(5,2,5,2),
+                                      padding: const EdgeInsets.all(0),
                                       child: Text(selectedValues[index].split('-_-')[0].toString(),
                                         style: widget.labelStyle??TextStyle(
                                             color: Colors.white,
@@ -562,7 +565,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown>
             itemBuilder: (BuildContext context, int index) {
               return TextButton(
                 style: TextButton.styleFrom(
-                    backgroundColor: widget.primaryColor?? Colors.black,
+                    backgroundColor: widget.primaryColor?? Colors.white,
                     padding: EdgeInsets.all(8),
                     tapTargetSize: MaterialTapTargetSize.shrinkWrap
                 ),

@@ -30,7 +30,12 @@ class _LoanState extends State<resignation_form> {
 
               resizeToAvoidBottomInset: false,
               body: SafeArea(
-                child: ListView(
+
+                child:
+                Form(
+                  key: model.formKey,
+                  child:
+                ListView(
                   children: [
                     GeneralAppBar(
                         title: "Resignation Form",
@@ -94,17 +99,35 @@ class _LoanState extends State<resignation_form> {
                                   controller: model.empcodecontroller,
                                   labelText: 'Emp Code',
                                   inputType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return 'Code is required';
+                                    }
+                                    return null;
+                                  },
                                 ),
                                 SizedBox(height: 10,),
                                 CustomTextField(
                                   controller: model.namecontroller,
                                   labelText: 'Name',
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return 'Name is required';
+                                    }
+                                    return null;
+                                  },
                                 ),
 
                                 SizedBox(height: 10,),
                                 CustomTextField(
                                   controller: model.departmentcontroller,
                                   labelText: 'Department',
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return 'Department is required';
+                                    }
+                                    return null;
+                                  },
                                 ),
 
 
@@ -220,12 +243,19 @@ class _LoanState extends State<resignation_form> {
                                     color: AppColors.primary,
                                     size: 24,
                                   ),
+
                                 ),
                                 SizedBox(height: 10,),
                                 CustomTextField(
                                   controller: model.mobilenumbercontroller,
                                   labelText: 'Mobile Number',
                                   inputType: TextInputType.number,
+                                  validator: (value) {
+                                    if (value == null || value.trim().isEmpty) {
+                                      return 'Number is required';
+                                    }
+                                    return null;
+                                  },
                                 ),
 
                                 SizedBox(height: 10,),
@@ -241,7 +271,16 @@ class _LoanState extends State<resignation_form> {
                                       child: Text("Upload Attachments"),
                                     ),
                                     if(model.imagepath.isNotEmpty)
-                                      Icon(Icons.check, color: Colors.green,)
+                                      Icon(Icons.check, color: Colors.green,),
+                                    if (model.imageError == true && model.imagepath.isEmpty)
+                                      Padding(
+                                        padding: const EdgeInsets.only(top: 4.0, left: 4.0),
+                                        child: Text(
+                                          "Attachment is required",
+                                          style: TextStyle(color: Colors.red, fontSize: 12),
+
+                                        ),
+                                      ),
                                   ],
                                 ),
 
@@ -262,6 +301,13 @@ class _LoanState extends State<resignation_form> {
                                           child: CustomTextField(
                                             controller: model.fathernamecontroller,
                                             labelText: 'Father Name',
+                                            validator: (value) {
+                                              if (value == null || value.trim().isEmpty) {
+                                                return 'Number is required';
+                                              }
+                                              return null;
+                                            },
+
                                           ),
                                         ),
                                       ],
@@ -276,6 +322,12 @@ class _LoanState extends State<resignation_form> {
                                             controller: model.cniccontroller,
                                             labelText: 'CNIC Number',
                                             inputType: TextInputType.number,
+                                            validator: (value) {
+                                              if (value == null || value.trim().isEmpty) {
+                                                return 'CNIC Number is required';
+                                              }
+                                              return null;
+                                            },
                                           ),
                                         ),
                                       ],
@@ -289,6 +341,13 @@ class _LoanState extends State<resignation_form> {
                                           child:  CustomTextField(
                                             controller: model.jobcontroller,
                                             labelText: 'Job Title',
+                                            validator: (value) {
+                                              if (value == null || value.trim().isEmpty) {
+                                                return 'Title is required';
+                                              }
+                                              return null;
+                                            },
+
                                           ),
                                         ),
                                       ],
@@ -302,6 +361,13 @@ class _LoanState extends State<resignation_form> {
                                           child:  CustomTextField(
                                             controller: model.reasoncontroller,
                                             labelText: 'Reason',
+                                            validator: (value) {
+                                              if (value == null || value.trim().isEmpty) {
+                                                return 'Reason is required';
+                                              }
+                                              return null;
+                                            },
+
                                           ),
                                         ),
                                       ],
@@ -315,6 +381,7 @@ class _LoanState extends State<resignation_form> {
                                           child: TextFormField(
                                             decoration: InputDecoration(
                                               hintText: 'Enter the notice period in days',
+
                                             ),
                                           ),
                                         ),
@@ -327,6 +394,12 @@ class _LoanState extends State<resignation_form> {
                                             inputType: TextInputType.number,
                                             controller: model.noticeperiod,
                                             labelText: 'Notice Period',
+                                            validator: (value) {
+                                              if (value == null || value.trim().isEmpty) {
+                                                return 'Notice Period is required';
+                                              }
+                                              return null;
+                                            },
                                           ),
                                         ),
                                         Text(" days. My last working day would be"),
@@ -370,28 +443,57 @@ class _LoanState extends State<resignation_form> {
                                   text: "Apply Resignation",
                                   isBusy: model.isBusy,
                                   onTap: () {
+                                    model.branchDropdownError =
+                                        (model.branchvalue ?? '').isEmpty;
+                                    model.regionDropdownError =
+                                        (model.regionvalue ?? '').isEmpty;
+                                    if (model.imagepath.isEmpty) {
+                                      setState(() {
+                                        model.imageError = true;
+                                      });
+                                    } else {
+                                      model.imageError = false;
+                                    }
+                                    if (model.regionDropdownError ||
+                                        model.branchDropdownError ||
+                                        model.imageError) {
+                                      Constants.customErrorSnack(context,
+                                          "Please fill in all dropdowns and attachments.");
+                                      return;
+                                    }
                                     print("image: ${model.imagepath}");
-                                    if (
-                                        model.namecontroller.text.isNotEmpty &&
-                                        model.departmentcontroller.text.isNotEmpty &&
-                                            model.imagepath.isNotEmpty &&
-                                        model.branchvalue != null &&
-                                        model.empcodecontroller.text.isNotEmpty &&
-                                        model.mobilenumbercontroller.text.isNotEmpty &&
-                                        model.startdatecontroller.text.isNotEmpty && model.fathernamecontroller.text.isNotEmpty
-                                        && model.cniccontroller.text.isNotEmpty && model.jobcontroller.text.isNotEmpty
-                                        && model.reasoncontroller.text.isNotEmpty  && model.lastdaycontroller.text.isNotEmpty
-                                        ) {
-                                    print("object");
+                                    if (model.formKey.currentState!.validate()) {
+                                      if (
+                                      model.namecontroller.text.isNotEmpty &&
+                                          model.departmentcontroller.text
+                                              .isNotEmpty &&
+                                          model.imagepath.isNotEmpty &&
+                                          model.branchvalue != null &&
+                                          model.empcodecontroller.text
+                                              .isNotEmpty &&
+                                          model.mobilenumbercontroller.text
+                                              .isNotEmpty &&
+                                          model.startdatecontroller.text
+                                              .isNotEmpty &&
+                                          model.fathernamecontroller.text
+                                              .isNotEmpty
+                                          && model.cniccontroller.text
+                                          .isNotEmpty &&
+                                          model.jobcontroller.text.isNotEmpty
+                                          && model.reasoncontroller.text
+                                          .isNotEmpty &&
+                                          model.lastdaycontroller.text
+                                              .isNotEmpty
+                                      ) {
+                                        print("object");
                                         model.applyresignation(context);
                                       }
                                       else {
-
                                         Constants.customErrorSnack(
                                             context, "Please enter all Feilds");
                                       }
-                                   }
-
+                                    }
+                                  }
                                 ),
                               ],
                             ),
@@ -406,6 +508,7 @@ class _LoanState extends State<resignation_form> {
                     )],
                 ),
               ),
+            ),
             ),
         viewModelBuilder: () => ResignationViewModel(),
         onModelReady: (model) => model.init(context),

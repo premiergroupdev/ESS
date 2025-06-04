@@ -100,151 +100,116 @@ UserData.clearUserData();
 
 class CustomBar extends StatelessWidget {
   final String title;
-  bool islogout;
-  BuildContext context;
+  final bool islogout;
+  final BuildContext context;
 
-  CustomBar({required this.title, this.islogout=false, required this.context}); // Constructor without islogout
+  CustomBar({required this.title, this.islogout = false, required this.context});
 
   @override
-  Widget build( context) {
-    return Column(
-      children: [
-
-        Container(
-          height: 130,
-          padding: const EdgeInsets.all(8), // Add some padding
-          decoration: BoxDecoration(
-            color: AppColors.primary,
-            borderRadius: BorderRadius.vertical(bottom: Radius.circular(20.0)),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.2), // Shadow color
-                offset: Offset(0, 4), // Position of the shadow
-                blurRadius: 6, // Blur effect
-                spreadRadius: 0,
-              )
-            ]
+  Widget build(BuildContext context) {
+    return Container(
+      height: 90,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: AppColors.primary,
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(16.0)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.15),
+            offset: Offset(0, 4),
+            blurRadius: 6,
           ),
-          child:
-
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: IconButton(
-                          icon: Icon(
-                            Icons.menu,
-                            color: AppColors.primary,
-                          ),
-                          onPressed: () {
-                            Scaffold.of(context).openDrawer();
-                          },
-                        ),
-                      ),
-                    ),
-                    Center(
-                      child: Text(
-                        title,
-                        style: TextStyle(color: AppColors.white, fontSize: 20, fontWeight: FontWeight.bold), // Title text style
-                      ),
-                    ),
-
-                    islogout==true ?
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        decoration: BoxDecoration(
-                            color: Colors.red,
-                            borderRadius: BorderRadius.circular(8)),
-                        child: IconButton(
-                          icon: Icon(Icons.logout, color: Colors.white,), // Logout icon
-                          onPressed: () {
-
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text(
-                                  'Logout',
-                                  style: TextStyle(
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white, // Set title text color to white
-                                  ),
-                                ),
-                                content: Text(
-                                  'Are you sure you want to logout?',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.white, // Set content text color to white
-                                  ),
-                                ),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(20.0),
-                                ),
-                                backgroundColor: AppColors.primary, // Set the background color to your primary color
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.of(context).pop(); // Close dialog
-                                    },
-                                    child: Text(
-                                      'Cancel',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  TextButton(
-                                    onPressed: () async {
-                                      print("Logging out...");
-                                      SharedPreferences sp = await SharedPreferences.getInstance();
-                                      await sp.clear();
-                                      UserData.clearUserData();
-                                      Navigator.of(context).pop(); // Close dialog
-                                      NavService.appmenu(); // Navigate to app menu
-                                    },
-                                    child: Text(
-                                      'Logout',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        ),
-                      ),
-                    ) : Text(""),
-                    if(islogout==false)
-                      Text('')
-                   // SizedBox(width: 48),
-                    // Placeholder for alignment
-                  ],
-                ),
-              ],
+        ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Row(
+          children: [
+            // Menu Button
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: IconButton(
+                icon: Icon(Icons.menu, color: AppColors.primary),
+                onPressed: () {
+                  Scaffold.of(context).openDrawer();
+                },
+              ),
             ),
+
+            // Title Centered
+            Expanded(
+              child: Center(
+                child: Text(
+                  title,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+
+            // Logout Button (if applicable)
+            if (islogout)
+              Container(
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: IconButton(
+                  icon: Icon(Icons.logout, color: Colors.white),
+                  onPressed: () {
+                    _showLogoutDialog(this.context);
+                  },
+                ),
+              )
+            else
+              SizedBox(width: 48), // Placeholder to balance the row
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text(
+          'Logout',
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
           ),
         ),
-        SizedBox(height: 13,)
-        // You can add more widgets below the AppBar if needed
-      ],
+        content: Text(
+          'Are you sure you want to logout?',
+          style: TextStyle(fontSize: 16, color: Colors.white),
+        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20.0)),
+        backgroundColor: AppColors.primary,
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: Text('Cancel', style: TextStyle(color: Colors.white)),
+          ),
+          TextButton(
+            onPressed: () async {
+              SharedPreferences sp = await SharedPreferences.getInstance();
+              await sp.clear();
+              UserData.clearUserData();
+              Navigator.of(context).pop();
+              NavService.appmenu(); // Navigate to app menu
+            },
+            child: Text('Logout', style: TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
     );
   }
 }

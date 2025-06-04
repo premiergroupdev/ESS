@@ -47,6 +47,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     children: [
                       CustomBar(
                           title: 'Dashboard', islogout: true, context: context),
+                      SizedBox(height: 10,),
 
                       Expanded(
 

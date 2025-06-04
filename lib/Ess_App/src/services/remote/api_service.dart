@@ -40,6 +40,7 @@ import '../../models/api_response_models/Training_model.dart';
 import '../../models/api_response_models/advance_line_manager_approval.dart';
 import '../../models/api_response_models/branch.dart';
 import '../../models/api_response_models/branch.dart';
+import '../../models/api_response_models/ceo_model.dart';
 import '../../models/api_response_models/changepassword_model.dart';
 import '../../models/api_response_models/director_model.dart';
 import '../../models/api_response_models/fetch_loan_approval.dart';
@@ -1249,6 +1250,35 @@ class ApiService {
     }
   }
 
+  Future<ApiResult<CeoLoanModel>> loan_approval_ceo() async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+
+      };
+      var res = await _apiClient?.getReq(
+          "/ceo_loan_approvals.php",
+          headers: headers
+      );
+print("Status code: ${res.statusCode }");
+      if (res.statusCode == 200) {
+        var data = jsonDecode(res.data);
+        print("Data: ${data}");
+        return ApiResult.success(data: CeoLoanModel.fromJson(data));
+      }
+      else {
+        return ApiResult.failure(
+            error: NetworkExceptions.notFound(res.message ?? "Incorrect"));
+      }
+    }
+    catch (e,stack) {
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
 
   Future<ApiResult<director>> director_loan_approval() async {
     try {
@@ -1477,7 +1507,7 @@ class ApiService {
         'Cookie': 'PHPSESSID=0qga4kkbhct0q1ejhl93b5oj8p'
       };
       var response = await _apiClient?.getReq(
-          "/hod_loan_approved.php?loan_id=${loan_id}&comment=${comment}&status=${status}",
+          "/ceo_loan_approved.php?loan_id=${loan_id}&comment=${comment}&status=${status}&username=${authService.user?.userId}",
 
           //print("https://premierspulse.com/ess/scripts/adv_fin_approval.php?case_id=$id&final_amount=$amount&status=$status&remarks=$remarks");
           headers: headers

@@ -10,7 +10,7 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # Stable and compatible versions for Flutter 3.22.0
+
   connectivity: ^3.0.6
   freezed_annotation: ^2.4.1
   fluttertoast: ^8.2.4
@@ -52,7 +52,6 @@ dependencies:
   google_maps_flutter: ^2.6.0
   cloud_firestore: ^4.15.8
   firebase_core: ^2.27.0
-
   image: ^4.1.7
   firebase_messaging: ^14.7.21
   flutter_local_notifications: ^17.1.2

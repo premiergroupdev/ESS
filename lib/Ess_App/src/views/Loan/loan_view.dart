@@ -25,7 +25,7 @@ class _LoanState extends State<Loan> {
 
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
+  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return
@@ -56,7 +56,11 @@ class _LoanState extends State<Loan> {
                       child: Padding(
                         padding: const EdgeInsets.all(16.0),
                         child: SingleChildScrollView(
-                          child: Column(
+                          child:
+                          Form(
+                            key: _formKey,
+                            child:
+                          Column(
                             children: [
                               CustomSearchableDropDown(
                                 items: model.loan_applicants,
@@ -93,10 +97,12 @@ class _LoanState extends State<Loan> {
                                 },
 
                               ),
-
+                              if (model.applicantDropdownError)
+                                Text("Please select applicant type", style: TextStyle(color: Colors.red, fontSize: 12)),
                               SizedBox(height: 10,),
 
                               CustomSearchableDropDown(
+
                                 items: model.finalApprovalData,
                                 label: model.selectedValue == '' ? 'Branch List' : 'Select Loan Type',
                                 decoration: BoxDecoration(
@@ -120,24 +126,45 @@ class _LoanState extends State<Loan> {
                                     });
                                   }
                                 },
+
                               ),
+                              if (model.applicantDropdownError)
+                                Text("Please select loan type", style: TextStyle(color: Colors.red, fontSize: 12)),
 SizedBox(height: 10,),
 
 
                               CustomTextField(
                                 controller: model.namecontroller,
                                 labelText: 'Name',
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Name is required';
+                                  }
+                                  return null;
+                                },
                               ),
 
                               SizedBox(height: 10,),
                               CustomTextField(
                                 controller: model.positioncontroller,
                                 labelText: 'Position',
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Position is required';
+                                  }
+                                  return null;
+                                },
                               ),
                               SizedBox(height: 10,),
                               CustomTextField(
                                 controller: model.departmentcontroller,
                                 labelText: 'Department',
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Department is required';
+                                  }
+                                  return null;
+                                },
                               ),
                               SizedBox(height: 10,),
 
@@ -209,12 +236,24 @@ SizedBox(height: 10,),
                                 controller: model.empcodecontroller,
                                 labelText: 'Emp Code',
                                 inputType: TextInputType.number,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Code is required';
+                                  }
+                                  return null;
+                                },
                               ),
                               SizedBox(height: 10,),
                               CustomTextField(
                                 controller: model.mobilenumbercontroller,
                                 labelText: 'Mobile Number',
                                 inputType: TextInputType.number,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Number is required';
+                                  }
+                                  return null;
+                                },
                               ),
                               SizedBox(height: 10,),
                               // CustomTextField(
@@ -255,6 +294,12 @@ SizedBox(height: 10,),
                                 labelText: 'CNIC',
                                 inputType: TextInputType.number,
                                 formatter: [CnicFormatter()],
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'CNIC is required';
+                                  }
+                                  return null;
+                                },
 
                               ),
                               SizedBox(height: 30,),
@@ -262,16 +307,34 @@ SizedBox(height: 10,),
                                 controller: model.loanamountrs,
                                 labelText: 'Loan Amount Rs',
                                 inputType: TextInputType.number,
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Loan Amount is required';
+                                  }
+                                  return null;
+                                },
                               ),
                               SizedBox(height: 30,),
                               CustomTextField(
                                 controller: model.loanamountinwordscontroller,
                                 labelText: 'Loan Amount In Words',
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Loan Amount In Words is required';
+                                  }
+                                  return null;
+                                },
                               ),
                               SizedBox(height: 30,),
                               CustomTextField(
                                 controller: model.purposeofloancontroller,
                                 labelText: 'Purpose of loan',
+                                validator: (value) {
+                                  if (value == null || value.trim().isEmpty) {
+                                    return 'Purpose is required';
+                                  }
+                                  return null;
+                                },
                               ),
                               SizedBox(height: 10,),
                               Row(
@@ -280,18 +343,28 @@ SizedBox(height: 10,),
 
                                   ElevatedButton(
                                     onPressed: () async {
+                                      model.imageError = model.imagepath.isEmpty;
                                       model.getImageCamera();
 
                                     },
-                                    child: Text("Upload Attachments"),
+                                    child: Text("Upload CNIC"),
                                   ),
                                   if(model.imagepath.isNotEmpty)
                                     Text(
                                       model.imagepath.split('/').last, // Extracts the file name from the path
                                       style: TextStyle(fontWeight: FontWeight.bold),
                                     ),
+                                  if (model.imageError == true && model.imagepath.isEmpty)
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 4.0, left: 4.0),
+                                      child: Text(
+                                        "Attachment is required",
+                                        style: TextStyle(color: Colors.red, fontSize: 12),
+                                      ),
+                                    ),
                                 ],
                               ),
+
                               SizedBox(height: 30,),
                               Text(" I solemnly affirm that the application of loan is made to meet expenses stated as the purpose already mentioned above."),
                          //Text("number of equal monthly INSTALLMENT of Rs  "),
@@ -417,37 +490,77 @@ SizedBox(height: 10,),
                                 text: "Apply Loan",
                                 isBusy: model.isBusy,
                                 onTap: () {
-                                  if (model.namecontroller.text.isNotEmpty &&
-                                      model.positioncontroller.text.isNotEmpty &&
-                                      model.departmentcontroller.text.isNotEmpty &&
-                                      model.precodevalue != null &&
-                                      model.branchvalue != null &&
-                                        model.imagepath.isNotEmpty &&
-                                      model.empcodecontroller.text.isNotEmpty &&
-                                      model.mobilenumbercontroller.text.isNotEmpty &&
-                                      model.dateofjoningcontroller.text.isNotEmpty &&
-                                      model.cniccontroller.text.isNotEmpty &&
-                                      model.loanamountrs.text.isNotEmpty &&
-                                      model.loanamountinwordscontroller.text.isNotEmpty &&
-                                      model.purposeofloancontroller.text.isNotEmpty &&
-                                      ((model.selectedValue != "pf_permanent_withdrawl" &&
-                                          model.repay_loan_month_controller.text.isNotEmpty &&
-                                          model.resultController.text.isNotEmpty) ||
-                                          model.selectedValue == "pf_permanent_withdrawl")) {
-                                    // Validate mobile number length
-                                    if (model.mobilenumbercontroller.text.length >= 11 &&
-                                        model.mobilenumbercontroller.text.length <= 11) {
-                                      model.applyloan(context);
+                                  setState(() {
+                                    model.applicantDropdownError = (model.loanapplicants ?? '').isEmpty;
+                                    model.loanTypeDropdownError = (model.selectedValue ?? '').isEmpty;
+                                    model.branchDropdownError = (model.branchvalue ?? '').isEmpty;
+                                    model.preCodeDropdownError = (model.precodevalue ?? '').isEmpty;
+
+                                    if (model.loanapplicants == "for_self") {
+                                      model.guarantor1DropdownError = (model.selectedgraduatevalue1 ?? '').isEmpty;
+                                      model.guarantor2DropdownError = (model.selectedgraduatevalue2 ?? '').isEmpty;
                                     } else {
-                                      Constants.customErrorSnack(
-                                          context, "Please enter a valid mobile number");
+                                      model.guarantor1DropdownError = false;
+                                      model.guarantor2DropdownError = false;
                                     }
+                                  });
+
+
+                                  if (model.imagepath.isEmpty) {
+                                    setState(() {
+                                      model.imageError = true;
+                                    });
                                   } else {
-                                    Constants.customErrorSnack(
-                                        context, "Please fill in all fields");
+                                    model.imageError = false;
                                   }
+
+                                  // Step 3: If any dropdown or image error is true, stop here
+                                  if (model.applicantDropdownError ||
+                                      model.loanTypeDropdownError ||
+                                      model.branchDropdownError ||
+                                      model.preCodeDropdownError ||
+                                      model.imageError ||
+                                      (model.loanapplicants == "for_self" &&
+                                          (model.guarantor1DropdownError || model.guarantor2DropdownError))) {
+                                    Constants.customErrorSnack(context, "Please fill in all dropdowns and attachments.");
+                                    return;
+                                  }
+                                  print("Before: ${model.imageError}");
+    if (_formKey.currentState!.validate()) {
+
+
+      if (model.namecontroller.text.isNotEmpty &&
+          model.positioncontroller.text.isNotEmpty &&
+          model.departmentcontroller.text.isNotEmpty &&
+          model.precodevalue != null &&
+          model.branchvalue != null &&
+          model.imagepath.isNotEmpty &&
+          model.empcodecontroller.text.isNotEmpty &&
+          model.mobilenumbercontroller.text.isNotEmpty &&
+          model.dateofjoningcontroller.text.isNotEmpty &&
+          model.cniccontroller.text.isNotEmpty &&
+          model.loanamountrs.text.isNotEmpty &&
+          model.loanamountinwordscontroller.text.isNotEmpty &&
+          model.purposeofloancontroller.text.isNotEmpty &&
+          ( ( model.selectedValue != "pf_permanent_withdrawl" &&
+              model.repay_loan_month_controller.text.isNotEmpty &&
+              model.resultController.text.isNotEmpty) ||
+              model.selectedValue == "pf_permanent_withdrawl")) {
+
+        if ( model.mobilenumbercontroller.text.length >= 11 &&
+            model.mobilenumbercontroller.text.length <= 11 ) {
+          model.applyloan(context);
+        } else {
+          Constants.customErrorSnack(context, "Please enter a valid mobile number");
+        }
+      } else {
+        Constants.customErrorSnack(
+            context, "Please fill in all fields");
+      }
+    }
                                 },
                               ),
+
                             ],
                           ),
 
@@ -458,7 +571,7 @@ SizedBox(height: 10,),
 
                     ),
                   ),
-                  )],
+                  ))],
               ),
             ),
           ),

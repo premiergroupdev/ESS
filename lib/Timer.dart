@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 import 'Ess_App/src/styles/app_colors.dart';
 
@@ -21,7 +22,7 @@ class _TimerScreenState extends State<TimerScreen> {
 
   String _getCurrentTime() {
     final now = DateTime.now();
-    final hours = now.hour % 12;  // Convert to 12-hour format
+    final hours = now.hour % 12;
     final ampm = now.hour >= 12 ? 'PM' : 'AM';
     return "${_twoDigits(hours)}:${_twoDigits(now.minute)}:${_twoDigits(now.second)} $ampm";
   }
@@ -51,7 +52,11 @@ class _TimerScreenState extends State<TimerScreen> {
       body: Center(
         child: Text(
           _currentTime,
-          style: TextStyle(fontSize: 40, color: Colors.white, fontWeight: FontWeight.bold),
+            style: GoogleFonts.poppins(
+              color: AppColors.white,
+fontWeight: FontWeight.bold,
+              fontSize: 32,
+            ),
         ),
       ),
     );

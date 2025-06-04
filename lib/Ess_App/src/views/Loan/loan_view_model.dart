@@ -30,6 +30,15 @@ class LoanViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel {
   final TextEditingController repaymonthlyamount = TextEditingController();
   final TextEditingController repay_loan_month_controller = TextEditingController();
   final TextEditingController resultController = TextEditingController();
+  bool applicantDropdownError = false;
+  bool loanTypeDropdownError = false;
+  bool branchDropdownError = false;
+  bool preCodeDropdownError = false;
+  bool guarantor1DropdownError = false;
+  bool guarantor2DropdownError = false;
+
+  bool imageError = false;
+
   DateTime bookDateFormat = DateTime.now();
   @override
   void dispose() {
@@ -89,7 +98,7 @@ class LoanViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel {
   }
 
   init(BuildContext context) async {
-
+    loanapplicants="for_self";
     await getFinalApprovalData(context);
           await guaranterdata(context);
           await branchdata(context);

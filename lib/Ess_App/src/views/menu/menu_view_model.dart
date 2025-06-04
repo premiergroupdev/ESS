@@ -3,6 +3,7 @@ import 'package:ess/Ess_App/src/services/local/navigation_service.dart';
 import 'package:ess/Ess_App/src/services/remote/base/api_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:package_info/package_info.dart';
 import 'package:stacked/stacked.dart';
 import '../login/local/local_db.dart';
 class CustomMenuItem {
@@ -26,6 +27,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
 
   int collapsedIndex = -1;
   bool? checktabledata;
+  String version='';
   final dbHelper = DatabaseHelper();
   Future<void> checktable() async {
     checktabledata = await  dbHelper.checkTable();
@@ -35,6 +37,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
 
   void init(BuildContext context){
     checktable();
+    version_no();
   }
   changeIndex(int index) {
     if (collapsedIndex == index) {
@@ -54,6 +57,11 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
     authService.logout();
     print(authService.user);
     NavService.appmenu();
+  }
+
+  void version_no() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+     version = packageInfo.version.split('-').first.trim();
   }
 
 
@@ -239,6 +247,11 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
               NavService.director_approval();
               Scaffold.of(context).closeDrawer();
             },
+          ),
+          CustomMenuItem(
+            label: "CEO Approvals",
+            isParent: false,
+            onPress: () {NavService.ceo_approval();Scaffold.of(context).closeDrawer();},
           ),
 
         ]

@@ -3,6 +3,7 @@ import 'package:ess/Ess_App/src/views/Loan/Pending_hod_Approval/pending_approval
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:stacked/stacked.dart';
 
 import '../../../base/utils/constants.dart';
@@ -90,139 +91,234 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                         children: [
                                           TextSpan(
                                             text: 'Mr. ',
-                                            style: TextStyle(color: Colors.black),
+                                                    style: GoogleFonts.poppins(
+                                                      color: AppColors.black,
+
+
+                                                    ),
                                           ),
                                           TextSpan(
                                             text: data.empName.toString(),
-                                            style: TextStyle(color: Colors.blue,
-                                                fontWeight: FontWeight.bold),
+                                                    style: GoogleFonts.poppins(
+                                                        color: AppColors.primary,
+                                                        fontWeight: FontWeight.w600
+
+
+                                                    ),
                                           ),
 
                                           TextSpan(
                                             text: ' has applied for the loan of ',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
                                           TextSpan(
-                                            text: data.loanAmount.toString() + " Rs \n",
-                                            style: TextStyle(color: Colors.blue,
-                                                fontWeight: FontWeight.bold),
+                                            text: data.loanAmount.toString() + " Rs. \n",
+                                            style: GoogleFonts.poppins(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.w600
+
+
+                                            ),
                                           ),
 
                                           TextSpan(
                                             text: 'Designation:  ',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
                                           TextSpan(
                                             text: data.position + "\n",
-                                            style: TextStyle(
-                                                color: Colors.blue,
-                                                fontWeight: FontWeight.bold
+                                            style: GoogleFonts.poppins(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.w600
+
+
                                             ),
                                           ),
                                           TextSpan(
                                             text: 'Department:  ',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
                                           TextSpan(
                                             text: data.department + "\n",
-                                            style: TextStyle(
-                                                color: Colors.blue,
-                                                fontWeight: FontWeight.bold
+                                            style: GoogleFonts.poppins(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.w600
+
+
                                             ),
                                           ),
                                           TextSpan(
                                             text: 'Date of joining:  ',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
                                           TextSpan(
                                             text: data.doj + "\n",
-                                            style: TextStyle(
-                                                color: Colors.blue,
-                                                fontWeight: FontWeight.bold
+                                            style: GoogleFonts.poppins(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.w600
+
+
                                             ),
                                           ),
                                           TextSpan(
                                             text: 'Loan type:  ',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
                                           TextSpan(
                                             text: data.loanType + "\n",
-                                            style: TextStyle(
-                                                color: Colors.blue,
-                                                fontWeight: FontWeight.bold
+                                            style: GoogleFonts.poppins(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.w600
+
+
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: 'Purpose : ',
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: "${data.purpose + "\n\n"}",
+                                            style: GoogleFonts.poppins(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.w600
+
+
                                             ),
                                           ),
                                           TextSpan(
                                             text: ' He will repay the loan in',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
                                           TextSpan(
                                             text: ' ${data.totalInstallment}',
-                                            style: TextStyle(color: Colors.blue,
-                                                fontWeight: FontWeight.bold),
+                                            style: GoogleFonts.poppins(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.w600
+
+
+                                            ),
                                           ),
                                           TextSpan(
                                             text: ' equal installments of ',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
                                           TextSpan(
                                             text: ' ${data.perMonthRepay} Rs',
-                                            style: TextStyle(color: Colors.blue,
-                                                fontWeight: FontWeight.bold),
+                                            style: GoogleFonts.poppins(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.w600
+
+
+                                            ),
                                           ),
                                           TextSpan(
                                             text: ' and need your approval for further proceedings. \n',
-                                            style: TextStyle(color: Colors.black),
+                                              style: GoogleFonts.poppins(
+                                                color: AppColors.black,
+
+
+                                              ),
                                           ),
-                                          TextSpan(
-                                            text: 'Purpose : ',
-                                            style: TextStyle(color: Colors.black),
-                                          ),
-                                          TextSpan(
-                                            text: "${data.purpose + "\n"}",
-                                            style: TextStyle(color: Colors.blue,
-                                                fontWeight: FontWeight.bold
-                                            ),
-                                          ),
+
                                           if(data.empShare.isNotEmpty)
                                           TextSpan(
                                             text: 'Emp Share : ${data.empShare} ',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
                                           if(data.cmpShare.isNotEmpty)
                                           TextSpan(
                                             text: 'Cmp Share : ${data.cmpShare} ',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
                                           if(data.prvBalance.isNotEmpty)
                                           TextSpan(
                                             text: 'Prv Share : ${data.prvBalance}',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
                                           if(data.loanComments.isNotEmpty)
                                           TextSpan(
                                             text: 'Coments : ${data.loanComments.map((e) => e.comments)} \n',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
 
                                           if(data.loanComments.isNotEmpty)
                                           TextSpan(
                                             text: 'Posted by : ${data.loanComments.map((e) => e.postedBy)}',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
 
                                           TextSpan(
-                                            text: '\n\n',
+                                            text: '',
                                             style: TextStyle(color: Colors.black),
                                           ),
                                           TextSpan(
                                             text: 'Do you want to change this amount and tenure?  ',
-                                            style: TextStyle(color: Colors.black),
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
                                           ),
                                           TextSpan(
                                             text: 'Edit',
-                                            style: TextStyle(color: Colors.blue,
-                                                fontWeight: FontWeight.bold
+                                            style: GoogleFonts.poppins(
+                                              fontWeight: FontWeight.w600,
+                                              color: AppColors.primary,
+
+
                                             ),
                                             recognizer: TapGestureRecognizer()
                                               ..onTap = () {
@@ -352,10 +448,13 @@ else {
 
                                       ),
                                     ),
+
+
+
                                     SizedBox(height: 10,),
                                     if(data.attachmenturl != null)
                                       Row(
-                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
                                           InkWell(
                                             onTap: () {
@@ -366,22 +465,42 @@ else {
                                                 ),
                                               );
                                             },
-                                            child: Text(
-                                              "See attachments",
-                                              style: TextStyle(fontWeight: FontWeight.bold),
+                                            child:
+                              Container(
+                              padding: EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                              color: AppColors.primary,
+                              borderRadius: BorderRadius.circular(8)),
+                              child:
+                                            Text(
+                                              "See "
+                                                  ""
+                                                  "Attachments",
+                                              style: TextStyle(fontWeight: FontWeight.bold,
+                                              fontSize: 11,
+                                                color: Colors.white
+                                              ),
                                               textAlign: TextAlign.start,
+
                                             ),
                                           ),
-                                        ],
+                                          ) ],
                                       ),
 
 
 
                                     SizedBox(height: 20,),
-                                    TextFormField(
+                              Container(
+                              color: Colors.white,
+                              height: 35,
+                              child: TextFormField(
                                       controller:model.comment,
                                     decoration: InputDecoration(
+
                                     labelText: 'Enter Comment',
+
+                                      labelStyle: TextStyle(color: Colors.grey[800], fontWeight: FontWeight.w500, fontSize: 15),
+
                                     border: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(8.0)),
                                     ),
@@ -389,23 +508,26 @@ else {
                                     borderRadius: BorderRadius.all(Radius.circular(8.0)),
                                     borderSide: BorderSide(
                                     color: AppColors.primary,  // Border color when enabled
-                                    width: 2.0, // Border width when enabled
+                                    width: 1.0, // Border width when enabled
                                     ),
                                     ),
                                     focusedBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.all(Radius.circular(8.0)),
                                     borderSide: BorderSide(
                                     color: AppColors.primary, // Border color when focused
-                                    width: 2.0, // Border width when focused
+                                     // Border width when focused
                               ),
                               ),
                               ),
                               ),
-
+                              ),
+SizedBox(height: 10,),
                                     Row(
                                       children: [
                                         Spacer(),
-                                        buildStatusDropdown(
+                                        Container(
+                                        height:35,
+                              child: buildStatusDropdown(
                                           model.selectedvisitStatusList[index],
                                           model.dropdownValues,
                                               (String? newValue) async {
@@ -480,7 +602,7 @@ else {
                                           },
                                         )
 
-                                      ],
+                                        ) ],
                                     ),
 
                                   ],),

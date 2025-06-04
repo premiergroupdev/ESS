@@ -8,7 +8,8 @@ class CustomTextField extends StatelessWidget {
   final String labelText;
   final TextInputType? inputType;
   final List<TextInputFormatter>? formatter;
-  final bool editable; // Add this line
+  final bool editable;
+  final String? Function(String?)? validator; // ✅ Add validator
 
   const CustomTextField({
     Key? key,
@@ -16,29 +17,26 @@ class CustomTextField extends StatelessWidget {
     required this.labelText,
     this.inputType,
     this.editable = true,
-    this.formatter
-
-    // Default value is true
+    this.formatter,
+    this.validator, // ✅ Add to constructor
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-
         borderRadius: BorderRadius.circular(12.0),
         border: Border.all(
-          color: AppColors.primary, // Change the border color here
-          width: 1.0, // Change the border width here
+          color: AppColors.primary,
+          width: 1.0,
         ),
       ),
-      child: TextField(
+      child: TextFormField( // ✅ Changed to TextFormField
         controller: controller,
         keyboardType: inputType,
         inputFormatters: formatter,
         enabled: editable,
-
-        // Set the enabled property
+        validator: validator, // ✅ Pass validator here
         decoration: InputDecoration(
           labelText: labelText,
           labelStyle: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w400),
@@ -49,6 +47,7 @@ class CustomTextField extends StatelessWidget {
     );
   }
 }
+
 class message extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;

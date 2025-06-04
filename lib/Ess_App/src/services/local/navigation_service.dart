@@ -171,6 +171,9 @@ class NavService {
   static Future<dynamic>? allloan({dynamic arguments}) =>
       _navigationService!
           .navigateTo(Routes.allloan, arguments: arguments);
+  static Future<dynamic>? ceo_approval({dynamic arguments}) =>
+      _navigationService!
+          .navigateTo(Routes.ceo, arguments: arguments);
   static Future<dynamic>? loan_history({dynamic arguments}) =>
       _navigationService!
           .navigateTo(Routes.loan_history, arguments: arguments);

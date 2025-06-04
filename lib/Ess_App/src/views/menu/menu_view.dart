@@ -43,9 +43,7 @@ class MenuView extends StatelessWidget {
                           Container(
                             height: context.screenSize().height,
                           ),
-                          SingleChildScrollView(
-                            physics: BouncingScrollPhysics(),
-                            child: Column(
+                           Column(
                               children: [
                                 Stack(
                                   children: [
@@ -197,7 +195,7 @@ class MenuView extends StatelessWidget {
                                 ),
                               ],
                             ),
-                          ),
+
                           Positioned(
                               bottom: 0,
                               left: 0,

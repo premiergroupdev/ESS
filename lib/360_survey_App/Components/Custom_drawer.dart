@@ -34,36 +34,38 @@ class CustomDrawer extends StatelessWidget {
             children: <Widget>[
               DrawerHeader(
 
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    // Logo image
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        CircleAvatar(
-                          backgroundColor: Colors.white,
-                          backgroundImage: AssetImage('assets/images/personn.png'), // Image ka path
-                          radius: 40, // Avatar ka radius
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 5,),
-                    // Bold text for user name
-                    Expanded(
-                      child: Text(
-                        "${UserData.username.toString()}(${UserData.empCode})", // Yahan user ka naam likhein
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold, // Bold text
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Logo image
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.white,
+                            backgroundImage: AssetImage('assets/images/personn.png'), // Image ka path
+                            radius: 40, // Avatar ka radius
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 8,),
+                      // Bold text for user name
+                      Expanded(
+                        child: Text(
+                          "${UserData.username.toString()}(${UserData.empCode})", // Yahan user ka naam likhein
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 17,
+                            fontWeight: FontWeight.bold, // Bold text
+                          ),
                         ),
                       ),
-                    ),
 
-                  ],
-                ),
+                    ],
+                  ),
+
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [

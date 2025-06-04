@@ -44,205 +44,204 @@ class _Given_FeedbackState extends State<Result> {
   //   super.dispose();
   // }
   Widget build(BuildContext context) {
-    return
-      ChangeNotifierProvider<ResultViewModel>(
-          create: (context) => model,
-          child: Consumer<ResultViewModel>(
-              builder: (context, viewModel, child) {
-                return
-                  Scaffold(
-
-                    drawer: CustomDrawer(),
-                    body:
-
-                     Column(
-                            children: [
-                            CustomBar(title: 'Results',context: context),
-
-                        Expanded(
-                        child:
-                  viewModel.isLoading
-                    ? circular_bar() // Replace with your loading widget
-                    :
-                Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Expanded(
-                        child: PageView.builder(
-                          controller: _pageController,
-                          physics: NeverScrollableScrollPhysics(),
-                          itemCount: model.questions.length,
-                          onPageChanged: (index) {
-                            setState(() {
-                              _currentPage = index; // Update current page
-                            });
-                          },
-                          itemBuilder: (context, index) {
-                            return Padding(
-                              padding: const EdgeInsets.all(16.0),
-                              child: SingleChildScrollView( // Wrap in SingleChildScrollView
+    return ChangeNotifierProvider<ResultViewModel>(
+      create: (context) => model,
+      child: Consumer<ResultViewModel>(
+        builder: (context, viewModel, child) {
+          return Scaffold(
+            drawer: CustomDrawer(),
+            body: Column(
+              children: [
+                CustomBar(title: 'Results', context: context),
+                viewModel.isLoading
+                    ? Expanded(child: circular_bar())
+                    : Expanded(
+                  child: PageView.builder(
+                    controller: _pageController,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemCount: model.questions.length,
+                    onPageChanged: (index) {
+                      setState(() {
+                        _currentPage = index;
+                      });
+                    },
+                    itemBuilder: (context, index) {
+                      return LayoutBuilder(
+                        builder: (context, constraints) {
+                          return SingleChildScrollView(
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(
+                                minHeight: constraints.maxHeight,
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    Center(child: Text(
-                                      model.questions[index].category
-                                          .toString(), style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 18),)),
-                                    SizedBox(height: 20,),
+                                    Center(
+                                      child: Text(
+                                        model.questions[index].category.toString(),
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(height: 20),
                                     Container(
                                       padding: EdgeInsets.all(8.0),
                                       decoration: BoxDecoration(
-                                          color: AppColors.primary.withOpacity(
-                                              0.1),
-                                          borderRadius: BorderRadius.circular(8)
+                                        color: AppColors.primary.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(8),
                                       ),
                                       child: Text(
-                                        "Q${index + 1}: ${model.questions[index]
-                                            .question.toString()}",
+                                        "Q${index + 1}: ${model.questions[index].question}",
                                         style: TextStyle(
-                                            fontSize: 15, color: Colors.black),
+                                          fontSize: 15,
+                                          color: Colors.black,
+                                        ),
                                       ),
                                     ),
-                                    SizedBox(height: 10,),
-                                    if(model.resultlist !=null)
-                                    Container(
-                                      height:200,
-                                      child: Chart(data: model.resultlist!,),
-                                    ),
-
+                                    SizedBox(height: 10),
+                                    if (model.resultlist != null)
+                                      Container(
+                                        height: 200,
+                                        child: Chart(data: model.resultlist!),
+                                      ),
                                     SizedBox(height: 20),
-
-                                    if (viewModel.resultlist != null && viewModel.resultlist!.comments != null)
-                                    ListView.builder(
-                                      shrinkWrap: true,
+                                    if (viewModel.resultlist?.comments != null)
+                                      ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: NeverScrollableScrollPhysics(),
                                         itemCount: viewModel.resultlist!.comments.length,
-                                        itemBuilder: (BuildContext context, index)
-                                    {
-                                      var data=viewModel.resultlist!.comments[index];
-                                      return
-                                        RichText(
-                                          text: TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text: "Comments: ",
-                                                style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.primary),
+                                        itemBuilder: (context, commentIndex) {
+                                          var data = viewModel.resultlist!.comments[commentIndex];
+                                          return Padding(
+                                            padding: const EdgeInsets.only(bottom: 8.0),
+                                            child: RichText(
+                                              text: TextSpan(
+                                                children: [
+                                                  TextSpan(
+                                                    text: "Comments: ",
+                                                    style: TextStyle(
+                                                      fontWeight: FontWeight.bold,
+                                                      color: AppColors.primary,
+                                                    ),
+                                                  ),
+                                                  TextSpan(
+                                                    text: data,
+                                                    style: TextStyle(color: Colors.black),
+                                                  ),
+                                                ],
                                               ),
-                                              TextSpan(
-                                                text: data,
-                                                style: TextStyle(color: Colors.black),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-
-                                    }
-                                    ),
-                                    //Text(model.resultlist!.comments.comment.length.toString()),
-
-
-
+                                            ),
+                                          );
+                                        },
+                                      ),
                                     SizedBox(height: 20),
                                     Row(
-                                      mainAxisAlignment: MainAxisAlignment
-                                          .spaceBetween,
+                                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                       children: [
-
                                         if (index == 0)
-                                          Text(''),
-                                        if (index >
-                                            0) // Show Previous button only if it's not the first question
+                                          SizedBox()
+                                        else
                                           containerwidget(
                                             title: "Previous",
                                             color: Colors.red,
                                             Textcolor: Colors.white,
                                             ontap: () async {
-                                              print("number: ${model.questions[index-1].id}");
-                                              await model.resultdata1(model.questions[index-1].id);
+                                              await model.resultdata1(model.questions[index - 1].id);
                                               _pageController.previousPage(
-                                                duration: Duration(
-                                                    milliseconds: 300),
+                                                duration: Duration(milliseconds: 300),
                                                 curve: Curves.easeIn,
                                               );
                                             },
                                           ),
-
                                         if (index < model.questions.length - 1)
-                                        containerwidget(
-                                          title:  "Next",
-                                          color: AppColors.primary,
-                                          Textcolor: Colors.white,
-                                          ontap: () async {
-                                            if (index < model.questions.length - 1) {
-                                              print("number: ${model.questions[index+1].id}");
-                                              await model.resultdata1(model.questions[index+1].id);
-
-                                            // WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                if (_pageController.hasClients) { // Check if the controller is attached
-                                                  _pageController.nextPage(
-                                                    duration: Duration(milliseconds: 300),
-                                                    curve: Curves.easeIn,
-                                                  );
-                                                }
-                                            // });
-                                            } else {
-                                              _submitFeedback();
-                                            }
-                                          },
-
-
-                                        )
+                                          containerwidget(
+                                            title: "Next",
+                                            color: AppColors.primary,
+                                            Textcolor: Colors.white,
+                                            ontap: () async {
+                                              await model.resultdata1(model.questions[index + 1].id);
+                                              if (_pageController.hasClients) {
+                                                _pageController.nextPage(
+                                                  duration: Duration(milliseconds: 300),
+                                                  curve: Curves.easeIn,
+                                                );
+                                              }
+                                            },
+                                          )
+                                        else
+                                          containerwidget(
+                                            title: "Submit",
+                                            color: Colors.green,
+                                            Textcolor: Colors.white,
+                                            ontap: _submitFeedback,
+                                          ),
                                       ],
                                     ),
-                                    SizedBox(height: 20,),
-                                    if(model.resultlist !=null)
-                                    Container(
-                                      height: 100,
-                                      child: PieChartSample(
-
-                                          dataMap : {
-                                            "Strongly Agree": double.tryParse(model.resultlist!.stronglyAgree.toString()) ?? 0.0,
-                                            "Agree": double.tryParse(model.resultlist!.agree.toString()) ?? 0.0,
-                                            "Disagree": double.tryParse(model.resultlist!.disAgree.toString()) ?? 0.0,
-                                            "Strongly Disagree": double.tryParse(model.resultlist!.stronglyDisagree.toString()) ?? 0.0
-                                          }
-
+                                    SizedBox(height: 20),
+                                    if (model.resultlist != null)
+                                      Container(
+                                        height: 100,
+                                        child: PieChartSample(
+                                          dataMap: {
+                                            "Strongly Agree": double.tryParse(
+                                                model.resultlist!.stronglyAgree.toString()) ??
+                                                0.0,
+                                            "Agree": double.tryParse(
+                                                model.resultlist!.agree.toString()) ??
+                                                0.0,
+                                            "Disagree": double.tryParse(
+                                                model.resultlist!.disAgree.toString()) ??
+                                                0.0,
+                                            "Strongly Disagree": double.tryParse(
+                                                model.resultlist!.stronglyDisagree.toString()) ??
+                                                0.0,
+                                          },
+                                        ),
                                       ),
-                                    ),
+                                    SizedBox(height: 40),
                                   ],
                                 ),
                               ),
-                            );
-                          },
-                        ),
-                      ),
-
-                      // Dots Indicator
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                            model.questions.length, (index) {
-                          return Container(
-                            margin: EdgeInsets.symmetric(horizontal: 4),
-                            height: 8,
-                            width: 8,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _currentPage == index
-                                  ? AppColors.primary
-                                  : Colors.grey,
                             ),
                           );
-                        }),
-                      ),
-                      SizedBox(height: 16),
+                        },
+                      );
+                    },
+                  ),
+                ),
+                // Page Indicator Dots
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 8.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(model.questions.length, (index) {
+                      return Container(
+                        margin: EdgeInsets.symmetric(horizontal: 4),
+                        height: 8,
+                        width: 8,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: _currentPage == index
+                              ? AppColors.primary
+                              : Colors.grey,
+                        ),
+                      );
+                    }),
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
 
-                    ],
-                  ))]));
 
-              })); }
 
   void _submitFeedback() {
 

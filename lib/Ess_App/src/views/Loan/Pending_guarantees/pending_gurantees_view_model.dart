@@ -32,6 +32,7 @@ List<Pending> loanlistfinal=[];
     newsResponse.when(success: (data) async {
       if ((data.approvalListVisit?.length ?? 0) > 0) {
         loanlistfinal = data.approvalListVisit?.reversed.toList() ?? [];
+        print("Loan id: ${loanlistfinal[0].loanId}");
 
 
       } else {

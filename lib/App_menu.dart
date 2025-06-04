@@ -8,6 +8,7 @@ import 'package:ess/Learning_management_system/Screens/Lms_Dashboard/Lms_dashboa
 import 'package:ess/Learning_management_system/Utilis/colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 // import 'package:slide_digital_clock/slide_digital_clock.dart';
@@ -48,6 +49,7 @@ class _AppMenuState extends State<AppMenu> {
   bool isloading = false;
   bool isDialogShown = false;
   bool? isDialogShownPref;
+  String version='';
 
   Future<List> Api() async {
     var response = await http.get(Uri.parse("https://premierspulse.com/ess/scripts/dashboard_script.php"));
@@ -106,6 +108,11 @@ class _AppMenuState extends State<AppMenu> {
   void initState() {
     super.initState();
     fetchdata();
+    version_no();
+  }
+  void version_no() async {
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    version = packageInfo.version.split('-').first.trim();
   }
 
   @override
@@ -150,7 +157,11 @@ class _AppMenuState extends State<AppMenu> {
                         child: TimerScreen()),
                     Text(
                       "All Apps",
-                      style: TextStyle(color: AppColors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                    style: GoogleFonts.poppins(
+                      color: AppColors.white,
+
+                      fontSize: 18,
+                    ),
                     ),
                   ],
                 ),
@@ -291,6 +302,15 @@ class _AppMenuState extends State<AppMenu> {
                 },
               ),
             ),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text("Version: ${version}",style: GoogleFonts.poppins(
+                          color: AppColors.primary,
+
+                          fontSize: 14,
+                        ),),
+                      )
+
                     ],
                   ),
 

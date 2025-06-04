@@ -41,7 +41,10 @@ class Chart extends StatelessWidget {
           constraints: BoxConstraints.expand(),
           child: BarChart(
             BarChartData(
-              maxY: (chartData.map((e) => e['value'] as int).reduce((a, b) => a > b ? a : b)).toDouble() + 5,
+              maxY: chartData
+                  .map((e) => int.parse(e['value'].toString()))
+                  .reduce((a, b) => a > b ? a : b)
+                  .toDouble() + 5,
               barGroups: chartData.asMap().entries.map((entry) {
                 int index = entry.key;
                 var item = entry.value;
@@ -49,7 +52,7 @@ class Chart extends StatelessWidget {
                   x: index,
                   barRods: [
                     BarChartRodData(
-                      toY: (item['value'] as int).toDouble(),
+                      toY: int.parse(item['value'].toString()).toDouble(),
                       color: _getColor(item['response']),
                       width: 32,
                       borderRadius: BorderRadius.circular(6),

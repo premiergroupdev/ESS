@@ -33,6 +33,13 @@ Widget buildStatusDropdown(
         );
       }).toList(),
       underline: Container(), // Remove the underline that is default in DropdownButton
+      style: TextStyle(
+        color: selectedStatus == "Select Status" ? Colors.black : Colors.grey[800],
+        fontWeight: FontWeight.w500,
+        // Change the color of the selected item
+        fontSize: 16, // Optional: You can also change the font size of the selected item
+      ),
     ),
+
   );
 }

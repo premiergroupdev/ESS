@@ -68,6 +68,8 @@ import 'package:ess/Ess_App/src/views/QMS/View_sheets_view.dart' as _i48;
 import 'package:ess/Ess_App/src/views/QMS/Store_incharge_approval_view.dart' as _i49;
 import 'package:ess/Ess_App/src/views/QMS/Pharmacist_approval.dart' as _i50;
 import 'package:ess/Ess_App/src/views/Advacne_hod_Approval/Advance_hod_approval_view.dart' as _i51;
+import 'package:ess/Ess_App/src/views/Loan/Ceo_loan_approval/Ceo_loan_approval_view.dart' as _i52;
+
 import '../models/api_response_models/warehouse_list_model.dart';
 class Routes {
   static const splashView = '/';
@@ -114,6 +116,7 @@ class Routes {
   static const requestadvance=   '/request_advance_view';
   static const loan=   '/loan_view.dart';
   static const allloan=   '/see_all_loan_view.dart';
+  static const ceo=   '/Ceo_loan_approval_view.dart';
   static const loan_history=   '/loan_history_view.dart';
   static const pending_guarantee=   '/pending_guarantees_view.dart';
   static const Whistle=   '/whistle_blowing_view.dart';
@@ -180,7 +183,8 @@ class Routes {
     capex_form,
     capexgenerate,
     thumb,
-    advacne_hod_Approval
+    advacne_hod_Approval,
+    ceo
   };
 }
 
@@ -387,6 +391,11 @@ class StackedRouter extends _i1.RouterBase {
         Routes.advacne_hod_Approval,
         page: _i51.Advance_hod_approval
     ),
+    _i1.RouteDef(
+        Routes.ceo,
+        page: _i52.Ceo_loan_approval
+    ),
+
 
 
 
@@ -702,6 +711,12 @@ class StackedRouter extends _i1.RouterBase {
     _i51.Advance_hod_approval: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => _i51.Advance_hod_approval(),
+        settings: data,
+      );
+    },
+    _i52.Ceo_loan_approval: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => _i52.Ceo_loan_approval(),
         settings: data,
       );
     },
