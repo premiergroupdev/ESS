@@ -344,16 +344,13 @@ SizedBox(height: 10,),
                                   ElevatedButton(
                                     onPressed: () async {
                                       model.imageError = model.imagepath.isEmpty;
-                                      model.getImageCamera();
+                                      model.get_gallery_image();
 
                                     },
                                     child: Text("Upload CNIC"),
                                   ),
                                   if(model.imagepath.isNotEmpty)
-                                    Text(
-                                      model.imagepath.split('/').last, // Extracts the file name from the path
-                                      style: TextStyle(fontWeight: FontWeight.bold),
-                                    ),
+                                    Icon(Icons.check, color: Colors.green,),
                                   if (model.imageError == true && model.imagepath.isEmpty)
                                     Padding(
                                       padding: const EdgeInsets.only(top: 4.0, left: 4.0),
@@ -381,6 +378,12 @@ SizedBox(height: 10,),
                                             controller: model.repay_loan_month_controller,
                                             labelText: '',
                                             inputType: TextInputType.number,
+                                            validator: (value) {
+                                              if (value == null || value.trim().isEmpty) {
+                                                return 'Repay loan is required';
+                                              }
+                                              return null;
+                                            },
                                           ),
                                         ),
                                         Text(" number of equal monthly INSTALLMENT of Rs "),

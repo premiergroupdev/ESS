@@ -62,7 +62,7 @@ class LoanViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel {
   String imagepath = "";
   ImagePicker picker = ImagePicker();
 
-  Future<void> getImageCamera() async {
+  Future<void> get_gallery_image() async {
     try {
       // final result = await FilePicker.platform.pickFiles(
       //   type: FileType.custom,
