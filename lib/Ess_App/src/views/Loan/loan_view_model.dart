@@ -1,5 +1,6 @@
 // import 'package:file_picker/file_picker.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:stacked/stacked.dart';
 import '../../base/utils/constants.dart';
@@ -88,6 +89,31 @@ class LoanViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel {
       print('Error picking file: $e');
     }
   }
+  void showDisclaimerDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Important Notice', style: TextStyle(),textAlign: TextAlign.center,),
+          content: SingleChildScrollView(
+            child: Text(
+              'This loan service is only available to internal employees of Premier Sales Private Limited as part of their Provident Fund (PF) benefits.This is not a public loan or consumer lending product.There are no APRs, fees, penalties, or third-party financing involved.',
+              style: TextStyle(fontSize: 16, ),
+
+            ),
+          ),
+          actions: [
+            TextButton(
+              child: Text('I Understand'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
   void calculateMonthlyAmount() {
     double loanAmount = double.tryParse(loanamountrs.text) ?? 0.0;
     double repayMonth = double.tryParse(repay_loan_month_controller.text) ?? 1.0; // Default to 1 if parsing fails or value is 0
@@ -102,6 +128,7 @@ class LoanViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel {
     await getFinalApprovalData(context);
           await guaranterdata(context);
           await branchdata(context);
+    showDisclaimerDialog(context);
 
 
 

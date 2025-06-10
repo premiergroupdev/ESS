@@ -26,7 +26,15 @@ class _LoanState extends State<Loan> {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final _formKey = GlobalKey<FormState>();
+
+
   @override
+
+  @override
+  void initState() {
+    // WidgetsBinding.instance.addPostFrameCallback((_) => showDisclaimerDialog());
+    super.initState();
+  }
   Widget build(BuildContext context) {
     return
       ViewModelBuilder<LoanViewModel>.reactive(
