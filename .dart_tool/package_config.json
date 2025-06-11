@@ -369,7 +369,7 @@
     },
     {
       "name": "flutter",
-      "rootUri": "file:///Users/premiersalesprivateltd/Downloads/flutter%202/packages/flutter",
+      "rootUri": "file:///Users/premiersalesprivateltd/Downloads/flutter2/packages/flutter",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -543,7 +543,7 @@
     },
     {
       "name": "flutter_test",
-      "rootUri": "file:///Users/premiersalesprivateltd/Downloads/flutter%202/packages/flutter_test",
+      "rootUri": "file:///Users/premiersalesprivateltd/Downloads/flutter2/packages/flutter_test",
       "packageUri": "lib/",
       "languageVersion": "3.3"
     },
@@ -555,7 +555,7 @@
     },
     {
       "name": "flutter_web_plugins",
-      "rootUri": "file:///Users/premiersalesprivateltd/Downloads/flutter%202/packages/flutter_web_plugins",
+      "rootUri": "file:///Users/premiersalesprivateltd/Downloads/flutter2/packages/flutter_web_plugins",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -1155,7 +1155,7 @@
     },
     {
       "name": "sky_engine",
-      "rootUri": "file:///Users/premiersalesprivateltd/Downloads/flutter%202/bin/cache/pkg/sky_engine",
+      "rootUri": "file:///Users/premiersalesprivateltd/Downloads/flutter2/bin/cache/pkg/sky_engine",
       "packageUri": "lib/",
       "languageVersion": "3.2"
     },
@@ -1436,10 +1436,10 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2025-06-05T12:53:51.317527Z",
+  "generated": "2025-06-10T12:17:05.675005Z",
   "generator": "pub",
   "generatorVersion": "3.4.0-282.1.beta",
-  "flutterRoot": "file:///Users/premiersalesprivateltd/Downloads/flutter%202",
+  "flutterRoot": "file:///Users/premiersalesprivateltd/Downloads/flutter2",
   "flutterVersion": "3.22.0-0.1.pre",
   "pubCache": "file:///Users/premiersalesprivateltd/.pub-cache"
 }
