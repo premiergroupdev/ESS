@@ -10,6 +10,7 @@ import 'package:ess/Ess_App/src/views/menu/menu_view.dart';
 import 'package:ess/Ess_App/src/views/splash/splash_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class AppView extends StatelessWidget {
 
@@ -36,6 +37,14 @@ class AppView extends StatelessWidget {
               onGenerateRoute: NavService.onGenerateRoute,
               navigatorKey: NavService.key,
               theme: ThemeData(
+
+                textTheme: GoogleFonts.poppinsTextTheme().copyWith(
+                  bodyLarge: TextStyle(color: AppColors.primary),
+                  bodyMedium: TextStyle(color: AppColors.primary),
+                  bodySmall: TextStyle(color: AppColors.primary),
+                  headlineSmall: TextStyle(color: AppColors.primary),
+                  titleMedium: TextStyle(color: AppColors.primary),
+                ),
                   scaffoldBackgroundColor: Colors.white,
                   useMaterial3: true,
                   colorScheme: ColorScheme(brightness: Brightness.light, primary: AppColors.primary, onPrimary: AppColors.white, secondary: AppColors.secondary, onSecondary: AppColors.white, error: Colors.red, onError: AppColors.white, background: AppColors.white, onBackground: AppColors.white, surface: AppColors.white, onSurface: AppColors.primary),

@@ -184,7 +184,7 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown>
           children: [
 
             Container(
-           height: 35,
+           height: 52,
               decoration: widget.decoration,
               child:
               TextButton(
@@ -240,10 +240,10 @@ class _CustomSearchableDropDownState extends State<CustomSearchableDropDown>
                       'Select Value':widget.label!:onSelectLabel,
                         textAlign: widget.labelAlign??TextAlign.start,
                         style:  widget.labelStyle!=null?  widget.labelStyle!.copyWith(
-                          color: onSelectLabel==''? Colors.grey[600]:null,
+                          color: onSelectLabel==''? AppColors.primary:null,
                         ):TextStyle
                           (
-                          color: onSelectLabel==''? Colors.grey[600]:Colors.grey[800],
+                          color: onSelectLabel==''? AppColors.primary:AppColors.primary,
                         ),)),
                       Visibility(
                           visible: (widget.showClearButton!=null && widget.showClearButton==true && onSelectLabel!=null),

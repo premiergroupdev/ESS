@@ -59,6 +59,8 @@ class LoanViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel {
 
    // loanamountrs.addListener(calculateMonthlyAmount);
     repay_loan_month_controller.addListener(calculateMonthlyAmount);
+
+    notifyListeners();
   }
   String imagepath = "";
   ImagePicker picker = ImagePicker();
@@ -114,13 +116,16 @@ class LoanViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel {
       },
     );
   }
+
+
   void calculateMonthlyAmount() {
     double loanAmount = double.tryParse(loanamountrs.text) ?? 0.0;
     double repayMonth = double.tryParse(repay_loan_month_controller.text) ?? 1.0; // Default to 1 if parsing fails or value is 0
 
     // Calculate monthly amount and update the resultController text
     double monthlyAmount = loanAmount / repayMonth;
-    resultController.text = monthlyAmount.round().toString(); // Format the result to 2 decimal places
+    resultController.text = monthlyAmount.round().toString();
+    notifyListeners();
   }
 
   init(BuildContext context) async {

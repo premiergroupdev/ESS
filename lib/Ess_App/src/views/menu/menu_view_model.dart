@@ -248,6 +248,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
               Scaffold.of(context).closeDrawer();
             },
           ),
+        if(authService.user?.userId == '99938')
           CustomMenuItem(
             label: "CEO Approvals",
             isParent: false,

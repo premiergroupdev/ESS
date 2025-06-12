@@ -33,6 +33,7 @@ class Allloan extends StatelessWidget {
                             .screenSize()
                             .height - 145,
                         child: ListView.builder(
+                          physics: BouncingScrollPhysics(),
                             shrinkWrap: true
                             ,
                             itemCount: model.loanlistfinal.length,
@@ -43,181 +44,151 @@ class Allloan extends StatelessWidget {
                               return
 
                                 Container(
-                                    decoration: BoxDecoration(
-                                        color: AppColors.white,
-                                        borderRadius: BorderRadius
-                                            .circular(12),
-                                        boxShadow: [
-                                          BoxShadow(
-                                              color:
-                                              AppColors.primary
-                                                  .withOpacity(0.6),
-                                              offset: Offset(1, 1),
-                                              blurRadius: 2)
-                                        ]),
-                                    margin: EdgeInsets.fromLTRB(
-                                        20, 10, 20, 5),
-                                    padding: EdgeInsets.fromLTRB(
-                                        10, 15, 10, 15),
-                                    child: Column(
-
-                                        crossAxisAlignment: CrossAxisAlignment
-                                            .start,
-
-
-                                        children: [
-
-
-                                          Padding(
-                                            padding: const EdgeInsets
-                                                .all(2.0),
-                                            child: RichText(
-                                              text: TextSpan(
-                                                text: "Employee Code: ",
-                                                style: TextStyling
-                                                    .text14
-                                                    .copyWith(
-                                                    color: AppColors
-                                                        .darkGrey),
-                                                children: [
-                                                  TextSpan(
-                                                      text: data
-                                                          .emp_code
-                                                          .toString(),
-                                                      style: TextStyling
-                                                          .bold14
-                                                          .copyWith(
-                                                        color: AppColors
-                                                            .primary,
-                                                        fontSize: 14,)),
-                                                ],
-                                              ),
-
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.shade50.withOpacity(0.5),
+                                    borderRadius: BorderRadius.circular(12),
+                                    // boxShadow: [
+                                    //   BoxShadow(
+                                    //     color: Colors.blue.shade100,
+                                    //     offset: Offset(2, 2),
+                                    //     blurRadius: 6,
+                                    //   ),
+                                    // ],
+                                  ),
+                                  margin: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                  padding: EdgeInsets.all(15),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Employee Code
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            text: "Employee Code: ",
+                                            style: TextStyling.text14.copyWith(
+                                              color: AppColors.black,
+                                              fontSize: 13,
                                             ),
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets
-                                                .all(2.0),
-                                            child: RichText(
-                                              text: TextSpan(
-                                                text: "Employee Name: ",
-                                                style: TextStyling
-                                                    .text14
-                                                    .copyWith(
-                                                    color: AppColors
-                                                        .darkGrey),
-                                                children: [
-                                                  TextSpan(
-                                                      text: data
-                                                          .emp_name
-                                                          .toString(),
-                                                      style: TextStyling
-                                                          .bold14
-                                                          .copyWith(
-                                                        color: AppColors
-                                                            .primary,
-                                                        fontSize: 14,)),
-                                                ],
-                                              ),
-
-                                            ),
-                                          ),
-
-                                          Padding(
-                                            padding: const EdgeInsets
-                                                .all(2.0),
-                                            child: RichText(
-                                              text: TextSpan(
-                                                text: "loan Amount: ",
-                                                style: TextStyling
-                                                    .text14
-                                                    .copyWith(
-                                                    color: AppColors
-                                                        .darkGrey),
-
-                                                children: [
-                                                  TextSpan(
-                                                      text: data
-                                                          .loan_amount
-                                                          .toString(),
-                                                      style: TextStyling
-                                                          .text12
-                                                          .copyWith(
-                                                        color: AppColors
-                                                            .primary,
-                                                        fontSize: 14,)),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-
-
-
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment
-                                                .spaceBetween,
                                             children: [
-                                              Text(""),
-                                              InkWell(
-                                                onTap: () {
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: Text('Loan Details', textAlign: TextAlign.center,style: TextStyle(fontWeight: FontWeight.bold),),
-                                                        contentPadding: EdgeInsets.all(8), // Padding around the content
-                                                        content: Column(
-                                                          mainAxisSize: MainAxisSize.min, // Use min to reduce dialog size
-                                                          children: [
-                                                            SizedBox(height: 8), // Add gap
-                                                            Text('Designation: ${data.position}'),
-
-                                                            SizedBox(height: 8), // Add gap
-                                                            Text('Loan Type: ${data.loantype}'),// Add gap
-                                                            Text('Date of joining: ${data.doj}'),
-                                                            SizedBox(height: 8), // Add gap
-                                                            Text('Total Installment: ${data.total_installment}'),
-                                                            SizedBox(height: 8), // Add gap
-                                                            Text('Per Month Repay: ${data.per_month_repay}'),
-                                                            SizedBox(height: 8), // Add gap
-                                                            Text('HOD Status: ${data.hod_status}'),
-                                                            SizedBox(height: 8), // Add gap
-                                                            Text('Director Status: ${data.director_status}'),
-                                                            SizedBox(height: 8), // Add gap
-                                                            Text('CEO Status: ${data.ceo_status}'),
-                                                            SizedBox(height: 8),
-                                                            Text('Reason: ${data.purpose}'),
-                                                            SizedBox(height: 8), //// Add gap
-                                                          ],
+                                              TextSpan(
+                                                text: data.emp_code.toString(),
+                                                style: TextStyling.bold14.copyWith(
+                                                  color: AppColors.primary,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      // Employee Name
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            text: "Employee Name: ",
+                                            style: TextStyling.text14.copyWith(color: AppColors.black),
+                                            children: [
+                                              TextSpan(
+                                                text: data.emp_name.toString(),
+                                                style: TextStyling.bold14.copyWith(
+                                                  color: AppColors.primary,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      // Loan Amount
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 4),
+                                        child: RichText(
+                                          text: TextSpan(
+                                            text: "Loan Amount: ",
+                                            style: TextStyling.text14.copyWith(  color: AppColors.black,),
+                                            children: [
+                                              TextSpan(
+                                                text: data.loan_amount.toString(),
+                                                style: TextStyling.text12.copyWith(
+                                                  color: AppColors.primary,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      // Button Row
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.end,
+                                        children: [
+                                          InkWell(
+                                            onTap: () {
+                                              showDialog(
+                                                context: context,
+                                                builder: (BuildContext context) {
+                                                  return AlertDialog(
+                                                    shape: RoundedRectangleBorder(
+                                                        borderRadius: BorderRadius.circular(12)),
+                                                    title: Center(
+                                                      child: Text(
+                                                        'Loan Details',
+                                                        style: TextStyle(
+                                                          fontWeight: FontWeight.bold,
+                                                          fontSize: 18,
+                                                          color: AppColors.primary,
                                                         ),
-                                                        actions: <Widget>[
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                            child: Text('Close'),
-                                                          ),
+                                                      ),
+                                                    ),
+                                                    content: SingleChildScrollView(
+                                                      child: Column(
+                                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                                        mainAxisSize: MainAxisSize.min,
+                                                        children: [
+                                                          detailRow("Designation", data.position),
+                                                          detailRow("Loan Type", data.loantype),
+                                                          detailRow("Date of Joining", data.doj),
+                                                          detailRow("Total Installments", data.total_installment),
+                                                          detailRow("Per Month Repay", data.per_month_repay),
+                                                          detailRow("HOD Status", data.hod_status),
+                                                          detailRow("Director Status", data.director_status),
+                                                          detailRow("CEO Status", data.ceo_status),
+                                                          detailRow("Reason", data.purpose),
                                                         ],
-                                                      );
-                                                    },
+                                                      ),
+                                                    ),
+                                                    // actions: [
+                                                    //   Center(
+                                                    //     child: TextButton(
+                                                    //       onPressed: () => Navigator.of(context).pop(),
+                                                    //       child: Text('Close'),
+                                                    //     ),
+                                                    //   )
+                                                    // ],
                                                   );
                                                 },
-                                                child: Container(
-                                                  padding: EdgeInsets.all(6),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: AppColors.primary, // Use your desired color here
-                                                  ),
-                                                  child: Text(
-                                                    "See Details",
-                                                    style: TextStyle(color: Colors.white),
-                                                  ),
-                                                ),
-                                              )
-
-                                            ],
+                                              );
+                                            },
+                                            child: Container(
+                                              padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(8),
+                                                color: AppColors.primary,
+                                              ),
+                                              child: Text(
+                                                "See Details",
+                                                style: TextStyle(color: Colors.white, fontSize: 10),
+                                              ),
+                                            ),
                                           )
-                                        ]));
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                );
+
                             }
                         )
                     )
@@ -230,3 +201,16 @@ class Allloan extends StatelessWidget {
       onModelReady: (model) => model.init(context),
     );
   }}
+
+Widget detailRow(String title, String value) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(vertical: 4.0),
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(flex: 4, child: Text("$title:")),
+        Expanded(flex: 4, child: Text(value, style: TextStyle(fontWeight: FontWeight.bold))),
+      ],
+    ),
+  );
+}

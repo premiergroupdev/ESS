@@ -42,6 +42,12 @@ class directorForm {
   final String empShare;
   final String cmpShare;
   final String prvBalance;
+  final String hoddate;
+  final String hod_comments;
+  final String dirname;
+  final String dirdate;
+  final String dircomment;
+  final String  posted_date;
 
   directorForm({
     required this.loanId,
@@ -65,33 +71,46 @@ class directorForm {
     required this.empShare,
     required this.cmpShare,
     required this.prvBalance,
+    required this.hoddate,
+    required this.hod_comments,
+    required this.dirname,
+    required this.dirdate,
+    required this.dircomment,
+    required this.posted_date,
   });
 
   factory directorForm.fromJson(Map<String, dynamic> json) {
     return directorForm(
-      loanId: json['loan_id'],
-      empCode: json['emp_code'],
-      empName: json['emp_name'],
-      position: json['position'],
-      attachmenturl:json['attachmenturl'],
-      doj: json['doj'],
-      loanType: json['loantype'],
-      department: json['department'],
-      branch: json['branch'],
-      loanAmount: json['loan_amount'],
-      purpose: json['purpose'],
-      totalInstallment: json['total_installment'],
-      perMonthRepay: json['per_month_repay'],
-      hodStatus: json['hod_status'],
-      hodName: json['hod_name'],
-      directorStatus: json['director_status'],
-      ceoStatus: json['ceo_status'],
-      completePf: json['complete_pf'],
-      empShare: json['emp_share'],
-      cmpShare: json['cmp_share'],
-      prvBalance: json['prv_balance'],
+      loanId: json['loan_id'] ?? '',
+      empCode: json['emp_code'] ?? '',
+      empName: json['emp_name'] ?? '',
+      position: json['position'] ?? '',
+      attachmenturl: json['attachmenturl'] ?? '',
+      doj: json['doj'] ?? '',
+      loanType: json['loantype'] ?? '',
+      department: json['department'] ?? '',
+      branch: json['branch'] ?? '',
+      loanAmount: json['loan_amount'] ?? '',
+      purpose: json['purpose'] ?? '',
+      totalInstallment: json['total_installment'] ?? '',
+      perMonthRepay: json['per_month_repay'] ?? '',
+      hodStatus: json['hod_status'] ?? '',
+      hodName: json['hod_name'] ?? '',
+      directorStatus: json['director_status'] ?? '',
+      ceoStatus: json['ceo_status'] ?? '',
+      completePf: json['complete_pf'] ?? '',
+      empShare: json['emp_share'] ?? '',
+      cmpShare: json['cmp_share'] ?? '',
+      prvBalance: json['prv_balance'] ?? '',
+      hoddate: json['hod_approval_date'] ?? '',
+      hod_comments: json['hod_comments'] ?? '',
+      dirname: json['director_name'] ?? '',
+      dirdate: json['dir_approval_date'] ?? '',
+      dircomment: json['dir_comments'] ?? '',
+      posted_date: json['posted_date'] ?? '',
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {

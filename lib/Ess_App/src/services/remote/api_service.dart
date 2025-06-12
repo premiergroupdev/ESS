@@ -1257,13 +1257,14 @@ class ApiService {
 
       };
       var res = await _apiClient?.getReq(
-          "/ceo_loan_approvals.php",
+          "/ceo_loan_approvals.php?EMPCODE=${authService.user?.userId ??
+              000000}",
           headers: headers
       );
-print("Status code: ${res.statusCode }");
+       print("Status code: ${res.statusCode }");
       if (res.statusCode == 200) {
         var data = jsonDecode(res.data);
-        print("Data: ${data}");
+        print("Datasss: ${data}");
         return ApiResult.success(data: CeoLoanModel.fromJson(data));
       }
       else {
@@ -1294,6 +1295,7 @@ print("Status code: ${res.statusCode }");
 
       if (res.statusCode == 200) {
         var data = jsonDecode(res.data);
+        print("data: ${data}");
         return ApiResult.success(data: director.fromJson(data));
       }
       else {
@@ -1499,7 +1501,7 @@ print("Status code: ${res.statusCode }");
   }
 
 
-  Future<ApiResult<dynamic>> hod_loan_approved(String status, String loan_id,
+  Future<ApiResult<dynamic>> ceo_loan_approved(String status, String loan_id,
       String comment) async {
     try {
       var headers = {
@@ -1555,6 +1557,69 @@ print("Status code: ${res.statusCode }");
       return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
     }
   }
+
+  Future<ApiResult<dynamic>> hod_loan_approved(String status, String loan_id,
+      String comment) async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Cookie': 'PHPSESSID=0qga4kkbhct0q1ejhl93b5oj8p'
+      };
+      var response = await _apiClient?.getReq(
+          "/hod_loan_approved.php?loan_id=${loan_id}&comment=${comment}&status=${status}&username=${authService.user?.userId}",
+
+          //print("https://premierspulse.com/ess/scripts/adv_fin_approval.php?case_id=$id&final_amount=$amount&status=$status&remarks=$remarks");
+          headers: headers
+      );
+      if (response?.statusCode == 200) {
+        var data = jsonDecode(response.data);
+
+        if (data != null && data.containsKey("status")) {
+          // Check if "status" is present in the JSON response
+          String responseStatus = data["status"].toString();
+
+          if (responseStatus == "200") {
+            // Successful status code
+            if (status == "approved") {
+              print("Request is Approved");
+            } else if (status == "rejected") {
+              print("Request is Rejected");
+            }
+
+            // Return a successful result
+            return ApiResult.success(data: data);
+          } else {
+            // Handle other status codes if needed
+            return ApiResult.failure(
+                error: NetworkExceptions.notFound(
+                    "Incorrect Status: $responseStatus")
+            );
+          }
+        } else {
+          // "status" key is missing in the JSON response
+          return ApiResult.failure(
+              error: NetworkExceptions.notFound(
+                  "Status key is missing in JSON response")
+          );
+        }
+      } else {
+        // Return a failure result with an error message
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(
+              response?.statusMessage ?? "Incorrect"),
+        );
+      }
+    } catch (e) {
+      // Handle any exceptions that may occur during the API call
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
+
+
+
 
 
   Future<ApiResult<dynamic>> director_loan_approved(String status,

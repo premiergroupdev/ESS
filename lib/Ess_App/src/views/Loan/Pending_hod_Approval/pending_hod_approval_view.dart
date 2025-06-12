@@ -5,7 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:stacked/stacked.dart';
-
+import 'package:intl/intl.dart';
 import '../../../base/utils/constants.dart';
 import '../../../models/api_response_models/Hod_loan_approval.dart';
 import '../../../services/remote/api_result.dart';
@@ -13,6 +13,7 @@ import '../../../services/remote/api_service.dart';
 import '../../../shared/top_app_bar.dart';
 import '../../../styles/app_colors.dart';
 import '../../your_attandence/widget/dropdown.dart';
+import '../Ceo_loan_approval/Ceo_loan_approval_view.dart';
 import '../webview.dart';
 
 class Pending_hod_approval extends StatefulWidget {
@@ -87,9 +88,27 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                       10, 15, 10, 15),
                                   child: Column(children: [
                                     RichText(
+
                                       text: TextSpan(
+
                                         children: [
                                           TextSpan(
+                                            text: 'Case ID:  ',
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: data.loanId + "\n",
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.primary,
+                                              fontWeight: FontWeight.bold),
+                                          ),
+                                          TextSpan(
+
+
                                             text: 'Mr. ',
                                                     style: GoogleFonts.poppins(
                                                       color: AppColors.black,
@@ -101,7 +120,7 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                             text: data.empName.toString(),
                                                     style: GoogleFonts.poppins(
                                                         color: AppColors.primary,
-                                                        fontWeight: FontWeight.w600
+                                                        fontWeight: FontWeight.bold
 
 
                                                     ),
@@ -116,10 +135,12 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                             ),
                                           ),
                                           TextSpan(
-                                            text: data.loanAmount.toString() + " Rs. \n",
+                                            text: ' ${NumberFormat('#,##0').format(
+                                              int.tryParse(data.loanAmount) ?? 0, // Fallback to 0 if parsing fails
+                                            )} Rs\n',
                                             style: GoogleFonts.poppins(
                                                 color: AppColors.primary,
-                                                fontWeight: FontWeight.w600
+                                                fontWeight: FontWeight.bold
 
 
                                             ),
@@ -137,7 +158,7 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                             text: data.position + "\n",
                                             style: GoogleFonts.poppins(
                                                 color: AppColors.primary,
-                                                fontWeight: FontWeight.w600
+                                                fontWeight: FontWeight.bold
 
 
                                             ),
@@ -154,7 +175,7 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                             text: data.department + "\n",
                                             style: GoogleFonts.poppins(
                                                 color: AppColors.primary,
-                                                fontWeight: FontWeight.w600
+                                                fontWeight: FontWeight.bold
 
 
                                             ),
@@ -171,7 +192,24 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                             text: data.doj + "\n",
                                             style: GoogleFonts.poppins(
                                                 color: AppColors.primary,
-                                                fontWeight: FontWeight.w600
+                                                fontWeight: FontWeight.bold
+
+
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: 'Posted Date:  ',
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: data.posted_date + "\n",
+                                            style: GoogleFonts.poppins(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.bold
 
 
                                             ),
@@ -188,7 +226,7 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                             text: data.loanType + "\n",
                                             style: GoogleFonts.poppins(
                                                 color: AppColors.primary,
-                                                fontWeight: FontWeight.w600
+                                                fontWeight: FontWeight.bold
 
 
                                             ),
@@ -202,10 +240,27 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                             ),
                                           ),
                                           TextSpan(
-                                            text: "${data.purpose + "\n\n"}",
+                                            text: "${data.purpose + "\n"}",
                                             style: GoogleFonts.poppins(
                                                 color: AppColors.primary,
-                                                fontWeight: FontWeight.w600
+                                                fontWeight: FontWeight.bold
+
+
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: 'Branch : ',
+                                            style: GoogleFonts.poppins(
+                                              color: AppColors.black,
+
+
+                                            ),
+                                          ),
+                                          TextSpan(
+                                            text: "${data.branch + "\n\n"}",
+                                            style: GoogleFonts.poppins(
+                                                color: AppColors.primary,
+                                                fontWeight: FontWeight.bold
 
 
                                             ),
@@ -222,7 +277,7 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                             text: ' ${data.totalInstallment}',
                                             style: GoogleFonts.poppins(
                                                 color: AppColors.primary,
-                                                fontWeight: FontWeight.w600
+                                                fontWeight: FontWeight.bold
 
 
                                             ),
@@ -236,16 +291,19 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                             ),
                                           ),
                                           TextSpan(
-                                            text: ' ${data.perMonthRepay} Rs',
+                                            text: ' ${NumberFormat('#,##0').format(
+                                              int.tryParse(data.perMonthRepay) ?? 0, // Fallback to 0 if parsing fails
+                                            )} Rs',
                                             style: GoogleFonts.poppins(
                                                 color: AppColors.primary,
-                                                fontWeight: FontWeight.w600
+                                                fontWeight: FontWeight.bold
 
 
                                             ),
                                           ),
+
                                           TextSpan(
-                                            text: ' and need your approval for further proceedings. \n',
+                                            text: ' and need your approval for further proceedings. \n\n',
                                               style: GoogleFonts.poppins(
                                                 color: AppColors.black,
 
@@ -253,33 +311,54 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                               ),
                                           ),
 
-                                          if(data.empShare.isNotEmpty)
-                                          TextSpan(
-                                            text: 'Emp Share : ${data.empShare} ',
-                                            style: GoogleFonts.poppins(
-                                              color: AppColors.black,
 
 
-                                            ),
-                                          ),
-                                          if(data.cmpShare.isNotEmpty)
-                                          TextSpan(
-                                            text: 'Cmp Share : ${data.cmpShare} ',
-                                            style: GoogleFonts.poppins(
-                                              color: AppColors.black,
+                                            // ...[
+                                            //   TextSpan(
+                                            //     text: 'Emp Share : ',
+                                            //     style: GoogleFonts.poppins(
+                                            //       color: AppColors.black,
+                                            //     ),
+                                            //   ),
+                                            //   TextSpan(
+                                            //     text: '${NumberFormat('#,##0').format(int.tryParse(data.empShare) ?? 0)}\n',
+                                            //     style: GoogleFonts.poppins(
+                                            //       fontWeight: FontWeight.bold,
+                                            //       color: AppColors.primary,
+                                            //     ),
+                                            //   ),
+                                            //   if (data.cmpShare.isNotEmpty) ...[
+                                            //     TextSpan(
+                                            //       text: 'Cmp Share : ',
+                                            //       style: GoogleFonts.poppins(
+                                            //         color: AppColors.black,
+                                            //       ),
+                                            //     ),
+                                            //     TextSpan(
+                                            //       text: '${NumberFormat('#,##0').format(int.tryParse(data.cmpShare) ?? 0)}\n',
+                                            //       style: GoogleFonts.poppins(
+                                            //         fontWeight: FontWeight.bold,
+                                            //         color: AppColors.primary,
+                                            //       ),
+                                            //     ),
+                                            //   ],
+                                            //   if (data.prvBalance.isNotEmpty) ...[
+                                            //     TextSpan(
+                                            //       text: 'Prv Share : ',
+                                            //       style: GoogleFonts.poppins(
+                                            //         color: AppColors.black,
+                                            //       ),
+                                            //     ),
+                                            //     TextSpan(
+                                            //       text: '${NumberFormat('#,##0').format(int.tryParse(data.prvBalance) ?? 0)}\n\n',
+                                            //       style: GoogleFonts.poppins(
+                                            //         fontWeight: FontWeight.bold,
+                                            //         color: AppColors.primary,
+                                            //       ),
+                                            //     ),
+                                            //   ],
+                                            // ],
 
-
-                                            ),
-                                          ),
-                                          if(data.prvBalance.isNotEmpty)
-                                          TextSpan(
-                                            text: 'Prv Share : ${data.prvBalance}',
-                                            style: GoogleFonts.poppins(
-                                              color: AppColors.black,
-
-
-                                            ),
-                                          ),
                                           if(data.loanComments.isNotEmpty)
                                           TextSpan(
                                             text: 'Coments : ${data.loanComments.map((e) => e.comments)} \n',
@@ -308,6 +387,7 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                             text: 'Do you want to change this amount and tenure?  ',
                                             style: GoogleFonts.poppins(
                                               color: AppColors.black,
+                                              fontWeight: FontWeight.w600
 
 
                                             ),
@@ -333,6 +413,7 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                                         child: Column(
                                                           children: [
                                                             TextFormField(
+                                                              inputFormatters: [CurrencyInputFormatter()],
                                                               keyboardType: TextInputType.number,
                                                               controller:model.New_loan_amt[index],
                                                               decoration: InputDecoration(
@@ -449,42 +530,120 @@ else {
                                       ),
                                     ),
 
-
-
-                                    SizedBox(height: 10,),
                                     if(data.attachmenturl != null)
+                                      Column(
+                                        children: [
+                                          SizedBox(height: 5,),
+                                          Row(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            children: [
+
+                                              InkWell(
+                                                onTap: () {
+                                                  Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                      builder: (context) => WebViewScreen(url: data.attachmenturl),
+                                                    ),
+                                                  );
+                                                },
+                                                child:
+                                                Container(
+
+                                                  child:
+                                                  Text(
+                                                    "See "
+                                                        ""
+                                                        "Attachments",
+                                                    style: GoogleFonts.poppins(
+                                                        color: Colors.green,
+                                                        fontWeight: FontWeight.w500
+
+
+                                                    ),
+                                                    textAlign: TextAlign.start,
+
+                                                  ),
+                                                ),
+
+
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+
+                                    SizedBox(height: 20,),
+
                                       Row(
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
-                                          InkWell(
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => WebViewScreen(url: data.attachmenturl),
-                                                ),
-                                              );
-                                            },
-                                            child:
-                              Container(
-                              padding: EdgeInsets.all(6),
-                              decoration: BoxDecoration(
-                              color: AppColors.primary,
-                              borderRadius: BorderRadius.circular(8)),
-                              child:
-                                            Text(
-                                              "See "
-                                                  ""
-                                                  "Attachments",
-                                              style: TextStyle(fontWeight: FontWeight.bold,
-                                              fontSize: 11,
-                                                color: Colors.white
-                                              ),
-                                              textAlign: TextAlign.start,
+                                          Row(
+                                            children: [
 
-                                            ),
+                                              InkWell(
+                                                onTap: () {
+                                                  model.approval_details(context, data);
+                                                },
+                                                child:
+                                                Container(
+                                                  padding: EdgeInsets.all(6),
+                                                  decoration: BoxDecoration(
+                                                      color: AppColors.primary,
+                                                      borderRadius: BorderRadius.circular(8)),
+                                                  child:
+                                                  Text(
+                                                    "Approval Details",
+                                                    style: TextStyle(
+                                                        fontSize: 11,
+                                                        color: Colors.white
+                                                    ),
+                                                    textAlign: TextAlign.start,
+
+                                                  ),
+                                                ),
+
+
+                                              ),
+                                              SizedBox(width: 5,)
+                                            ],
                                           ),
-                                          ) ],
+                                          if(data.empShare.isNotEmpty)
+                                            Row(
+                                              children: [
+
+                                                InkWell(
+                                                  onTap: () {
+                                                   model.show_pf_details(context, data);
+                                                  },
+                                                  child:
+                                                  Container(
+                                                    padding: EdgeInsets.all(6),
+                                                    decoration: BoxDecoration(
+                                                        color: AppColors.primary,
+                                                        borderRadius: BorderRadius.circular(8)),
+                                                    child:
+                                                    Text(
+                                                      "PF Details",
+                                                      style: TextStyle(
+                                                          fontSize: 11,
+                                                          color: Colors.white
+                                                      ),
+                                                      textAlign: TextAlign.start,
+
+                                                    ),
+                                                  ),
+
+
+                                                ),
+                                                SizedBox(width: 5,)
+                                              ],
+                                            ),
+
+
+
+
+                                        ],
                                       ),
 
 
@@ -542,63 +701,169 @@ SizedBox(height: 10,),
                                               resetSelectedStatus(index);
                                               return; // Exit the function early, skipping the API call
                                             }
+                                            showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return AlertDialog(
+                                                  shape: RoundedRectangleBorder(
+                                                    borderRadius: BorderRadius.circular(12),
+                                                  ),
+                                                  backgroundColor: AppColors.primary, // Custom primary background color
+                                                  title: Text(
+                                                    "Confirm Your Decision",
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 16,
+                                                      fontWeight: FontWeight.bold,
+                                                      color: Colors.white, // White text color
+                                                    ),
+                                                  ),
+                                                  content: Text(
+                                                    "Are you sure you want to $newValue this loan?",
+                                                    style: GoogleFonts.poppins(
+                                                      fontSize: 14,
+                                                      color: Colors.white, // White content text
+                                                    ),
+                                                  ),
+                                                  actions: <Widget>[
+                                                    // Cancel Button
+                                                    TextButton(
+                                                      child: Text(
+                                                        "Cancel",
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 14,
+                                                          color: Colors.white, // White color for cancel button text
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.of(context).pop(); // Close the dialog
+                                                        // Optionally reset the selection if the user cancels
+                                                        setState(() {
+                                                          model.selectedvisitStatusList[index] = "Select your decision";
+                                                        });
+                                                      },
+                                                    ),
+                                                    // Confirm Button
+                                                    TextButton(
+                                                      child: Text(
+                                                        "Confirm",
+                                                        style: GoogleFonts.poppins(
+                                                          fontSize: 14,
+                                                          fontWeight: FontWeight.bold,
+                                                          color: Colors.white, // White color for confirm button text
+                                                        ),
+                                                      ),
+                                                      onPressed: () async {
+                                                        Navigator.of(context).pop(); // Close the dialog
 
-                                            ApiService api = ApiService();
-                                            String selectedBackendValue;
-                                            if (newValue == "Approved") {
-                                              selectedBackendValue = "approved";
-                                            } else if (newValue ==
-                                                "Rejected") {
-                                              selectedBackendValue = "rejected";
-                                            } else {
-                                              selectedBackendValue =
-                                              "0"; // Default value for other cases
-                                            }
+                                                        ApiService api = ApiService();
+                                                        String selectedBackendValue;
 
-                                            final response = await api
-                                                .hod_loan_approved(
-                                              selectedBackendValue,
-                                              data.loanId.toString(),
-                                              model.comment.text.toString(),
+                                                        // Map the dropdown value to the backend value
+                                                        if (newValue == "Approved") {
+                                                          selectedBackendValue = "approved";
+                                                        } else if (newValue == "Rejected") {
+                                                          selectedBackendValue = "rejected";
+                                                        } else {
+                                                          selectedBackendValue = "0"; // Default value for other cases
+                                                        }
+
+                                                        // Make the API call
+                                                        final response = await api.hod_loan_approved(
+                                                          selectedBackendValue,
+                                                          data.loanId.toString(),
+                                                          model.comment.text.toString(),
+                                                        );
+
+                                                        if (response is Success) {
+                                                          final jsonResponse = response.data;
+
+                                                          if (jsonResponse != null && jsonResponse.containsKey("status")) {
+                                                            final status = jsonResponse["status"];
+                                                            final msg = jsonResponse['status_message'];
+                                                            print("Status: $status");
+
+                                                            if (newValue == "Approved") {
+                                                              Constants.customSuccessSnack(context, msg);
+                                                            } else if (newValue == "Rejected") {
+                                                              Constants.customSuccessSnack(context, msg);
+                                                            }
+
+                                                            // If approved or rejected or status is success
+                                                            if (newValue == "Approved" || newValue == "Rejected" || status == "200") {
+                                                              setState(() {
+                                                                if (model.selectedvisitStatusList[index] != "Select your decision") {
+                                                                  model.loanlistfinal.removeAt(index); // Remove item from loan list
+                                                                }
+                                                                model.selectedvisitStatusList[index] = "Select your decision"; // Reset dropdown value
+                                                              });
+                                                            }
+                                                          } else {
+                                                            print("JSON response is null or 'status' is missing");
+                                                          }
+                                                        }
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
                                             );
 
-                                            if (response is Success) {
-                                              final jsonResponse = response.data;
-
-                                              if (jsonResponse != null &&
-                                                  jsonResponse.containsKey(
-                                                      "status")) {
-                                                final status = jsonResponse["status"];
-                                                final msg = jsonResponse['status_message'];
-                                                print("Status: $status");
-
-                                                if (newValue ==
-                                                    "Approved") {
-                                                  Constants.customSuccessSnack(
-                                                      context, msg);
-                                                } else if (newValue ==
-                                                    "Rejected") {
-                                                  Constants.customSuccessSnack(
-                                                      context, msg);
-                                                }
-
-                                                if (
-                                                newValue ==
-                                                    "Approved" ||
-                                                    newValue == "Rejected" ||
-                                                    status == "200") {
-                                                  setState(() {
-                                                    if(model.selectedvisitStatusList != "Select your decision")
-
-                                                      model.loanlistfinal.removeAt(index);
-                                                    model.selectedvisitStatusList[index] = "Select your decision";
-                                                  });
-                                                }
-                                              } else {
-                                                print(
-                                                    "JSON response is null or 'status' is missing");
-                                              }
-                                            }
+                                            // ApiService api = ApiService();
+                                            // String selectedBackendValue;
+                                            // if (newValue == "Approved") {
+                                            //   selectedBackendValue = "approved";
+                                            // } else if (newValue ==
+                                            //     "Rejected") {
+                                            //   selectedBackendValue = "rejected";
+                                            // } else {
+                                            //   selectedBackendValue =
+                                            //   "0"; // Default value for other cases
+                                            // }
+                                            //
+                                            // final response = await api
+                                            //     .hod_loan_approved(
+                                            //   selectedBackendValue,
+                                            //   data.loanId.toString(),
+                                            //   model.comment.text.toString(),
+                                            // );
+                                            //
+                                            // if (response is Success) {
+                                            //   final jsonResponse = response.data;
+                                            //
+                                            //   if (jsonResponse != null &&
+                                            //       jsonResponse.containsKey(
+                                            //           "status")) {
+                                            //     final status = jsonResponse["status"];
+                                            //     final msg = jsonResponse['status_message'];
+                                            //     print("Status: $status");
+                                            //
+                                            //     if (newValue ==
+                                            //         "Approved") {
+                                            //       Constants.customSuccessSnack(
+                                            //           context, msg);
+                                            //     } else if (newValue ==
+                                            //         "Rejected") {
+                                            //       Constants.customSuccessSnack(
+                                            //           context, msg);
+                                            //     }
+                                            //
+                                            //     if (
+                                            //     newValue ==
+                                            //         "Approved" ||
+                                            //         newValue == "Rejected" ||
+                                            //         status == "200") {
+                                            //       setState(() {
+                                            //         if(model.selectedvisitStatusList != "Select your decision")
+                                            //
+                                            //           model.loanlistfinal.removeAt(index);
+                                            //         model.selectedvisitStatusList[index] = "Select your decision";
+                                            //       });
+                                            //     }
+                                            //   } else {
+                                            //     print(
+                                            //         "JSON response is null or 'status' is missing");
+                                            //   }
+                                            // }
                                           },
                                         )
 

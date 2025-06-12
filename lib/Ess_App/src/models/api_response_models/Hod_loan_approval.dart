@@ -25,6 +25,9 @@ class hodloanmodel {
 
 class LoanForm {
   final String loanId;
+  final String hodName;
+  final String hoddate;
+  final String posted_date;
   final String empCode;
   final String empName;
   final String position;
@@ -44,12 +47,24 @@ class LoanForm {
   final String empShare;
   final String cmpShare;
   final String prvBalance;
+  final String hod_comments;
+  final String directorname;
+  final String dir_approval_date;
+  final String dir_comments;
+
+
+
+
   final List<LoanComment> loanComments;
 
   LoanForm({
+    required this.posted_date,
     required this.loanId,
     required this.empCode,
+    required this.hodName,
     required this.empName,
+    required this.hod_comments,
+    required this.directorname,
     required this.position,
     required this.doj,
     required this.loanType,
@@ -68,35 +83,52 @@ class LoanForm {
     required this.cmpShare,
     required this.prvBalance,
     required this.loanComments,
+    required this.hoddate,
+    required this.dir_comments,
+
+    required this.dir_approval_date,
+
+
+
   });
 
   factory LoanForm.fromJson(Map<String, dynamic> json) {
     return LoanForm(
-      loanId: json['loan_id'],
-      empCode: json['emp_code'],
-      empName: json['emp_name'],
-      position: json['position'],
-      doj: json['doj'],
-      attachmenturl: json['attachmenturl'],
-      loanType: json['loantype'],
-      department: json['department'],
-      branch: json['branch'],
-      loanAmount: json['loan_amount'],
-      purpose: json['purpose'],
-      totalInstallment: json['total_installment'],
-      perMonthRepay: json['per_month_repay'],
-      hodStatus: json['hod_status'],
-      directorStatus: json['director_status'],
-      ceoStatus: json['ceo_status'],
-      completePf: json['complete_pf'],
-      empShare: json['emp_share'],
-      cmpShare: json['cmp_share'],
-      prvBalance: json['prv_balance'],
-      loanComments: (json['loancomments'] as List)
-          .map((comment) => LoanComment.fromJson(comment))
-          .toList(),
+      posted_date: json['posted_date'] ?? '',
+      loanId: json['loan_id'] ?? '',
+      hodName: json['hod_name'] ?? '',
+      hoddate: json['hod_approval_date'] ?? '',
+      empCode: json['emp_code'] ?? '',
+      empName: json['emp_name'] ?? '',
+      position: json['position'] ?? '',
+      doj: json['doj'] ?? '',
+      loanType: json['loantype'] ?? '',
+      department: json['department'] ?? '',
+      branch: json['branch'] ?? '',
+      loanAmount: json['loan_amount'] ?? '',
+      purpose: json['purpose'] ?? '',
+      totalInstallment: json['total_installment'] ?? '',
+      perMonthRepay: json['per_month_repay'] ?? '',
+      hodStatus: json['hod_status'] ?? '',
+      attachmenturl: json['attachmenturl'] ?? '',
+      directorStatus: json['director_status'] ?? '',
+      ceoStatus: json['ceo_status'] ?? '',
+      completePf: json['complete_pf'] ?? '',
+      empShare: json['emp_share'] ?? '',
+      cmpShare: json['cmp_share'] ?? '',
+      prvBalance: json['prv_balance'] ?? '',
+      hod_comments: json['hod_comments'] ?? '',
+      directorname: json['director_name'] ?? '',
+      dir_approval_date: json['dir_approval_date'] ?? '',
+      dir_comments: json['dir_comments'] ?? '',
+
+      loanComments: (json['loancomments'] as List<dynamic>?)
+          ?.map((comment) => LoanComment.fromJson(comment))
+          .toList() ??
+          [],
     );
   }
+
 
   Map<String, dynamic> toJson() {
     return {

@@ -2,11 +2,14 @@ import 'package:ess/Ess_App/src/models/api_response_models/Hod_loan_approval.dar
 import 'package:ess/Ess_App/src/services/local/base/auth_view_model.dart';
 import 'package:ess/Ess_App/src/services/remote/base/api_view_model.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:stacked/stacked.dart';
 import '../../../base/utils/constants.dart';
 import '../../../models/api_response_models/director_model.dart';
 import '../../../models/api_response_models/loan_model.dart';
-
+import '../../../styles/app_colors.dart';
+import 'package:intl/intl.dart';
 
 class director_loan_view_model extends ReactiveViewModel with AuthViewModel, ApiViewModel {
   @override
@@ -81,8 +84,8 @@ class director_loan_view_model extends ReactiveViewModel with AuthViewModel, Api
       ) async {
     var newsResponse = await runBusyFuture(apiService.director_loan_approval());
     newsResponse.when(success: (data) async {
-      if ((data?.approvalListvisit.length ?? 0) > 0) {
-        loanlistfinal = data.approvalListvisit?.reversed.toList() ?? [];
+      if ((data.approvalListvisit.length ?? 0) > 0) {
+        loanlistfinal = data.approvalListvisit.reversed.toList() ?? [];
 
 
 
@@ -146,6 +149,236 @@ class director_loan_view_model extends ReactiveViewModel with AuthViewModel, Api
           Constants.customErrorSnack(context, error.toString());
         });
   }
+
+
+
+  void show_pf_details(BuildContext context, directorForm data) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: SizedBox(
+            width: 200,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: AppColors.primary,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    'PF Details',
+                    style: GoogleFonts.poppins(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 12),
+
+                  RichText(
+                    text: TextSpan(
+                      style: GoogleFonts.poppins(
+                        fontSize: 13,
+                        color: Colors.white,
+                      ),
+                      children: [
+                        TextSpan(text: 'Complete PF: '),
+                        TextSpan(
+                          text:
+                          '${NumberFormat('#,##0').format(int.tryParse(data.completePf) ?? 0)}\n',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        TextSpan(text: 'Emp Share: '),
+                        TextSpan(
+                          text:
+                          '${NumberFormat('#,##0').format(int.tryParse(data.empShare) ?? 0)}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        const WidgetSpan(child: SizedBox(height: 8)), // 👈 Spacing
+
+                        if (data.cmpShare.isNotEmpty) ...[
+                          TextSpan(text: '\nCmp Share: '),
+                          TextSpan(
+                            text:
+                            '${NumberFormat('#,##0').format(int.tryParse(data.cmpShare) ?? 0)}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          const WidgetSpan(child: SizedBox(height: 8)), // 👈 Spacing
+                        ],
+                        if (data.prvBalance.isNotEmpty) ...[
+                          TextSpan(text: '\nPrv Share: '),
+                          TextSpan(
+                            text:
+                            '${NumberFormat('#,##0').format(int.tryParse(data.prvBalance) ?? 0)}',
+                            style: const TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 16),
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(
+                        "Close",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+  void approval_details(BuildContext context, directorForm data) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: SizedBox(
+            width: 280, // Increased width for breathing room
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(12),
+                color: AppColors.primary,
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start, // Left-align content
+                children: [
+                  Center(
+                    child: Text(
+                      'Approval Details',
+                      style: GoogleFonts.poppins(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  // HOD Section
+                  Text.rich(
+                    TextSpan(
+                      children: [
+
+                        TextSpan(
+                          text: 'HOD Status:\n',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: Colors.white,
+                          ),
+                        ),
+                        TextSpan(
+                          text:
+                          '${data.hodStatus} (${data.hodName})\nDate: ${data.hoddate}\nComment: ${data.hod_comments}\n\n',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            color: Colors.white,
+                          ),
+                        ),
+                        TextSpan(
+                          text: 'Director Status:\n',
+                          style: GoogleFonts.poppins(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color: Colors.white,
+                          ),
+                        ),
+                        TextSpan(
+                          text:
+                          '${data.directorStatus} (${data.dirname})\nDate: ${data.dirdate}\nComment: ${data.dircomment}',
+                          style: GoogleFonts.poppins(
+                            fontSize: 13,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // const SizedBox(height: 12),
+                  //
+                  // // Director Section
+                  // Text.rich(
+                  //   TextSpan(
+                  //     children: [
+                  //       TextSpan(
+                  //         text: 'Director Status:\n',
+                  //         style: GoogleFonts.poppins(
+                  //           fontWeight: FontWeight.bold,
+                  //           fontSize: 13,
+                  //           color: Colors.white,
+                  //         ),
+                  //       ),
+                  //       TextSpan(
+                  //         text:
+                  //         '${data.directorStatus} (${data.directorname})\nDate: ${data.dir_approval_date} \nComment: ${data.dir_comments}',
+                  //         style: GoogleFonts.poppins(
+                  //           fontSize: 13,
+                  //           color: Colors.white,
+                  //         ),
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
+                  //
+                  // const SizedBox(height: 20),
+
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Text(
+                        "Close",
+                        style: GoogleFonts.poppins(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+
+
+
+
+
 
 }
 

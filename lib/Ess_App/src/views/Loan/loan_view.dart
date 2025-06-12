@@ -9,6 +9,7 @@ import '../../shared/input_field.dart';
 import '../../shared/loading_indicator.dart';
 import '../../shared/top_app_bar.dart';
 import '../../styles/app_colors.dart';
+import 'Ceo_loan_approval/Ceo_loan_approval_view.dart';
 import 'customsearchabledropdown.dart';
 import 'customtextfeild.dart';
 import 'loan_view_model.dart';
@@ -35,6 +36,7 @@ class _LoanState extends State<Loan> {
     // WidgetsBinding.instance.addPostFrameCallback((_) => showDisclaimerDialog());
     super.initState();
   }
+
   Widget build(BuildContext context) {
     return
       ViewModelBuilder<LoanViewModel>.reactive(
@@ -214,7 +216,7 @@ SizedBox(height: 10,),
                                 label: model.precodevalue == '' ? 'Branch List' : 'Select Pre Code',
                                 decoration: BoxDecoration(
                                   color: Colors.white,
-                                  borderRadius: const BorderRadius.all(Radius.circular(8)),
+                                  borderRadius: const BorderRadius.all(Radius.circular(10)),
                                   border: Border.all(color: const Color(0xff3E4684)),
                                 ),
                                 prefixIcon: const Padding(
@@ -263,13 +265,13 @@ SizedBox(height: 10,),
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 10,),
+                              SizedBox(height: 4,),
                               // CustomTextField(
                               //   controller: model.dateofjoningcontroller,
                               //   labelText: 'Date of joining',
                               // ),
                               SecondInputField(
-                                label: 'Date of joining',
+
                                 hint: 'Select Booking Date',
                                 controller: model.dateofjoningcontroller,
                                 inputType: TextInputType.datetime,
@@ -296,7 +298,7 @@ SizedBox(height: 10,),
                                 ),
                               ),
 
-                              SizedBox(height: 30,),
+                              SizedBox(height: 10,),
                               CustomTextField(
                                 controller: model.cniccontroller,
                                 labelText: 'CNIC',
@@ -310,9 +312,10 @@ SizedBox(height: 10,),
                                 },
 
                               ),
-                              SizedBox(height: 30,),
+                              SizedBox(height: 10,),
                               CustomTextField(
                                 controller: model.loanamountrs,
+                                formatter: [CurrencyInputFormatter()],
                                 labelText: 'Loan Amount Rs',
                                 inputType: TextInputType.number,
                                 validator: (value) {
@@ -322,7 +325,7 @@ SizedBox(height: 10,),
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 30,),
+                              SizedBox(height: 10,),
                               CustomTextField(
                                 controller: model.loanamountinwordscontroller,
                                 labelText: 'Loan Amount In Words',
@@ -333,7 +336,7 @@ SizedBox(height: 10,),
                                   return null;
                                 },
                               ),
-                              SizedBox(height: 30,),
+                              SizedBox(height: 10,),
                               CustomTextField(
                                 controller: model.purposeofloancontroller,
                                 labelText: 'Purpose of loan',
@@ -346,19 +349,15 @@ SizedBox(height: 10,),
                               ),
                               SizedBox(height: 10,),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.end,
                                 children: [
-
-                                  ElevatedButton(
-                                    onPressed: () async {
-                                      model.imageError = model.imagepath.isEmpty;
-                                      model.get_gallery_image();
-
-                                    },
-                                    child: Text("Upload CNIC"),
-                                  ),
                                   if(model.imagepath.isNotEmpty)
-                                    Icon(Icons.check, color: Colors.green,),
+                                    Container(
+                                        decoration: BoxDecoration(
+                                            color: Colors.green,
+                                            borderRadius: BorderRadius.circular(20)),
+                                        child: Icon(Icons.check, color: Colors.white,)),
+                                  SizedBox(width: 10,),
                                   if (model.imageError == true && model.imagepath.isEmpty)
                                     Padding(
                                       padding: const EdgeInsets.only(top: 4.0, left: 4.0),
@@ -367,48 +366,96 @@ SizedBox(height: 10,),
                                         style: TextStyle(color: Colors.red, fontSize: 12),
                                       ),
                                     ),
+                                  ElevatedButton(
+                                    onPressed: () async {
+                                      model.imageError = model.imagepath.isEmpty;
+                                      model.get_gallery_image();
+                                    },
+                                    child: Text("Upload CNIC", style: TextStyle(color: Colors.white),),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.primary, // Change this to your desired color
+                                      //onPrimary: Colors.white, // Text color (optional)
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(18), // Optional: to make the button rounded
+                                      ),
+                                      padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20), // Optional: adjust padding
+                                    ),
+                                  ),
+
+
                                 ],
                               ),
 
-                              SizedBox(height: 30,),
+                              SizedBox(height: 10,),
                               Text(" I solemnly affirm that the application of loan is made to meet expenses stated as the purpose already mentioned above."),
                          //Text("number of equal monthly INSTALLMENT of Rs  "),
-
+                              SizedBox(height: 10,),
                               Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+
                                 children: [
-                                Wrap(
-                                      children: [
-                                        Text("I will repay the loan in "),
-                                        SizedBox(
-                                          width: 100,
-                                          child: CustomTextField(
-                                            controller: model.repay_loan_month_controller,
-                                            labelText: '',
-                                            inputType: TextInputType.number,
-                                            validator: (value) {
-                                              if (value == null || value.trim().isEmpty) {
-                                                return 'Repay loan is required';
-                                              }
-                                              return null;
-                                            },
-                                          ),
+                                  Wrap(
+                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                    spacing: 6,
+                                    runSpacing: 6,
+                                    children: [
+                                     // Text("I will repay the loan in "),
+                                      SizedBox(
+
+                                        child: CustomTextField(
+
+
+                                          controller: model.repay_loan_month_controller,
+                                          labelText: 'I will repay the loan in',
+                                          inputType: TextInputType.number,
+                                          validator: (value) {
+                                            if (value == null || value.trim().isEmpty) {
+                                              return 'Repay loan is required';
+                                            }
+                                            return null;
+                                          },
                                         ),
-                                        Text(" number of equal monthly INSTALLMENT of Rs "),
-
-                                        SizedBox(
-                                          width: 100,child:
-                                         CustomTextField(
-                                              controller: model.resultController,
-                                              labelText: '',
-                                           editable: false,
-
-                                            ),
+                                      ),
+                                      RichText(
+                                        text: TextSpan(
+                                          style: TextStyle(
+                                            color: AppColors.primary, // Or AppColors.textColor if you have it
+                                            fontSize: 12,
+                                            height: 1.5,
+                                            letterSpacing: 0.5, // Add spacing between letters (adjust this value as needed)
                                           ),
+                                          children: [
+                                            TextSpan(text: "Number of equal monthly INSTALLMENT of Rs: "),
+                                            TextSpan(
+                                              text: NumberFormat('#,##0').format(
+                                                int.tryParse(model.resultController.text) ?? 0, // Fallback to 0 if parsing fails
+                                              ),
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 13,
+                                                letterSpacing: 0.5,
+                                              ),
+                                            ),
 
-                                        Text(", as the repayment of the principal, payment of mark-up (if-opted) as per the rules of employee loan facility will be over and above the installment of the principal."),
-                                      ],
-                                    ),
+                                            TextSpan(
+                                              text: " as the repayment of the principal, payment of mark-up (if-opted) as per the rules of employee loan facility will be over and above the installment of the principal.",
+                                              style: TextStyle(letterSpacing: 0.5),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+
+                                      // SizedBox(
+                                      //   width: 60,
+                                      //   child: CustomTextField(
+                                      //     controller: model.resultController,
+                                      //     labelText: '',
+                                      //     editable: false,
+                                      //   ),
+                                      // ),
+                                    ],
+                                  )
+
 
                                 ],
                               ),
@@ -458,7 +505,7 @@ SizedBox(height: 10,),
                               ),
 
 
-                              SizedBox(height: 30,),
+                              SizedBox(height: 10,),
 
                               Visibility(
                                 visible: model.loanapplicants=="for_self",
@@ -585,6 +632,7 @@ SizedBox(height: 10,),
                   ))],
               ),
             ),
+
           ),
       viewModelBuilder: () => LoanViewModel(),
       onModelReady: (model) => model.init(context),
