@@ -380,7 +380,7 @@ class _Pending_guaranteesState extends State<Pending_hod_approval> {
                                           ),
 
                                           TextSpan(
-                                            text: '',
+                                            text: '\n',
                                             style: TextStyle(color: Colors.black),
                                           ),
                                           TextSpan(
@@ -753,7 +753,8 @@ SizedBox(height: 10,),
                                                         ),
                                                       ),
                                                       onPressed: () async {
-                                                        Navigator.of(context).pop(); // Close the dialog
+
+
 
                                                         ApiService api = ApiService();
                                                         String selectedBackendValue;
@@ -767,7 +768,9 @@ SizedBox(height: 10,),
                                                           selectedBackendValue = "0"; // Default value for other cases
                                                         }
 
-                                                        // Make the API call
+
+
+
                                                         final response = await api.hod_loan_approved(
                                                           selectedBackendValue,
                                                           data.loanId.toString(),
@@ -781,26 +784,25 @@ SizedBox(height: 10,),
                                                             final status = jsonResponse["status"];
                                                             final msg = jsonResponse['status_message'];
                                                             print("Status: $status");
-
-                                                            if (newValue == "Approved") {
-                                                              Constants.customSuccessSnack(context, msg);
-                                                            } else if (newValue == "Rejected") {
-                                                              Constants.customSuccessSnack(context, msg);
-                                                            }
-
-                                                            // If approved or rejected or status is success
-                                                            if (newValue == "Approved" || newValue == "Rejected" || status == "200") {
+                                                            if (status == "200") {
                                                               setState(() {
                                                                 if (model.selectedvisitStatusList[index] != "Select your decision") {
-                                                                  model.loanlistfinal.removeAt(index); // Remove item from loan list
+                                                                  model.loanlistfinal.removeAt(index);
                                                                 }
                                                                 model.selectedvisitStatusList[index] = "Select your decision"; // Reset dropdown value
                                                               });
+                                                              Constants.customSuccessSnack(context, msg);
+                                                              Navigator.of(context).pop();
+
+
                                                             }
                                                           } else {
                                                             print("JSON response is null or 'status' is missing");
                                                           }
                                                         }
+
+
+
                                                       },
                                                     ),
                                                   ],

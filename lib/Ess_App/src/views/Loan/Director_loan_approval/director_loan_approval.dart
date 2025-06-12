@@ -821,20 +821,22 @@ SizedBox(height: 7,),
                                                               final msg = jsonResponse['status_message'];
                                                               print("Status: $status");
 
-                                                              if (newValue == "Approved") {
-                                                                Constants.customSuccessSnack(context, msg);
-                                                              } else if (newValue == "Rejected") {
-                                                                Constants.customSuccessSnack(context, msg);
-                                                              }
+                                                              // if (newValue == "Approved") {
+                                                              //   Constants.customSuccessSnack(context, msg);
+                                                              // } else if (newValue == "Rejected") {
+                                                              //   Constants.customSuccessSnack(context, msg);
+                                                              // }
 
                                                               // If approved or rejected or status is success
-                                                              if (newValue == "Approved" || newValue == "Rejected" || status == "200") {
+                                                              if (status == "200") {
                                                                 setState(() {
                                                                   if (model.selectedvisitStatusList[index] != "Select your decision") {
                                                                     model.loanlistfinal.removeAt(index); // Remove item from loan list
                                                                   }
                                                                   model.selectedvisitStatusList[index] = "Select your decision"; // Reset dropdown value
                                                                 });
+                                                                Constants.customSuccessSnack(context, msg);
+                                                                Navigator.of(context).pop();
                                                               }
                                                             } else {
                                                               print("JSON response is null or 'status' is missing");
