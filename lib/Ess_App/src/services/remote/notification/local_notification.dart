@@ -10,9 +10,7 @@ class LocalNotificationService {
     // Define initialization settings for Android and iOS
     InitializationSettings initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('@drawable/premierlogo'),
-      iOS:
-
-      DarwinInitializationSettings(
+      iOS: DarwinInitializationSettings(
         requestAlertPermission: true,
         requestBadgePermission: true,
         requestSoundPermission: true,
