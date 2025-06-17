@@ -21,7 +21,7 @@ class LoginViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel 
   bool? checktabledata;
   Map<String, dynamic> data={};
   List<BiometricType>? availablebiometric;
-  final dbHelper = DatabaseHelper();
+  final dbHelper = DatabaseHelpe();
   final LocalAuthentication? auth =LocalAuthentication();
   TextEditingController email = TextEditingController();
   TextEditingController password = TextEditingController();

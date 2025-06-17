@@ -6,8 +6,11 @@ import 'package:ess/Ess_App/src/styles/app_colors.dart';
 import 'package:ess/Ess_App/src/styles/text_theme.dart';
 import 'package:ess/Ess_App/src/views/notification/notification_view_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:stacked/stacked.dart';
+
+import '../../models/api_response_models/Notification.dart';
 
 class NotificationView extends StatelessWidget {
   @override
@@ -17,45 +20,21 @@ class NotificationView extends StatelessWidget {
         child: Scaffold(
           body: SingleChildScrollView(
             child: Column(
-              children: [
-                Container(
-                  padding: EdgeInsets.only(bottom: 18, left: 18, right: 18,),
-                  margin: EdgeInsets.fromLTRB(0, 18, 0, 0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          Navigator.pop(context);
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: HexColor("#FAFAFA"),
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                              color: HexColor("#F3F3F3"),
-                            ),
-                          ),
-                          height: 40,
-                          width: 40,
-                          child: Center(
-                              child: Icon(
-                                Icons.arrow_back_ios_new,
-                                color: AppColors.primary,
-                              )),
-                        ),
-                      ),
-                      Text(
-                        "Notification",
-                        style: TextStyling.bold22.copyWith(color: AppColors.primary),
-                      ),
-Text("")
 
-                    ],
-                  ),
-                ),
-                model.list.isEmpty ?
+              children: [
+                GeneralAppBar(
+                    title: "Notifications",
+
+                    onMenuTap: () {
+Navigator.pop(context);
+                    },
+                    onNotificationTap: () {
+                      Navigator.pop(context);
+                    }),
+
+                model.data.isEmpty ?
                 Container(
+
                   color: Colors.white,
                   padding: EdgeInsets.symmetric(horizontal: 10),
                   height: context.screenSize().height - 110,
@@ -71,56 +50,99 @@ Text("")
                       Text("Data Not Available", style: TextStyling.bold18.copyWith(color: AppColors.primary),)
                     ],
                   ),
-                ) : Expanded(
-                  child: ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    shrinkWrap: true,
-                      itemCount:model.list.length ,
-                      itemBuilder: (BuildContext context, index)
-                      {
-                        var  data=model.list[index];
-                        return Card(
-                          elevation: 4,
-                          margin: EdgeInsets.all(10),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Row(
+                ) :
+                 Container(
+                 height: 600,
+                   child: ListView.builder(
+                      itemCount: model.data.length,
+                      physics: BouncingScrollPhysics(),
+                      itemBuilder: (BuildContext context, index) {
+                        Notification_model noti = model.data[index];
+                        String formattedDate = DateFormat.yMMMd().format(noti.timestamp!); // E.g., 'Jul 23, 2024'
+                        String formattedTime = DateFormat.jm().format(noti.timestamp!);
+
+                        return
+
+
+                          Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8),
+                            child: GestureDetector(
+                              onTap: () => model.toggleExpand(index), // Toggle expansion on tap
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blue.shade50,
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                padding: const EdgeInsets.all(12),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Icon(Icons.check_circle, color: Colors.green), // Attendance icon
-                                    SizedBox(width: 10), // Space between icon and text
+                                    Icon(Icons.notifications, color: AppColors.primary),
+                                    SizedBox(width: 10),
                                     Expanded(
-                                      child: Text("Your Attendance has been marked"
-                                        ,
-                                        style: TextStyle(fontSize: 13),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          // Title
+                                          Text(
+                                            noti.title ?? '',
+                                            style: TextStyle(
+                                              fontWeight: FontWeight.bold,
+                                              color: AppColors.primary,
+                                              fontSize: 16,
+                                            ),
+                                            overflow: TextOverflow.ellipsis, // Handle overflow
+                                          ),
+                                          SizedBox(height: 5),
+                                          // Body
+                                          AnimatedSize(
+                                            duration: Duration(milliseconds: 300),
+                                            curve: Curves.easeInOut,
+                                            child: ConstrainedBox(
+                                              constraints: model.expandedList[index]
+                                                  ? BoxConstraints()
+                                                  : BoxConstraints(maxHeight: 40), // Adjust height to fit your needs
+                                              child: Text(
+                                                noti.body ?? '',
+                                                style: TextStyle(
+                                                  color: AppColors.primary,
+                                                  fontSize: 12,
+                                                ),
+                                                overflow: TextOverflow.fade,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(height: 5),
+                                          // Formatted Time
+                                          Text(
+                                            formattedTime,
+                                            style: TextStyle(
+                                              color: AppColors.black,
+                                              fontSize: 10,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Text( data['date'],style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),)
-
+                                    SizedBox(width: 10),
+                                    // Formatted Date
+                                    Text(
+                                      formattedDate,
+                                      style: TextStyle(
+                                        color: AppColors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 10,
+                                      ),
+                                    ),
                                   ],
                                 ),
-                                SizedBox(height: 8,),
-                                Container(
-                                  alignment: Alignment.centerLeft, // Start alignment
-                                  child: Text(
-                                    "${data['time']} AM",
-                                    style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-
-                                // Text("Latitude: ${data['target_lat']}"),
-                                // Text("Longtitude: ${data['target_long']}"),
-                                // Text("Target Latitude: ${data['lat']}"),
-                                // Text("Target Longtitude: ${data['long']}")
-                              ],
-                              
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                )
+                          );
+                      },
+                    ),
+                 ),
+
               ],
             ),
           ),
