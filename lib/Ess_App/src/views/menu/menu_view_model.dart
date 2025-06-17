@@ -228,7 +228,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
             onPress: () {NavService.pending_guarantees();Scaffold.of(context).closeDrawer();},
           ),
 
-          if(authService.user?.role == 'hod')
+         // if(authService.user?.role == 'hod')
             CustomMenuItem(
               label: "Pending HOD Approvals",
               isParent: false,
