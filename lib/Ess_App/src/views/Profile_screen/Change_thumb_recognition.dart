@@ -16,7 +16,7 @@ class thumb_recogition extends StatefulWidget {
   @override
   State<thumb_recogition> createState() => _thumb_recogitionState();
 }
-final dbHelper = DatabaseHelper();
+final dbHelper = DatabaseHelpe();
 AuthService? authService ;
 TextEditingController _controller = TextEditingController();
 AuthService _authService = locator<AuthService>();

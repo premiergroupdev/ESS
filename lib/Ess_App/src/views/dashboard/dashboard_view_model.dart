@@ -20,17 +20,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 import '../../configs/app_setup.locator.dart';
 import '../../models/api_response_models/My_smart_goals.dart';
+import '../../models/api_response_models/Notification.dart';
 import '../../models/api_response_models/attendence.dart';
 import '../../services/local/auth_service.dart';
 import '../../services/local/navigation_service.dart';
 import '../local_db.dart';
+import '../login/local/local_db.dart';
 
 class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel
 
 {
   LoginViewModel login = LoginViewModel();
   Dashboard? dashboard;
-
+  static DatabaseHelpe databaseHelper = DatabaseHelpe();
   String currentTime = DateTime.now().toIso8601String().substring(11, 16);
   String today = DateTime.now().toIso8601String().split('T')[0];
   DatabaseHelper database=DatabaseHelper();
@@ -566,14 +568,45 @@ void checkbirthday(BuildContext context) async
         NavService.yourAttendance();
       }
     }
+    // Future<void> backgroundMessageHandler(RemoteMessage message) async {
+    //   try {
+    //     print("Handling a background message: ${message.messageId}");
+    //
+    //     if (message.notification != null) {
+    //       print('Notification Title: ${message.notification!.title}');
+    //       print('Notification Body: ${message.notification!.body}');
+    //
+    //       Notification_model notification = Notification_model(
+    //         title: message.notification!.title,
+    //         body: message.notification!.body,
+    //         timestamp: message.sentTime ?? DateTime.now(), // Use sentTime or current time
+    //       );
+    //
+    //       // Access your database helper instance
+    //       await databaseHelper.insertnotification(notification);
+    //     }
+    //
+    //     print('Payload data: ${message.data}');
+    //   } catch (e) {
+    //     print('Error handling background message: $e');
+    //     // Handle the exception as needed, such as logging it or reporting it.
+    //   }
+    // }
     FirebaseMessaging.onMessage.listen(
-          (RemoteMessage message) {
+          (RemoteMessage message) async {
         print("FirebaseMessaging.onMessage.listen");
         if (message.notification != null)
         {
           print(message.notification!.title);
           print(message.notification!.body);
           LocalNotificationService.createAndDisplayNotification(message);
+          Notification_model notification = Notification_model(
+            title: message.notification!.title,
+            body: message.notification!.body,
+            timestamp: message.sentTime ?? DateTime.now(), // Use sentTime or current time
+          );
+
+          await databaseHelper.insertnotification(notification);
           if (message.data.containsKey('type'))
           {
 
@@ -596,12 +629,20 @@ void checkbirthday(BuildContext context) async
     );
     FirebaseMessaging.onMessageOpenedApp.listen(
           (RemoteMessage message)
-      {
+      async {
         print("FirebaseMessaging.onMessageOpenedApp.listen");
         if (message.notification != null) {
           print(message.notification!.title);
           print(message.notification!.body);
           print("message.data");
+          Notification_model notification = Notification_model(
+            title: message.notification!.title,
+            body: message.notification!.body,
+            timestamp: message.sentTime ?? DateTime.now(), // Use sentTime or current time
+          );
+
+          // Access your database helper instance
+          await databaseHelper.insertnotification(notification);
           if (message.data.containsKey('type'))
           {
             String? type = message.data['type'];

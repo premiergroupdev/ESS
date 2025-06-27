@@ -1,13 +1,16 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../../../models/api_response_models/Notification.dart';
+import '../../../views/local_db.dart';
+import '../../../views/login/local/local_db.dart';
+
+
 class LocalNotificationService {
-  static final FlutterLocalNotificationsPlugin _notificationsPlugin =
-  FlutterLocalNotificationsPlugin();
-
-
+  static final FlutterLocalNotificationsPlugin _notificationsPlugin = FlutterLocalNotificationsPlugin();
+  static DatabaseHelpe databaseHelper = DatabaseHelpe();
   static Future<void> initialize() async {
-    // Define initialization settings for Android and iOS
+
     InitializationSettings initializationSettings = InitializationSettings(
       android: AndroidInitializationSettings('@drawable/premierlogo'),
       iOS: DarwinInitializationSettings(
@@ -18,7 +21,7 @@ class LocalNotificationService {
     );
 
     try {
-      // Initialize the notifications plugin
+
       bool? initialized = await _notificationsPlugin.initialize(
         initializationSettings,
         // onSelectNotification: (String? payload) async {
@@ -58,6 +61,7 @@ class LocalNotificationService {
         notificationDetails,
         payload: message.data['_id'],
       );
+
     } on Exception catch (e) {
       print(e);
     }

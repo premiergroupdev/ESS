@@ -28,7 +28,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
   int collapsedIndex = -1;
   bool? checktabledata;
   String version='';
-  final dbHelper = DatabaseHelper();
+  final dbHelper = DatabaseHelpe();
   Future<void> checktable() async {
     checktabledata = await  dbHelper.checkTable();
     print("table data: ${checktabledata}");

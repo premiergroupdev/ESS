@@ -20,15 +20,38 @@ import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 
+import 'Ess_App/src/models/api_response_models/Notification.dart';
+import 'Ess_App/src/views/login/local/local_db.dart';
+import 'Ess_App/src/views/notification/notification.dart';
+
 
 DateTime? lastApiCallTime;
 DatabaseHelper databse=DatabaseHelper();
-
+ DatabaseHelpe databaseHelper = DatabaseHelpe();
 Future<void> backgroundHandler(RemoteMessage message) async {
-  print(message.data.toString());
-  print(message.notification!.title);
-}
+  try {
+    print("Handling a background message: ${message.messageId}");
 
+    if (message.notification != null) {
+      print('Notification Title: ${message.notification!.title}');
+      print('Notification Body: ${message.notification!.body}');
+
+      Notification_model notification = Notification_model(
+        title: message.notification!.title,
+        body: message.notification!.body,
+        timestamp: message.sentTime ?? DateTime.now(), // Use sentTime or current time
+      );
+
+      // Access your database helper instance
+      await databaseHelper.insertnotification(notification);
+    }
+
+    print('Payload data: ${message.data}');
+  } catch (e) {
+    print('Error handling background message: $e');
+    // Handle the exception as needed, such as logging it or reporting it.
+  }
+}
 
 Future<void> resetBirthdayFlag() async {
 
@@ -57,6 +80,7 @@ void main() async
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  await FirebaseApi().initNotification();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.remove('isDialogShown');
 
