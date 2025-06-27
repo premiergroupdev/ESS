@@ -62,6 +62,9 @@ class NavService {
   static Future<dynamic>? applyLeave({dynamic arguments}) =>
       _navigationService!
           .navigateTo(Routes.applyLeaveView, arguments: arguments);
+  static Future<dynamic>? annaul_leave({dynamic arguments}) =>
+      _navigationService!
+          .navigateTo(Routes.annual_view, arguments: arguments);
 
   static Future<dynamic>? applyVisit({dynamic arguments}) =>
       _navigationService!

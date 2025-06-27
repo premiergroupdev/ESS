@@ -1935,6 +1935,31 @@ print("Approval Data: ${data}");
     }
   }
 
+
+
+  Future<ApiResult<Map<String, dynamic>>> applyannualLeave(BuildContext context,
+      LeaveFormData formData) async {
+    try {
+      var response = await _apiClient?.getReq(
+          "/apply_annual_planner.php?empcode=${authService.user?.userId ?? 000000}&startDate=${formData.fromDate}&endDate=${formData.toDate}"
+      );
+      var data = jsonDecode(response?.data);
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+
+      print("2");
+      return ApiResult.success(data: data);
+    } catch (e) {
+      print("3");
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
   Future<ApiResult<Visits>> getVisits(BuildContext context) async {
     try {
       var response = await _apiClient?.getReq(
