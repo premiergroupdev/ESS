@@ -4,6 +4,7 @@ import 'package:ess/Ess_App/src/services/remote/api_service.dart';
 import 'package:ess/Ess_App/src/services/remote/notification/local_notification.dart';
 import 'package:ess/Ess_App/src/views/dashboard/dashboard_view_model.dart';
 import 'package:ess/Ess_App/src/views/local_db.dart';
+import 'package:ess/Ess_App/src/views/notification/Notification_provider.dart';
 // import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:ess/Ess_App/src/app/app_view.dart';
@@ -14,6 +15,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 // import 'package:geolocator/geolocator.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -43,7 +45,7 @@ Future<void> backgroundHandler(RemoteMessage message) async {
       );
 
       // Access your database helper instance
-      await databaseHelper.insertnotification(notification);
+     // await databaseHelper.insertnotification(notification);
     }
 
     print('Payload data: ${message.data}');
@@ -73,43 +75,47 @@ final currentTimes = DateTime.now();
 String currentTime = DateTime.now().toIso8601String().substring(11, 16);
 String today = DateTime.now().toIso8601String().split('T')[0];
 DateTime? lastAttendanceCheckTime;
-
-void main() async
-
-{
-
+DatabaseHelpe DBHelper = DatabaseHelpe();
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp();
   await FirebaseApi().initNotification();
+  // FirebaseMessaging.onMessage.listen((RemoteMessage message) async  {
+  //   await DBHelper.getNotificationCount();
+  // });
+  //
+  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async  {
+  //   await DBHelper.getNotificationCount();
+  // });
+  await DBHelper.getNotificationCount();
+
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.remove('isDialogShown');
 
   await FirebaseMessaging.instance.requestPermission();
-  FirebaseMessaging.onBackgroundMessage(backgroundHandler);
-  //_requestPermissions();
-  LocalNotificationService.initialize();
-  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
-    alert: true,
-    badge: true,
-    sound: true,
-  );
+
   AuthService.prefs = await SharedPreferences.getInstance();
-  SystemChrome.setPreferredOrientations
-    (
-      [
+
+  SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
-      ]
-    );
-  final package = await PackageInfo.fromPlatform( );
+  ]);
+
+  final package = await PackageInfo.fromPlatform();
   setupLocator();
-  FlavorService.init( package );
-  String? token = await FirebaseMessaging.instance.getToken( );
+  FlavorService.init(package);
+
+  String? token = await FirebaseMessaging.instance.getToken();
   print('Firebase Token: $token');
 
-  runApp(AppView());
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => NotificationProvider(),
+      child: AppView(),
+    ),
+  );
 }
-
 
 
 

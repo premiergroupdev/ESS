@@ -29,6 +29,7 @@ class NotificationViewModel extends ReactiveViewModel with AuthViewModel {
   Future<void> getData() async {
     try {
       var model = await databaseHelper.getnotification();
+      await databaseHelper.updateNotificationCount();
       model.sort((a, b) => b.timestamp!.compareTo(a.timestamp!));
 
         data = model;

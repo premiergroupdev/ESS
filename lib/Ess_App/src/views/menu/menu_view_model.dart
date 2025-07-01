@@ -115,6 +115,22 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
                 },
               ),
               CustomMenuItem(
+                label: "My Annual Plan",
+                isParent: false,
+                onPress: () {
+                  NavService.annaul_leave_applications();
+                  Scaffold.of(context).closeDrawer();
+                },
+              ),
+              CustomMenuItem(
+                label: "Annual Plan Approval",
+                isParent: false,
+                onPress: () {
+                  NavService.plan_approval();
+                  Scaffold.of(context).closeDrawer();
+                },
+              ),
+              CustomMenuItem(
                 label: "Pending Leave Approval",
                 isParent: false,
                 onPress: () {

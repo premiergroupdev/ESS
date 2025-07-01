@@ -2,12 +2,15 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:provider/provider.dart';
 
 import '../../models/api_response_models/Notification.dart';
 import '../local_db.dart';
 import '../login/local/local_db.dart';
+import 'Notification_provider.dart';
 
 DatabaseHelpe _databaseHelper = DatabaseHelpe();
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 @pragma('vm:entry-point')
 Future<void> backgroundMessageHandler(RemoteMessage message) async {
   try {
@@ -25,6 +28,7 @@ Future<void> backgroundMessageHandler(RemoteMessage message) async {
 
       // Access your database helper instance
       await _databaseHelper.insertnotification(notification);
+
     }
 
     print('Payload data: ${message.data}');
@@ -38,7 +42,6 @@ Future<void> backgroundMessageHandler(RemoteMessage message) async {
 class FirebaseApi {
   final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-
   Future<void> initNotification({BuildContext? context}) async {
     await Firebase.initializeApp();
 
@@ -80,18 +83,20 @@ class FirebaseApi {
       if (message.notification != null) {
         showLocalNotification(message.notification!);
 
-        DateTime currentTime = DateTime.now();
         Notification_model notification = Notification_model(
           title: message.notification!.title,
           body: message.notification!.body,
-          timestamp: message.sentTime ?? currentTime,
+          timestamp: message.sentTime ?? DateTime.now(),
         );
 
         await _databaseHelper.insertnotification(notification);
-      }
 
-      print('Data: ${message.data}');
+
+
+
+      }
     });
+
 
     FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
       print('Message clicked!');
@@ -119,5 +124,17 @@ class FirebaseApi {
       notification.body,
       platformChannelSpecifics,
     );
+  }
+}
+
+class NotiCount {
+  static ValueNotifier<int?> count = ValueNotifier<int?>(null);
+
+  static void setCount(int countNo) {
+    count.value = countNo;
+  }
+
+  static void clear() {
+    count.value = null;
   }
 }

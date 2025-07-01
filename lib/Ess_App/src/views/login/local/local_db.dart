@@ -1,9 +1,15 @@
+import 'package:ess/Ess_App/src/views/notification/Notification_provider.dart';
+import 'package:ess/Ess_App/src/views/notification/notification.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/src/widgets/framework.dart';
+import 'package:provider/provider.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
 import '../../../models/api_response_models/Notification.dart';
+import '../../local_db.dart';
 
-class DatabaseHelpe {
+class DatabaseHelpe with ChangeNotifier{
   static final DatabaseHelpe _instance = DatabaseHelpe._internal();
   factory DatabaseHelpe() => _instance;
   DatabaseHelpe._internal();
@@ -73,7 +79,13 @@ class DatabaseHelpe {
               'timestamp TEXT,'
               'notifications_count'
               ')',
+
         );
+        await db.execute(
+            'CREATE TABLE notification_counts('
+                'id INTEGER PRIMARY KEY,'
+                'notifications_count INTEGER DEFAULT 0'
+                ')');
       },
       version: 1,
     );
@@ -123,14 +135,85 @@ class DatabaseHelpe {
   Future<void> insertnotification(Notification_model model) async {
     try {
       final Database db = await database;
-
       await db.insert('notification', model.toJson());
+      await insertNotificationCount(1);
+      await getNotificationCount();
+      // // Delay execution until widget tree is built
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   loadUnreadCount(); // Now navigatorKey.currentContext will be available
+      // });
+
       print("Inserted data successfully");
     } catch (e) {
       print("Failed to insert data: $e");
       throw Exception("Failed to insert notification into database");
     }
   }
+
+  Future<void> loadUnreadCount({int retryCount = 5}) async {
+    final db = await DatabaseHelpe().database;
+    final list = await db.query('notification');
+    NotiCount.count.value= list.length;
+  //  final ctx = navigatorKey.currentContext;
+
+    // if (ctx != null) {
+    //   ctx.read<NotificationProvider>().setCount(list.length);
+    //   print("🔔 Updated count: ${ctx.read<NotificationProvider>().count}");
+    // } else if (retryCount > 0) {
+    //   print("Context not ready, retrying... ($retryCount)");
+    //   await Future.delayed(Duration(milliseconds: 300));
+    //   loadUnreadCount(retryCount: retryCount - 1);
+    // } else {
+    //   print("❌ Failed to get context after retries.");
+    // }
+  }
+
+
+
+  Future<void> markAllAsRead() async {
+    final Database db = await DatabaseHelpe().database;
+    await db.update('notification', {'notifications_count': 1});
+    NotiCount.count.value = 0;
+    notifyListeners();
+  }
+  Future<void> getNotificationCount() async {
+    final Database db = await database;
+    int count = Sqflite.firstIntValue(await db.rawQuery('SELECT COUNT(*) FROM notification_counts')) ?? 0;
+    NotiCount.count.value= count;
+    print("Get count${NotiCount.count.value}");
+    notifyListeners();
+
+
+  }
+  Future<void> updateNotificationCount() async {
+    final Database db = await database;
+    NotiCount.count.value = 0;
+    NotificationListener;
+    print("hey");
+    await db.delete('notification_counts');
+  }
+  Future<void> insertNotificationCount(int count) async {
+    final Database db = await database;
+
+    await db.insert(
+      'notification_counts',
+      {'notifications_count': count},
+
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
+    print("insert");
+  }
+
+  // Future<void> loadNotificationCounts() async {
+  //   try {
+  //     int count = await getNotificationCount();
+  //     NotiCount.count.value= count;
+  //     notifyListeners();
+  //   } catch (e) {
+  //     print('Error loading notification count: $e');
+  //
+  //   }
+  // }
 
 
   Future<List<Notification_model>> getnotification() async {
@@ -145,12 +228,29 @@ class DatabaseHelpe {
       print("Failed to retrieve notifications: $e");
       throw Exception("Failed to retrieve notifications from database");
     }
+
   }
 
 
-
-
-
+  // Future<int> getNotificationCount() async {
+  //   final Database db = await database;
+  //   int count = Sqflite.firstIntValue(
+  //       await db.rawQuery('SELECT COUNT(*) FROM notification_counts')) ?? 0;
+  //   return count;
+  // }
+  //
+  // Future<void> updateNotificationCount() async {
+  //   final Database db = await database;
+  //   await db.delete('notification_counts');
+  // }
+  // Future<void> insertNotificationCount(int count) async {
+  //   final Database db = await database;
+  //   await db.insert(
+  //     'notification_counts',
+  //     {'notifications_count': count},
+  //     conflictAlgorithm: ConflictAlgorithm.replace,
+  //   );
+  // }
 
 
 

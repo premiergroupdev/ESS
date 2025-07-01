@@ -38,10 +38,8 @@ class ceo_view_model extends ReactiveViewModel with AuthViewModel, ApiViewModel 
   init(BuildContext context) async {
 
     await getvisitApprovalData(context);
-    selectedvisitStatusList = List.generate(
-      loanlistfinal.length, (index) => "Select your decision",);
-    url = List.generate(
-      loanlistfinal.length, (index) => "Select your decision",);
+    selectedvisitStatusList = List.generate(loanlistfinal.length, (index) => "Select your decision",);
+    //url = List.generate(loanlistfinal.length, (index) => "Select your decision",);
     New_loan_amt = List.generate(loanlistfinal.length, (_) => TextEditingController());
     // New_loan_amt = List.generate(loanlistfinal.length, (i) {
     //   final controller = TextEditingController();

@@ -44,6 +44,12 @@
       "languageVersion": "2.12"
     },
     {
+      "name": "badges",
+      "rootUri": "file:///C:/Users/fahad.shafiq/AppData/Local/Pub/Cache/hosted/pub.dev/badges-3.1.2",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "base58check",
       "rootUri": "file:///C:/Users/fahad.shafiq/AppData/Local/Pub/Cache/hosted/pub.dev/base58check-2.0.0",
       "packageUri": "lib/",
@@ -1436,7 +1442,7 @@
       "languageVersion": "2.19"
     }
   ],
-  "generated": "2025-06-27T12:41:35.225209Z",
+  "generated": "2025-07-01T12:29:14.495669Z",
   "generator": "pub",
   "generatorVersion": "3.4.0",
   "flutterRoot": "file:///E:/Downloads/flutter",

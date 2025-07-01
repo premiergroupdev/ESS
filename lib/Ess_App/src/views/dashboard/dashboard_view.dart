@@ -1,5 +1,6 @@
 import 'package:ess/Ess_App/generated/assets.dart';
 import 'package:ess/Ess_App/src/views/dashboard/widget/Stats_card.dart';
+import 'package:ess/Ess_App/src/views/notification/notification.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -9,6 +10,8 @@ import 'package:ess/Ess_App/src/shared/loading_indicator.dart';
 import 'package:ess/Ess_App/src/shared/spacing.dart';
 import 'package:ess/Ess_App/src/styles/app_colors.dart';
 import 'package:ess/Ess_App/src/styles/text_theme.dart';
+import 'package:badges/badges.dart' as badges;
+import 'package:provider/provider.dart';
 import 'package:ess/Ess_App/src/views/dashboard/widget/br.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -17,6 +20,7 @@ import 'package:stacked/stacked.dart';
 import '../../models/api_response_models/My_smart_goals.dart';
 import '../local_db.dart';
 import '../menu/menu_view.dart';
+import '../notification/Notification_provider.dart';
 import '../your_attandence/widget/Attendance_widget.dart';
 import '../your_attandence/widget/attendence_data_table.dart';
 import 'dashboard_view_model.dart';
@@ -85,11 +89,17 @@ class _DashboardViewState extends State<DashboardView> {
                     title: model.currentUser?.userName ??
                         model.currentUser?.email ??
                         "null",
-                    onMenuTap: () {
+                    onMenuTap: () async  {
                       Scaffold.of(context).openDrawer();
 
                     },
-                    onNotificationTap: () {   NavService.notification();  },),
+                    onNotificationTap: ()async  {
+                     // await   model.databaseHelper.updateNotificationCount();
+
+                      NavService.notification();
+
+
+                      },),
 
 
 
@@ -694,10 +704,12 @@ class _SingleBoxState extends State<SingleBox> {
     );
   }
 }
+
+
 class CustomHeader extends StatelessWidget {
-  final String title;  // Title parameter
-  final VoidCallback onMenuTap;  // Callback for menu tap
-  final VoidCallback onNotificationTap;  // Callback for notification tap
+  final String title;
+  final VoidCallback onMenuTap;
+  final VoidCallback onNotificationTap;
 
   const CustomHeader({
     Key? key,
@@ -708,53 +720,50 @@ class CustomHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return Stack(
       children: [
-
         Container(
-              height: 220,
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: [
-                    AppColors.primary,
-                    AppColors.primary.withOpacity(0.85),
-                  ],
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.3),
-                    spreadRadius: 3,
-                    blurRadius: 13,
-                    offset: Offset(0, 4),
-                  ),
-                ],
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(50),
-                  bottomRight: Radius.circular(50),
-                ),
-              ),
+          height: 220,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                AppColors.primary,
+                AppColors.primary.withOpacity(0.85),
+              ],
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.3),
+                spreadRadius: 3,
+                blurRadius: 13,
+                offset: Offset(0, 4),
+              ),
+            ],
+            borderRadius: BorderRadius.only(
+              bottomLeft: Radius.circular(50),
+              bottomRight: Radius.circular(50),
+            ),
+          ),
+        ),
 
-
-        // Header content
         Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding:  EdgeInsets.all(20.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 20,),
+              SizedBox(height: 20),
+
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-
-                  // Menu icon with onTap action
                   InkWell(
                     onTap: onMenuTap,
                     child: Icon(Icons.menu, color: Colors.white),
                   ),
-                  // Title text (passed as a parameter)
+
                   Text(
                     "Dashboard",
                     style: GoogleFonts.poppins(
@@ -763,16 +772,36 @@ class CustomHeader extends StatelessWidget {
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  // Notification icon with onTap action
-                  InkWell(
-                    onTap: onNotificationTap,
-                    child: Icon(Icons.notification_add, color: Colors.white),
-                  ),
+
+
+                  ValueListenableBuilder<int?>(
+                    valueListenable: NotiCount.count,
+                    builder: (context, value, child) {
+                      return  InkWell(
+                        onTap: onNotificationTap,
+                        child: badges.Badge(
+                          showBadge: NotiCount.count.value! > 0,
+                          badgeContent: Text(
+                            NotiCount.count.value.toString(),
+                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                          ),
+                          badgeStyle: const badges.BadgeStyle(
+                            badgeColor: Colors.red,
+                            padding: EdgeInsets.all(6),
+                          ),
+                          child: Icon(Icons.notifications, color: Colors.white),
+                        ),
+                      );
+                    },
+                  )
+
+
+
                 ],
               ),
-              SizedBox(height: 12,),
+              SizedBox(height: 12),
               Text(
-                "Hello,\n ${title}",
+                "Hello,\n$title",
                 style: GoogleFonts.poppins(
                   color: Colors.white,
                   fontSize: 22,
@@ -787,7 +816,6 @@ class CustomHeader extends StatelessWidget {
                   fontSize: 16,
                 ),
               ),
-
             ],
           ),
         ),
@@ -795,6 +823,7 @@ class CustomHeader extends StatelessWidget {
     );
   }
 }
+
 Widget _buildCheckInTime(List<AttendenceTableData> data) {
   return
 Padding(

@@ -32,7 +32,8 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
 {
   LoginViewModel login = LoginViewModel();
   Dashboard? dashboard;
-  static DatabaseHelpe databaseHelper = DatabaseHelpe();
+
+   DatabaseHelpe databaseHelper = DatabaseHelpe();
   String currentTime = DateTime.now().toIso8601String().substring(11, 16);
   String today = DateTime.now().toIso8601String().split('T')[0];
   DatabaseHelper database=DatabaseHelper();
@@ -195,7 +196,7 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
     WidgetsFlutterBinding.ensureInitialized();
     setBusy(true);
     token();
-    pushNotificationInstant();
+    //pushNotificationInstant();
     login.subscribeToken(context);
     await _checkVersion(context);
     await getDashboardData(context);

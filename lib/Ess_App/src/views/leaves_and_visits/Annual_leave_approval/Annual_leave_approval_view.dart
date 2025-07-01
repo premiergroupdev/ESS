@@ -18,7 +18,9 @@ class Annual_leave_View extends StatelessWidget {
     return ViewModelBuilder<Annual_leave_ViewModel>.reactive(
       builder: (viewModelContext, model, child) => Scaffold(
         resizeToAvoidBottomInset: false,
-        body: SafeArea(
+        body:
+
+        SafeArea(
           child: Column(
             children: [
               GeneralAppBar(

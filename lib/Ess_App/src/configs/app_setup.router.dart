@@ -70,6 +70,8 @@ import 'package:ess/Ess_App/src/views/QMS/Pharmacist_approval.dart' as _i50;
 import 'package:ess/Ess_App/src/views/Advacne_hod_Approval/Advance_hod_approval_view.dart' as _i51;
 import 'package:ess/Ess_App/src/views/Loan/Ceo_loan_approval/Ceo_loan_approval_view.dart' as _i52;
 import 'package:ess/Ess_App/src/views/leaves_and_visits/Annual_leave_approval/Annual_leave_approval_view.dart' as _i53;
+import 'package:ess/Ess_App/src/views/leaves_and_visits/Annual_leave_approval/Annual_leave_applications.dart' as _i54;
+import 'package:ess/Ess_App/src/views/leaves_and_visits/Annual_leave_approval/Plan_approvals_view.dart' as _i55;
 
 import '../models/api_response_models/warehouse_list_model.dart';
 class Routes {
@@ -98,6 +100,9 @@ class Routes {
 
   static const applyLeaveView = '/apply-leave-view';
   static const annual_view = '/Annual-leave-approval-view.dart';
+  static const annual_view_applications = '/Annual-leave-applications.dart';
+  static const plan_approval = '/Plan-approvals-view.dart';
+
 
   static const applyVisitView = '/apply-visit-view';
 
@@ -187,7 +192,9 @@ class Routes {
     thumb,
     advacne_hod_Approval,
     ceo,
-    annual_view
+    annual_view,
+    annual_view_applications,
+    plan_approval
   };
 }
 
@@ -401,6 +408,16 @@ class StackedRouter extends _i1.RouterBase {
     _i1.RouteDef(
         Routes.annual_view,
         page: _i53.Annual_leave_View
+    ),
+
+    _i1.RouteDef(
+        Routes.annual_view_applications,
+        page: _i54.Annual_leave_applications
+    ),
+
+    _i1.RouteDef(
+        Routes.plan_approval,
+        page: _i55.Plan_approval_view
     ),
 
 
@@ -733,6 +750,19 @@ class StackedRouter extends _i1.RouterBase {
         settings: data,
       );
     },
+    _i54.Annual_leave_applications: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => _i54.Annual_leave_applications(),
+        settings: data,
+      );
+    },
+    _i55.Plan_approval_view: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => _i55.Plan_approval_view(),
+        settings: data,
+      );
+    },
+
 
   };
 

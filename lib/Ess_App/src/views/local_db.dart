@@ -217,25 +217,6 @@ class DatabaseHelper {
   //     throw Exception("Failed to retrieve notifications from database");
   //   }
   // }
-  Future<int> getNotificationCount() async {
-    final Database db = await database;
-    int count = Sqflite.firstIntValue(
-        await db.rawQuery('SELECT COUNT(*) FROM notification_counts')) ?? 0;
-    return count;
-  }
-
-  Future<void> updateNotificationCount() async {
-    final Database db = await database;
-    await db.delete('notification_counts');
-  }
-  Future<void> insertNotificationCount(int count) async {
-    final Database db = await database;
-    await db.insert(
-      'notification_counts',
-      {'notifications_count': count},
-      conflictAlgorithm: ConflictAlgorithm.replace,
-    );
-  }
 
 
   Future<void> attendiesinsert(String roomNumber, String name) async {
@@ -267,12 +248,6 @@ class DatabaseHelper {
     }
 
   }
-
-
-
-
-
-
 }
 
 

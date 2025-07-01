@@ -14,7 +14,7 @@ import 'package:google_fonts/google_fonts.dart';
 
 class AppView extends StatelessWidget {
 
-
+  final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
@@ -33,6 +33,7 @@ class AppView extends StatelessWidget {
 
               MaterialApp(
               title: Constants.appTitle,
+              key: navigatorKey,
               debugShowCheckedModeBanner: false,
               onGenerateRoute: NavService.onGenerateRoute,
               navigatorKey: NavService.key,
