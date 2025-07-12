@@ -90,6 +90,9 @@ class NavService {
   static Future<dynamic>? view_sheet({dynamic arguments}) =>
       _navigationService!
           .navigateTo(Routes.viewsheet, arguments: arguments);
+  static Future<dynamic>? my_records({dynamic arguments}) =>
+      _navigationService!
+          .navigateTo(Routes.record, arguments: arguments);
   static Future<dynamic>? pharmacist_approval({dynamic arguments}) =>
       _navigationService!
           .navigateTo(Routes.pharmacist_approval, arguments: arguments);

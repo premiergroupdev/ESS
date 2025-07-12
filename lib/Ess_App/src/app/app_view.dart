@@ -1,4 +1,3 @@
-import 'package:connectivity/connectivity.dart';
 import 'package:ess/Ess_App/generated/assets.dart';
 import 'package:ess/Ess_App/src/base/utils/constants.dart';
 import 'package:ess/Ess_App/src/base/utils/utils.dart';
@@ -78,64 +77,7 @@ class AppView extends StatelessWidget {
   }
 }
 
-// class AppView extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-//       statusBarColor: AppColors.primary,
-//       statusBarIconBrightness: Brightness.light,
-//     ));
-//
-//     return MaterialApp(
-//       title: Constants.appTitle,
-//       debugShowCheckedModeBanner: false,
-//       onGenerateRoute: NavService.onGenerateRoute,
-//       navigatorKey: NavService.key,
-//       theme: ThemeData(
-//         scaffoldBackgroundColor: Colors.white,
-//         useMaterial3: true,
-//         colorScheme: ColorScheme(
-//           brightness: Brightness.light,
-//           primary: AppColors.primary,
-//           onPrimary: AppColors.white,
-//           secondary: AppColors.secondary,
-//           onSecondary: AppColors.white,
-//           error: Colors.red,
-//           onError: AppColors.white,
-//           background: AppColors.white,
-//           onBackground: AppColors.white,
-//           surface: AppColors.white,
-//           onSurface: AppColors.primary,
-//         ),
-//       ),
-//       home: Builder(
-//         builder: (context) {
-//           return Scaffold(
-//             drawer: Drawer(
-//               child: MenuView(), // You can put any widget inside the Drawer, for example, MenuView
-//             ),
-//             appBar: AppBar(
-//               title: Text('App Name'), // Change the title as needed
-//               leading: Builder(
-//                 builder: (BuildContext context) {
-//                   return IconButton(
-//                     icon: Icon(Icons.menu),
-//                     onPressed: () {
-//                       Scaffold.of(context).openDrawer();
-//                     },
-//                   );
-//                 },
-//               ),
-//             ),
-//             body: SplashView(), // Your main content goes here
-//           );
-//         },
-//       ),
-//     );
-//   }
-// }
-//
-//
+
 
 
 

@@ -1,8 +1,6 @@
 import 'dart:async';
-import 'dart:convert';
 import 'package:ess/Ess_App/src/base/utils/constants.dart';
 import 'package:ess/Ess_App/src/models/api_response_models/Stats_model.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:ess/Ess_App/src/models/api_response_models/dashboard.dart';
 import 'package:ess/Ess_App/src/services/local/base/auth_view_model.dart';
 import 'package:ess/Ess_App/src/services/remote/base/api_view_model.dart';

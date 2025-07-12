@@ -2,6 +2,7 @@ import 'package:ess/Ess_App/src/styles/app_colors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
+import 'package:ess/Ess_App/src/styles/text_theme.dart';
 
 import '../../../shared/loading_indicator.dart';
 import '../../../shared/top_app_bar.dart';
@@ -34,6 +35,7 @@ class _Annual_leave_applicationsState extends State<Annual_leave_applications> {
 
               onNotificationTap: () {}
           ),
+          model.plan_id.isNotEmpty ?
           Padding(
             padding: const EdgeInsets.all(8.0),
             child:
@@ -73,7 +75,17 @@ class _Annual_leave_applicationsState extends State<Annual_leave_applications> {
                   ],
                 )
           ),
-            ))],
+            ))
+              :Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text(
+              "Data Not Available",
+              style: TextStyling.bold18
+                  .copyWith(color: AppColors.darkGrey),
+            ),
+          ),
+
+        ],
       ),
     ),),
         viewModelBuilder: () => Annual_leave_applications_ViewModel(),

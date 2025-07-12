@@ -318,6 +318,15 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
         },
         children: [
           CustomMenuItem(
+            label: "My Records",
+            isParent: false,
+            onPress: () {
+
+              NavService.my_records();
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
             label: "Create new sheet",
             isParent: false,
             onPress: () {
@@ -335,6 +344,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
               Scaffold.of(context).closeDrawer();
             },
           ),
+
           CustomMenuItem(
             label: "Store Incharge Approval",
             isParent: false,

@@ -2286,6 +2286,44 @@ print("Approval Data: ${data}");
       return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
     }
   }
+  Future<ApiResult<List_temperature>> my_records(
+      BuildContext context, String start_date, String end_date) async
+  {
+    try {
+      var response = await _apiClient?.getReq(
+        "https://premierspulse.com/ess/scripts/qms/my_records.php?emp_code=${authService.user!.userId ?? 0000}&start_date=${start_date}&end_date=${end_date}",);
+      var data = jsonDecode(response?.data);
+      print("data: ${data}");
+      if (response?.statusCode != 200) {
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return ApiResult.success(data: List_temperature.fromJson(data));
+    }
+    catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+  Future<ApiResult<Map<String, dynamic>>> Delete_record(
+      BuildContext context, String id) async
+  {
+    try {
+      var response = await _apiClient?.getReq(
+        "https://premierspulse.com/ess/scripts/qms/delete_case.php?caseid=${id}",);
+      var data = jsonDecode(response?.data);
+      print("data: ${data}");
+      if (response?.statusCode != 200) {
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return ApiResult.success(data: data);
+    }
+    catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
 
   Future<ApiResult<List_temperature>> pharmacist_list(
       BuildContext context) async

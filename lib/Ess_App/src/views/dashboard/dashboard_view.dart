@@ -11,8 +11,6 @@ import 'package:ess/Ess_App/src/shared/spacing.dart';
 import 'package:ess/Ess_App/src/styles/app_colors.dart';
 import 'package:ess/Ess_App/src/styles/text_theme.dart';
 import 'package:badges/badges.dart' as badges;
-import 'package:provider/provider.dart';
-import 'package:ess/Ess_App/src/views/dashboard/widget/br.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
@@ -20,8 +18,6 @@ import 'package:stacked/stacked.dart';
 import '../../models/api_response_models/My_smart_goals.dart';
 import '../local_db.dart';
 import '../menu/menu_view.dart';
-import '../notification/Notification_provider.dart';
-import '../your_attandence/widget/Attendance_widget.dart';
 import '../your_attandence/widget/attendence_data_table.dart';
 import 'dashboard_view_model.dart';
 
@@ -541,28 +537,6 @@ class _DashboardViewState extends State<DashboardView> {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Widget leavesCart(BuildContext context, String title, String count, String icon) {
   final screenWidth = MediaQuery.of(context).size.width;
   final screenHeight = MediaQuery.of(context).size.height;
@@ -623,6 +597,7 @@ class SingleBox extends StatefulWidget {
   @override
   State<SingleBox> createState() => _SingleBoxState();
 }
+
 class _SingleBoxState extends State<SingleBox> {
   @override
   Widget build(BuildContext context) {
@@ -705,7 +680,6 @@ class _SingleBoxState extends State<SingleBox> {
   }
 }
 
-
 class CustomHeader extends StatelessWidget {
   final String title;
   final VoidCallback onMenuTap;
@@ -783,9 +757,10 @@ class CustomHeader extends StatelessWidget {
                           showBadge: NotiCount.count.value! > 0,
                           badgeContent: Text(
                             NotiCount.count.value.toString(),
-                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                            style:  TextStyle(color: Colors.white, fontSize: 10),
                           ),
-                          badgeStyle: const badges.BadgeStyle(
+                          badgeStyle: const
+                          badges.BadgeStyle(
                             badgeColor: Colors.red,
                             padding: EdgeInsets.all(6),
                           ),
@@ -893,6 +868,7 @@ width: 120,
 
   );
 }
+
 class ChartData {
   final String label;
   final int value;
@@ -900,6 +876,7 @@ class ChartData {
 
   ChartData(this.label, this.value, this.color);
 }
+
 class AttendanceHorizontalList extends StatelessWidget {
   final List<Map<String, dynamic>> attendanceData = List.generate(30, (index) {
     DateTime date = DateTime.now().subtract(Duration(days: index));

@@ -7,9 +7,6 @@ extension UIExt on BuildContext {
 
   Size screenSize() => MediaQuery.of(this).size;
 
-  // ThemeData appTheme() => Theme.of(this);
-  //
-  // TextTheme appTextTheme() => Theme.of(this).textTheme;
 
   void closeKeyboardIfOpen() {
     FocusScopeNode currentFocus = FocusScope.of(this);

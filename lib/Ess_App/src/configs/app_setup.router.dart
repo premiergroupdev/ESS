@@ -72,6 +72,7 @@ import 'package:ess/Ess_App/src/views/Loan/Ceo_loan_approval/Ceo_loan_approval_v
 import 'package:ess/Ess_App/src/views/leaves_and_visits/Annual_leave_approval/Annual_leave_approval_view.dart' as _i53;
 import 'package:ess/Ess_App/src/views/leaves_and_visits/Annual_leave_approval/Annual_leave_applications.dart' as _i54;
 import 'package:ess/Ess_App/src/views/leaves_and_visits/Annual_leave_approval/Plan_approvals_view.dart' as _i55;
+import 'package:ess/Ess_App/src/views/QMS/My_Records.dart' as _i56;
 
 import '../models/api_response_models/warehouse_list_model.dart';
 class Routes {
@@ -82,6 +83,7 @@ class Routes {
   static const tempuraturelistviewv = '/tempurature-list-view';
   static const store_encharge_approval = '/Store_incharge_approval_view';
   static const viewsheet = '/View_sheets_view';
+  static const record = '/My-Records';
   static const pharmacist_approval = '/Pharmacist-approval';
   static const loginView = '/login-view';
   static const loginsurvey='/Login-screen-view';
@@ -194,7 +196,8 @@ class Routes {
     ceo,
     annual_view,
     annual_view_applications,
-    plan_approval
+    plan_approval,
+    record
   };
 }
 
@@ -419,7 +422,10 @@ class StackedRouter extends _i1.RouterBase {
         Routes.plan_approval,
         page: _i55.Plan_approval_view
     ),
-
+    _i1.RouteDef(
+        Routes.record,
+        page: _i56.My_Records
+    ),
 
 
 
@@ -763,6 +769,12 @@ class StackedRouter extends _i1.RouterBase {
       );
     },
 
+    _i56.My_Records: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => _i56.My_Records(),
+        settings: data,
+      );
+    },
 
   };
 
