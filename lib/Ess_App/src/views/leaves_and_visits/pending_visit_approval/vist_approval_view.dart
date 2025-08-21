@@ -306,11 +306,7 @@ class _PendingapprovalState extends State<Pendingvisitapproval> {
                                                                           "Request is Rejected");
                                                                     }
 
-                                                                    if (newValue ==
-                                                                        "approved" || newValue ==
-                                                                        "rejected" ||
-                                                                        status ==
-                                                                            "200") {
+                                                                    if (newValue == "approved" || newValue == "rejected" || status == "200") {
                                                                       setState(() {
                                                                         model
                                                                             .visitapprovaldata

@@ -30,6 +30,8 @@ import 'package:flutter/cupertino.dart';
 import '../../../My_models/pending_visit_approval.dart';
 import '../../base/utils/constants.dart';
 import '../../models/api_response_models/Batch_model.dart';
+import '../../models/api_response_models/Capex_approval_model.dart';
+import '../../models/api_response_models/Capex_details.dart';
 import '../../models/api_response_models/Capex_model.dart';
 import '../../models/api_response_models/Hod_loan_approval.dart';
 import '../../models/api_response_models/List_temperature_sheet.dart';
@@ -37,6 +39,7 @@ import '../../models/api_response_models/Loan_history_hod_model.dart';
 import '../../models/api_response_models/Member_model.dart';
 import '../../models/api_response_models/My_smart_goals.dart';
 import '../../models/api_response_models/Training_model.dart';
+import '../../models/api_response_models/Traval_Expense.dart';
 import '../../models/api_response_models/advance_line_manager_approval.dart';
 import '../../models/api_response_models/branch.dart';
 import '../../models/api_response_models/branch.dart';
@@ -1198,6 +1201,246 @@ class ApiService {
   }
 
 
+
+  Future<ApiResult<dynamic>> expensesapprovalstatus(String status, String travel_id, String user_code) async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Cookie': 'PHPSESSID=0qga4kkbhct0q1ejhl93b5oj8p'
+      };
+      var response = await _apiClient?.getReq(
+          "/update_travel_status.php?status=${status}&travel_id=${travel_id}&emp_code=${user_code}&approvar_code=${authService.user!.userId}",
+          headers: headers
+      );
+      print("/update_travel_status.php?status=${status}&travel_id=${travel_id}&emp_code=${user_code}&approvar_code=${authService.user!.userId}");
+
+      if (response?.statusCode == 200) {
+        var data = jsonDecode(response.data);
+
+        if (data != null && data.containsKey("status")) {
+          // Check if "status" is present in the JSON response
+          String responseStatus = data["status"].toString();
+
+          if (responseStatus == "200") {
+            // Successful status code
+            if (status == "approved") {
+              print("Request is Approved");
+            } else if (status == "rejected") {
+              print("Request is Rejected");
+            }
+
+            // Return a successful result
+            return ApiResult.success(data: data);
+          } else {
+            // Handle other status codes if needed
+            return ApiResult.failure(error: NetworkExceptions.notFound(
+                "Incorrect Status: $responseStatus")
+            );
+          }
+        } else {
+          // "status" key is missing in the JSON response
+          return ApiResult.failure(
+              error: NetworkExceptions.notFound(
+                  "Status key is missing in JSON response")
+          );
+        }
+      } else {
+        // Return a failure result with an error message
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(
+              response?.statusMessage ?? "Incorrect"),
+        );
+      }
+    } catch (e) {
+      // Handle any exceptions that may occur during the API call
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+  Future<ApiResult<dynamic>> update_final_copex_status(String status, String copid,  String remarks) async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Cookie': 'PHPSESSID=0qga4kkbhct0q1ejhl93b5oj8p'
+      };
+      var response = await _apiClient?.getReq(
+          "/update_final_copex_status.php?ceo_status=${status}&copid=${copid}&remarks=${remarks}&username=${authService.user!.userName}",
+          headers: headers
+      );
+      print("/update_final_copex_status.php?ceo_status=${status}&copid=${copid}&remarks=${remarks}&username=${authService.user!.userName}");
+
+      if (response?.statusCode == 200) {
+        var data = jsonDecode(response.data);
+
+        if (data != null && data.containsKey("status")) {
+          // Check if "status" is present in the JSON response
+          String responseStatus = data["status"].toString();
+
+          if (responseStatus == "200") {
+            // Successful status code
+            if (status == "approved") {
+              print("Request is Approved");
+            } else if (status == "rejected") {
+              print("Request is Rejected");
+            }
+
+            // Return a successful result
+            return ApiResult.success(data: data);
+          } else {
+            // Handle other status codes if needed
+            return ApiResult.failure(error: NetworkExceptions.notFound(
+                "Incorrect Status: $responseStatus")
+            );
+          }
+        } else {
+          // "status" key is missing in the JSON response
+          return ApiResult.failure(
+              error: NetworkExceptions.notFound(
+                  "Status key is missing in JSON response")
+          );
+        }
+      } else {
+        // Return a failure result with an error message
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(
+              response?.statusMessage ?? "Incorrect"),
+        );
+      }
+    } catch (e) {
+      // Handle any exceptions that may occur during the API call
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+  Future<ApiResult<dynamic>> update_dept_head_copex_status(String status, String copid,  String remarks) async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Cookie': 'PHPSESSID=0qga4kkbhct0q1ejhl93b5oj8p'
+      };
+      var response = await _apiClient?.getReq(
+          "/update_dept_head_copex_status.php?dept_status=${status}&copid=${copid}&remarks=${remarks}&username=${authService.user!.userName}",
+          headers: headers
+      );
+    //  print("/update_final_copex_status.php?ceo_status=${status}&copid=${copid}&remarks=${remarks}&username=${authService.user!.userName}");
+
+      if (response?.statusCode == 200) {
+        var data = jsonDecode(response.data);
+
+        if (data != null && data.containsKey("status")) {
+          // Check if "status" is present in the JSON response
+          String responseStatus = data["status"].toString();
+          return ApiResult.success(data: data);
+          // if (responseStatus == "200") {
+          //   // Successful status code
+          //   if (status == "approved") {
+          //     print("Request is Approved");
+          //   } else if (status == "rejected") {
+          //     print("Request is Rejected");
+          //   }
+          //
+          //   // Return a successful result
+          //   return ApiResult.success(data: data);
+          // } else {
+          //   // Handle other status codes if needed
+          //   return ApiResult.failure(error: NetworkExceptions.notFound(
+          //       "Incorrect Status: $responseStatus")
+          //   );
+          // }
+        } else {
+          // "status" key is missing in the JSON response
+          return ApiResult.failure(
+              error: NetworkExceptions.notFound(
+                  "Status key is missing in JSON response")
+          );
+        }
+      } else {
+        // Return a failure result with an error message
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(
+              response?.statusMessage ?? "Incorrect"),
+        );
+      }
+    } catch (e) {
+      // Handle any exceptions that may occur during the API call
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+  Future<ApiResult<dynamic>> update_gm_copex_status(String status, String copid,  String remarks, String copex_type) async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Cookie': 'PHPSESSID=0qga4kkbhct0q1ejhl93b5oj8p'
+      };
+      var response = await _apiClient?.getReq(
+          "/update_gm_copex_status.php?gm_status=${status}&copid=${copid}&remarks=${remarks}&username=${authService.user!.userName}&copex_type=${copex_type}",
+          headers: headers
+      );
+      print("/update_gm_copex_status.php?gm_status=${status}&copid=${copid}&remarks=${remarks}&username=${authService.user!.userName}");
+
+      if (response?.statusCode == 200) {
+        print("1");
+        var data = jsonDecode(response.data);
+//print(data);
+        return  ApiResult.success(data: data);
+      } else {
+        print("2");
+        // Return a failure result with an error message
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(
+              response?.statusMessage ?? "Incorrect"),
+        );
+      }
+    } catch (e) {
+      // Handle any exceptions that may occur during the API call
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+  Future<ApiResult<dynamic>> update_hod_copex_status(String status, String copid,  String remarks, String copex_type) async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Cookie': 'PHPSESSID=0qga4kkbhct0q1ejhl93b5oj8p'
+      };
+      var response = await _apiClient?.getReq(
+          "/update_hod_copex_status.php?hod_status=${status}&copid=${copid}&remarks=${remarks}&username=${authService.user!.userName}&copex_type=${copex_type}",
+          headers: headers
+      );
+    //  print("/update_gm_copex_status.php?gm_status=${status}&copid=${copid}&remarks=${remarks}&username=${authService.user!.userName}");
+
+      if (response?.statusCode == 200) {
+        print("1");
+        var data = jsonDecode(response.data);
+//print(data);
+        return  ApiResult.success(data: data);
+      } else {
+        print("2");
+        // Return a failure result with an error message
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(
+              response?.statusMessage ?? "Incorrect"),
+        );
+      }
+    } catch (e) {
+      // Handle any exceptions that may occur during the API call
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
+
+
+
+
+
+
   Future<ApiResult<fecthhistory>> loan_history() async {
     try {
       var headers = {
@@ -1482,7 +1725,6 @@ class ApiService {
             );
           }
         } else {
-          // "status" key is missing in the JSON response
           return ApiResult.failure(
               error: NetworkExceptions.notFound(
                   "Status key is missing in JSON response")
@@ -2485,6 +2727,243 @@ print("Approval Data: ${data}");
       return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
     }
   }
+
+  Future<ApiResult<ExpensesModel>> get_travel_expenses(
+      BuildContext context) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/ceo_travel_approvals.php?emp_code=${authService.user!.userId}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: ExpensesModel.fromJson(data))  ;
+    } catch (e) {
+      print("2");
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
+  Future<ApiResult<CopexResponse>> get_capex_approval(
+      BuildContext context) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/ceo_copex_approvals.php?emp_code=${authService.user!.userId}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: CopexResponse.fromJson(data))  ;
+    } catch (e, stack) {
+      print(stack.toString());
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+  Future<ApiResult<CopexResponse>> gm_capex_approval(
+      BuildContext context) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/gm_copex_approvals.php?emp_code=${authService.user!.userId}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: CopexResponse.fromJson(data))  ;
+    } catch (e, stack) {
+      print(stack.toString());
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
+  Future<ApiResult<CopexResponse>> hod_capex(
+      BuildContext context) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/hod_copex_approvals.php?emp_code=${authService.user!.userId}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: CopexResponse.fromJson(data))  ;
+    } catch (e, stack) {
+      print("2");
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+  Future<ApiResult<CopexResponse>> head_of_department_capex(
+      BuildContext context) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/dept_head_copex_approvals.php?emp_code=${authService.user!.userId}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: CopexResponse.fromJson(data))  ;
+    } catch (e, stack) {
+      print("2");
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+  Future<ApiResult<ExpenseModel>> get_capex_details(
+      BuildContext context, copex_id) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/ceo_copex_details.php?copexid=${copex_id}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: ExpenseModel.fromJson(data))  ;
+    } catch (e, stack) {
+      print("2");
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+  Future<ApiResult<ExpenseModel>> gm_capex_details(
+      BuildContext context, copex_id) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/gm_copex_details.php?copexid=${copex_id}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: ExpenseModel.fromJson(data))  ;
+    } catch (e, stack) {
+      print("2");
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
+  Future<ApiResult<ExpenseModel>> hod_capex_details(
+      BuildContext context, copex_id) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/hod_copex_details.php?copexid=${copex_id}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: ExpenseModel.fromJson(data))  ;
+    } catch (e, stack) {
+      print("2");
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
+  Future<ApiResult<ExpenseModel>> Department_of_head_capex_details(
+      BuildContext context, copex_id) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/dept_head_copex_details.php?copexid=${copex_id}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: ExpenseModel.fromJson(data))  ;
+    } catch (e, stack) {
+      print("2");
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+  Future<ApiResult<dynamic>> copex_quotation_approval(
+      BuildContext context, String copex_id,String copex_product_id, String quotation_id, String vendorprice, String quote_reason) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/copex_quotation_approval.php?copex_id=${copex_id}&copex_product_id=${copex_product_id}&quotation_id=${quotation_id}&vendorprice=${vendorprice}&quote_reason=${quote_reason}&approval_user_name=${authService.user!.userName}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: data)  ;
+    } catch (e, stack) {
+      print("2");
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
+  Future<ApiResult<Map<String,dynamic>>> update_copex_expenditure(
+      BuildContext context, product_id, String status) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/update_copex_expenditure.php?copex_product_id=${product_id}&expenditure_status=${status}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: data)  ;
+    } catch (e) {
+      print("2");
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
 
   Future<ApiResult<String>> reserveRoom(BuildContext context,
       ReservationFormData formData) async

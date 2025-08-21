@@ -291,18 +291,14 @@ class _finalapprovalState extends State<Advance_hod_approval> {
                                                               (
                                                               String? newValue) async {
                                                             setState(() {
-                                                              model
-                                                                  .selectedvisitStatusList[index] =
-                                                                  newValue; // Update the selected status for this item
+                                                              model.selectedvisitStatusList[index] = newValue; // Update the selected status for this item
                                                             });
                                                             print(model
                                                                 .selectedvisitStatusList[index]);
                                                             print(
                                                                 "Selected value for index $index: $newValue");
-                                                            if (newValue ==
-                                                                "Select Status") {
-                                                              resetSelectedStatus(
-                                                                  index);
+                                                            if (newValue == "Select Status") {
+                                                              resetSelectedStatus(index);
                                                             }
 
 

@@ -194,6 +194,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
               ),
             ]
         ),
+
         CustomMenuItem(
             label: "Advance",
             isParent: true,
@@ -306,6 +307,44 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
               Scaffold.of(context).closeDrawer();
             },
           ),
+          CustomMenuItem(
+            label: "HOD Approval",
+            isParent: false,
+            onPress: () {
+
+              NavService.hod_approval();
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "Department Head Approval",
+            isParent: false,
+            onPress: () {
+
+              NavService.head_of_department_approval();
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+
+          CustomMenuItem(
+            label: "GM Capex Approval",
+            isParent: false,
+            onPress: () {
+
+              NavService.gm_capex_approval();
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "Final Capex Approval",
+            isParent: false,
+            onPress: () {
+
+              NavService.capex_approval();
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+
         ]
     ),
     if(authService.user?.is_qms == 1)
@@ -517,17 +556,49 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
         ]
     ),
     CustomMenuItem(
-        label: "All Apps",
+        label: "Travel Expense",
         isParent: true,
         onPress: () {
-          if(authService.user?.is_qms==1 ) {
+          if(authService.user?.is_qms== 1)
+          {
             changeIndex(14);
           }
-          if(authService.user?.memberAccess=='yes' ) {
+          if(authService.user?.memberAccess=='yes' )
+          {
             changeIndex(13);
           }
           else {
             changeIndex(12);
+          }
+        },
+        children: [
+          CustomMenuItem(
+            label: "Expense Approval",
+            isParent: false,
+            onPress: () {
+              NavService.expense_approval();
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          // CustomMenuItem(
+          //   label: "See All Reservation",
+          //   isParent: false,
+          //   onPress: () {NavService.allReservations();Scaffold.of(context).closeDrawer();},
+          // ),
+        ]
+    ),
+    CustomMenuItem   (
+        label: "All Apps",
+        isParent: true,
+        onPress: () {
+          if(authService.user?.is_qms==1 ) {
+            changeIndex(15);
+          }
+          if(authService.user?.memberAccess=='yes' ) {
+            changeIndex(14);
+          }
+          else {
+            changeIndex(13);
           }
           Scaffold.of(context).closeDrawer();
           NavService.appmenu();

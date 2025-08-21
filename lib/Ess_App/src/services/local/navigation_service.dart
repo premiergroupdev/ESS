@@ -107,6 +107,18 @@ class NavService {
   static Future<dynamic>? Generatecapex({dynamic arguments}) =>
       _navigationService!
           .navigateTo(Routes.capexgenerate, arguments: arguments);
+  static Future<dynamic>? capex_approval({dynamic arguments}) =>
+      _navigationService!
+          .navigateTo(Routes.capexapproval, arguments: arguments);
+  static Future<dynamic>? gm_capex_approval({dynamic arguments}) =>
+      _navigationService!
+          .navigateTo(Routes.gmcapexapproval, arguments: arguments);
+  static Future<dynamic>? head_of_department_approval({dynamic arguments}) =>
+      _navigationService!
+          .navigateTo(Routes.department_head_capexapproval, arguments: arguments);
+  static Future<dynamic>? hod_approval({dynamic arguments}) =>
+      _navigationService!
+          .navigateTo(Routes.hod_capexapproval, arguments: arguments);
 
   static Future<dynamic>? capexDetail({dynamic arguments}) =>
       _navigationService!
@@ -123,6 +135,9 @@ class NavService {
   static Future<dynamic>? reserveBoardRoom({dynamic arguments}) =>
       _navigationService!
           .navigateTo(Routes.reserveBoardRoomView, arguments: arguments);
+  static Future<dynamic>? expense_approval({dynamic arguments}) =>
+      _navigationService!
+          .navigateTo(Routes.expense_approval_view, arguments: arguments);
   static Future<dynamic>? Pendingapproval({dynamic arguments}) =>
       _navigationService!
           .navigateTo(Routes.pendingapproval, arguments: arguments);

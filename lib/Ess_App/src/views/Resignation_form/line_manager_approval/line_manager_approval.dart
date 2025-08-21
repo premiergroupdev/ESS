@@ -368,7 +368,9 @@ class _LineManagerState extends State<LineManager> {
                                                       }
 
 
-                                                    }}),
+                                                    }
+                                                  }
+                                                  ),
 
 
 

@@ -202,7 +202,8 @@ class MenuView extends StatelessWidget {
                               right: 0,
                               child: MainButton(
                                   text: "Log Out",
-                                  onTap: () {
+                                  onTap: ()
+                                  {
                                     model.onLogout();
                                   },
                                   icon: Icon(
@@ -211,7 +212,10 @@ class MenuView extends StatelessWidget {
                                   ),
                                   borderRadius: BorderRadius.only(
                                       topRight: Radius.circular(10),
-                                      topLeft: Radius.circular(10))))
+                                      topLeft: Radius.circular(10))
+
+                              )
+                          )
                         ],
                       ),
                   ],
@@ -222,10 +226,9 @@ class MenuView extends StatelessWidget {
 
         );
       },
-      viewModelBuilder: () => MenuViewModel(context),
+      viewModelBuilder: ( ) => MenuViewModel(context),
       onModelReady: (model) => model.init(context),
     );
-
   }
 }
 

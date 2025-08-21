@@ -73,8 +73,12 @@ import 'package:ess/Ess_App/src/views/leaves_and_visits/Annual_leave_approval/An
 import 'package:ess/Ess_App/src/views/leaves_and_visits/Annual_leave_approval/Annual_leave_applications.dart' as _i54;
 import 'package:ess/Ess_App/src/views/leaves_and_visits/Annual_leave_approval/Plan_approvals_view.dart' as _i55;
 import 'package:ess/Ess_App/src/views/QMS/My_Records.dart' as _i56;
+import 'package:ess/Ess_App/src/views/Traval_expense/Expense_approval_view.dart' as _i57;
+import 'package:ess/Ess_App/src/views/capex/Capex_approval/capex_approval_view.dart' as _i58;
+import 'package:ess/Ess_App/src/views/capex/gm_capex_approval/Gm_capex_approval_view/gm_capex_approval_views.dart' as _i59;
+import 'package:ess/Ess_App/src/views/capex/HOD_approval/hod_approvals/hod_approval_view.dart' as _i60;
 
-import '../models/api_response_models/warehouse_list_model.dart';
+import '../views/capex/Department_head_approval/Department_head_approval_view/Department_head_approval_views.dart'  as _i61;
 class Routes {
   static const splashView = '/';
 
@@ -114,9 +118,16 @@ class Routes {
 
   static const capexFormsView = '/capex-forms-view';
   static const capexgenerate = '/Generate-capex-view';
+  static const capexapproval = '/capex-approval-view.dart';
+  static const gmcapexapproval = '/gm-capex-approval-view-model.dart';
+  static const hodcapexapproval = '/hod_approval_view.dart';
+  static const hod_capexapproval = '/hod_approval_view.dart';
+  static const department_head_capexapproval = '/Department_head_approval_views.dart';
   static const applyFnfView = '/apply-fnf-view';
   static const training = '/Add_training_view.dart';
   static const reserveBoardRoomView = '/reserve-board-room-view';
+  static const expense_approval_view = '/Expense-approval-view.dart';
+
 
   static const allReservationsView = '/all-reservations-view';
   static const pendingapproval = '/pending_approval';
@@ -197,7 +208,12 @@ class Routes {
     annual_view,
     annual_view_applications,
     plan_approval,
-    record
+    record,
+    expense_approval_view,
+    capexapproval,
+    gmcapexapproval,
+    hod_capexapproval,
+    department_head_capexapproval
   };
 }
 
@@ -426,7 +442,26 @@ class StackedRouter extends _i1.RouterBase {
         Routes.record,
         page: _i56.My_Records
     ),
-
+    _i1.RouteDef(
+        Routes.expense_approval_view,
+        page: _i57.Expense_approval
+    ),
+    _i1.RouteDef(
+        Routes.capexapproval,
+        page: _i58.Capex_approval
+    ),
+    _i1.RouteDef(
+        Routes.gmcapexapproval,
+        page: _i59.Gm_Capex_approval
+    ),
+    _i1.RouteDef(
+        Routes.hod_capexapproval,
+        page: _i60.HOD_Capex_approval
+    ),
+    _i1.RouteDef(
+        Routes.department_head_capexapproval,
+        page: _i61.Department_head_Capex_approval
+    ),
 
 
 
@@ -775,6 +810,37 @@ class StackedRouter extends _i1.RouterBase {
         settings: data,
       );
     },
+    _i57.Expense_approval: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => _i57.Expense_approval(),
+        settings: data,
+      );
+    },
+    _i58.Capex_approval: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => _i58.Capex_approval(),
+        settings: data,
+      );
+    },
+    _i59.Gm_Capex_approval: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => _i59.Gm_Capex_approval(),
+        settings: data,
+      );
+    },
+    _i60.HOD_Capex_approval: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => _i60.HOD_Capex_approval(),
+        settings: data,
+      );
+    },
+    _i61.Department_head_Capex_approval: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => _i61.Department_head_Capex_approval(),
+        settings: data,
+      );
+    },
+
 
   };
 
