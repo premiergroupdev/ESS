@@ -15,7 +15,9 @@ import 'package:stacked/stacked.dart';
 import '../dashboard/widget/title_widget.dart';
 
 class YourAttendanceView extends StatelessWidget {
-
+ final  String? check;
+ final  String? code;
+ YourAttendanceView({this.check, this.code});
   @override
   Widget build(BuildContext context) {
 
@@ -80,7 +82,7 @@ class YourAttendanceView extends StatelessWidget {
         ),
       ),
       viewModelBuilder: () => YourAttendanceViewModel(),
-      onModelReady: (model) => model.init(context),
+      onModelReady: (model) => model.init(context, check.toString(), code.toString()),
     );
   }
 

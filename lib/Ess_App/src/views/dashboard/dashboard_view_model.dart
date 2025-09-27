@@ -306,7 +306,7 @@ void checkbirthday(BuildContext context) async
   getAttendanceData(BuildContext context, String Status) async {
     alldata.clear();
     all.clear();
-    var newsResponse = await runBusyFuture(apiService.attendance(context));
+    var newsResponse = await runBusyFuture(apiService.attendance(context, "1"));
     newsResponse.when(success: (dataNew) async {
       if ((dataNew.forms?.length ?? 0) > 0) {
         dataNew.forms?.forEach((element) {

@@ -40,7 +40,7 @@ class CustomTextField extends StatelessWidget {
         validator: validator, // ✅ Pass validator here
         decoration: InputDecoration(
           labelText: labelText,
-          labelStyle: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w400),
+          labelStyle: TextStyle(color: Colors.grey, fontWeight: FontWeight.w400),
           contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
           border: InputBorder.none,
         ),
@@ -48,6 +48,76 @@ class CustomTextField extends StatelessWidget {
     );
   }
 }
+
+
+
+class CustomTextField1 extends StatelessWidget {
+  final TextEditingController controller;
+  final String labelText;
+  final TextInputType? inputType;
+  final List<TextInputFormatter>? formatter;
+  final bool editable;
+  final String? Function(String?)? validator;
+  final ValueChanged<String>? onChanged; // ✅ Added this
+
+  const CustomTextField1({
+    Key? key,
+    required this.controller,
+    required this.labelText,
+    this.inputType,
+    this.editable = true,
+    this.formatter,
+    this.validator,
+    this.onChanged, // ✅ Include in constructor
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10.0),
+        border: Border.all(
+          color: AppColors.primary,
+          width: 1.0,
+        ),
+      ),
+      child: TextFormField(
+        controller: controller,
+        keyboardType: inputType,
+        inputFormatters: formatter,
+        enabled: editable,
+        validator: validator,
+        onChanged: onChanged, // ✅ Pass to TextFormField
+        decoration: InputDecoration(
+          labelText: labelText,
+          hintStyle: TextStyle(color: Colors.grey.shade600, fontWeight: FontWeight.w400),
+          labelStyle: TextStyle(
+            color: Colors.grey,
+            fontSize: 15,
+            fontWeight: FontWeight.w400,
+          ),
+          contentPadding: const EdgeInsets.symmetric(horizontal: 12.0),
+          border: InputBorder.none,
+        ),
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class message extends StatelessWidget {
   final TextEditingController controller;

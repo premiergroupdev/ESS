@@ -11,6 +11,7 @@ class AuthService with ReactiveServiceMixin {
   User? get user => _user.value;
 
   final String _prefKey = "USER_LOGIN_DATA";
+  String? get username => _user.value?.userName; // ✅ easy access
 
   AuthService() {
     listenToReactiveValues([_user]);

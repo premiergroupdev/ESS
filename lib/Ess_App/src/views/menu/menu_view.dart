@@ -189,7 +189,7 @@ class MenuView extends StatelessWidget {
                                       ),
                                     ),
                                  ),
-                                
+
                                 SizedBox(
                                   height: 60,
                                 ),

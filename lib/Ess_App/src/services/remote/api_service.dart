@@ -356,11 +356,11 @@ class ApiService {
 
 
   //Attendence
-  Future<ApiResult<Attendance>> attendance(BuildContext context) async {
+  Future<ApiResult<Attendance>> attendance(BuildContext context, String check,
+      {String? code}) async {
     try {
       var response = await _apiClient?.getReq(
-        "/fetch_my_attendance.php?EMPCODE=${authService.user?.userId ??
-            000000}",
+        "/fetch_my_attendance.php?EMPCODE=${check == "1" ? authService.user?.userId ?? 000000 :  code ?? 000000}",
       );
       var data = jsonDecode(response?.data);
       if (response?.statusCode != 200) {
@@ -492,6 +492,25 @@ class ApiService {
     }
   }
 
+
+  Future<ApiResult<dynamic>> advanc_list(BuildContext context) async {
+    try {
+      var response = await _apiClient?.getReq("/fetch_my_advance.php?EMPCODE=${authService.user?.userId ?? 000000}",);
+      var data = jsonDecode(response?.data);
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(
+
+            error:
+            NetworkExceptions.notFound(response?.message ?? "Incorrect"));
+      }
+      print("2");
+      return ApiResult.success(data: data);
+    } catch (e) {
+      print("3");
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
 
 
   Future<ApiResult<Final_advance>> fetch_advance_hod_approval(BuildContext context) async {
@@ -1401,6 +1420,38 @@ class ApiService {
     }
   }
 
+
+
+  Future<ApiResult<dynamic>> resignation_approval(String fnf_id, String status, String type) async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Cookie': 'PHPSESSID=0qga4kkbhct0q1ejhl93b5oj8p'
+      };
+      var response = await _apiClient?.getReq(
+          "/update_fnf_linemanager.php?fnf_id=${fnf_id}&username=${authService.user!.userName}&status=${status}&approval_type=${type}",
+          headers: headers
+      );
+      print("/update_fnf_linemanager.php?fnf_id=${fnf_id}&username=${authService.user!.userName}&status=${status}&approval_type=${type}");
+
+      if (response?.statusCode == 200) {
+        print("1");
+        var data = jsonDecode(response.data);
+//print(data);
+        return  ApiResult.success(data: data);
+      } else {
+        print("2");
+        // Return a failure result with an error message
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(
+              response?.statusMessage ?? "Incorrect"),
+        );
+      }
+    } catch (e) {
+      // Handle any exceptions that may occur during the API call
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
 
   Future<ApiResult<dynamic>> update_hod_copex_status(String status, String copid,  String remarks, String copex_type) async {
     try {
@@ -2749,6 +2800,28 @@ print("Approval Data: ${data}");
   }
 
 
+  Future<ApiResult<dynamic>> my_expense(
+      BuildContext context) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/fetch_my_expense.php?EMPCODE=9984528",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data:data)  ;
+    } catch (e) {
+      print("2");
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
 
   Future<ApiResult<CopexResponse>> get_capex_approval(
       BuildContext context) async {
@@ -2875,6 +2948,98 @@ print("Approval Data: ${data}");
       return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
     }
   }
+
+  Future<ApiResult<dynamic>> team_attendance(
+      BuildContext context) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/your_team_attendance.php?emp_code=${authService.user!.userId}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: data)  ;
+    } catch (e, stack) {
+      print("2");
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+  Future<ApiResult<dynamic>> fnf_submission(
+      BuildContext context) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/fnf_submitted_case.php?EMPCODE=${authService.user!.userId}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: data)  ;
+    } catch (e, stack) {
+      print("2");
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
+  Future<ApiResult<dynamic>> Al_reservation(
+      BuildContext context) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/all_resignation.php?EMPCODE=${authService.user!.userId}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: data)  ;
+    } catch (e, stack) {
+      print("2");
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+  Future<ApiResult<dynamic>> resignations_approval(
+      BuildContext context, String approval_type) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/fnf_linemanager_approval.php?emp_code=99923&approval_type=${approval_type}",
+      );
+      var data = jsonDecode(response?.data);
+      print("Data: ${data}");
+      if (response?.statusCode != 200) {
+        print("1");
+        return ApiResult.failure(error: NetworkExceptions.notFound(
+            response?.message ?? "Incorrect"));
+      }
+      return  ApiResult.success(data: data)  ;
+    } catch (e, stack) {
+      print("2");
+      print(stack);
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
+
 
 
 

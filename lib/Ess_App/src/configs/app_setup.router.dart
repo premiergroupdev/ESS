@@ -77,8 +77,12 @@ import 'package:ess/Ess_App/src/views/Traval_expense/Expense_approval_view.dart'
 import 'package:ess/Ess_App/src/views/capex/Capex_approval/capex_approval_view.dart' as _i58;
 import 'package:ess/Ess_App/src/views/capex/gm_capex_approval/Gm_capex_approval_view/gm_capex_approval_views.dart' as _i59;
 import 'package:ess/Ess_App/src/views/capex/HOD_approval/hod_approvals/hod_approval_view.dart' as _i60;
-
 import '../views/capex/Department_head_approval/Department_head_approval_view/Department_head_approval_views.dart'  as _i61;
+import '../views/Team_attendance/Team_attendance_view.dart'  as _i62;
+
+
+
+
 class Routes {
   static const splashView = '/';
 
@@ -93,6 +97,7 @@ class Routes {
   static const loginsurvey='/Login-screen-view';
   // static const loginsurvey = '/login-view';
   static const AppMenu = '/App-menu';
+  static const Team_attendance = '/Team-attendance-view.dart';
   static const advacne_hod_Approval = '/Advance_hod_approval_view';
   static const notificationView = '/notification-view';
 
@@ -213,7 +218,8 @@ class Routes {
     capexapproval,
     gmcapexapproval,
     hod_capexapproval,
-    department_head_capexapproval
+    department_head_capexapproval,
+    Team_attendance
   };
 }
 
@@ -461,6 +467,10 @@ class StackedRouter extends _i1.RouterBase {
     _i1.RouteDef(
         Routes.department_head_capexapproval,
         page: _i61.Department_head_Capex_approval
+    ),
+    _i1.RouteDef(
+        Routes.Team_attendance,
+        page: _i62.Team_attendance_view
     ),
 
 
@@ -837,6 +847,12 @@ class StackedRouter extends _i1.RouterBase {
     _i61.Department_head_Capex_approval: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => _i61.Department_head_Capex_approval(),
+        settings: data,
+      );
+    },
+    _i62.Team_attendance_view: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => _i62.Team_attendance_view(),
         settings: data,
       );
     },

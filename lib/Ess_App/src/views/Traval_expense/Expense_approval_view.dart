@@ -516,8 +516,10 @@ class _Expense_approvalState extends State<Expense_approval> {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<Expense_travel_viewmodel>.reactive(
-      builder: (viewModelContext, model, child) => Scaffold(
-        body: Column(
+      builder: (viewModelContext, model, child) =>
+          Scaffold(
+        body:
+        Column(
           children: [
             SizedBox(height: 20),
             GeneralAppBar(title: "Travel Expenses", onMenuTap: () {}, onNotificationTap: () {}),

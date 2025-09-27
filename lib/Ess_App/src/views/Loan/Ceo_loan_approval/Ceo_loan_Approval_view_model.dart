@@ -22,6 +22,8 @@ class ceo_view_model extends ReactiveViewModel with AuthViewModel, ApiViewModel 
     super.dispose();
   }
 
+
+
   List<String?> selectedvisitStatusList=["Select your decision"];
 
   List<String> dropdownValues = ["Select your decision", "Approved", "Rejected"];
@@ -63,11 +65,21 @@ class ceo_view_model extends ReactiveViewModel with AuthViewModel, ApiViewModel 
 
 
   void calculateMonthlyAmount(int index) {
-    double loanAmount = double.tryParse(New_loan_amt[index].text) ?? 0.0;
-    double repayMonth = double.tryParse(loan_repay_tenure[index].text) ?? 1.0; // Default to 1 if parsing fails or value is 0
+    // Remove commas, currency symbols etc. before parsing
+    String rawLoan = New_loan_amt[index].text.replaceAll(RegExp(r'[^0-9.]'), '');
+    String rawRepay = loan_repay_tenure[index].text.replaceAll(RegExp(r'[^0-9.]'), '');
+
+    double loanAmount = double.tryParse(rawLoan) ?? 0.0;
+    double repayMonth = double.tryParse(rawRepay) ?? 1.0;
+
+    if (repayMonth == 0) repayMonth = 1.0; // Prevent divide by zero
+
     double monthlyAmount = loanAmount / repayMonth;
-    resultController[index].text = monthlyAmount.round().toString(); // Format the result to 2 decimal places
+
+    // Format result with 2 decimals
+    resultController[index].text = monthlyAmount.toStringAsFixed(0);
   }
+
 
   getvisitApprovalData(
       BuildContext context,

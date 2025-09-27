@@ -119,14 +119,30 @@ class LoanViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel {
 
 
   void calculateMonthlyAmount() {
-    double loanAmount = double.tryParse(loanamountrs.text) ?? 0.0;
-    double repayMonth = double.tryParse(repay_loan_month_controller.text) ?? 1.0; // Default to 1 if parsing fails or value is 0
+    // Remove commas, currency symbols, and whitespace
+    String cleanedLoanAmount = loanamountrs.text
+        .replaceAll(RegExp(r'[^\d.]'), '')  // Keep only digits and decimal
+        .trim();
+
+    String cleanedRepayMonth = repay_loan_month_controller.text
+        .replaceAll(RegExp(r'[^\d.]'), '')
+        .trim();
+
+    double loanAmount = double.tryParse(cleanedLoanAmount) ?? 0.0;
+    double? repayMonth = double.tryParse(cleanedRepayMonth);
+
+    // Default to 1 if parsing fails or is 0
+    if (repayMonth == null || repayMonth == 0) {
+      repayMonth = 1.0;
+    }
 
     // Calculate monthly amount and update the resultController text
     double monthlyAmount = loanAmount / repayMonth;
     resultController.text = monthlyAmount.round().toString();
+
     notifyListeners();
   }
+
 
   init(BuildContext context) async {
     loanapplicants="for_self";

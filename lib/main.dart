@@ -1,18 +1,14 @@
 import 'dart:convert';
 import 'package:ess/Ess_App/src/services/local/auth_service.dart';
 import 'package:ess/Ess_App/src/services/remote/api_service.dart';
-import 'package:ess/Ess_App/src/services/remote/notification/local_notification.dart';
 import 'package:ess/Ess_App/src/views/dashboard/dashboard_view_model.dart';
 import 'package:ess/Ess_App/src/views/local_db.dart';
 import 'package:ess/Ess_App/src/views/notification/Notification_provider.dart';
-// import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/material.dart';
 import 'package:ess/Ess_App/src/app/app_view.dart';
 import 'package:ess/Ess_App/src/configs/app_setup.locator.dart';
 import 'package:ess/Ess_App/src/services/local/flavor_service.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
-// import 'package:geolocator/geolocator.dart';
 import 'package:package_info/package_info.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +17,6 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
-
 import 'Ess_App/src/models/api_response_models/Notification.dart';
 import 'Ess_App/src/views/login/local/local_db.dart';
 import 'Ess_App/src/views/notification/notification.dart';

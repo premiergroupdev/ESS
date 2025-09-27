@@ -39,8 +39,10 @@ class NavService {
       .navigateTo(Routes.survey_dashboard, arguments: arguments);
   static Future<dynamic>? appmenu({dynamic arguments}) => _navigationService!
       .clearStackAndShow(Routes.AppMenu, arguments: arguments);
+  static Future<dynamic>? team_attendance({dynamic arguments}) => _navigationService!
+      .navigateTo(Routes.Team_attendance, arguments: arguments);
   static Future<dynamic>? advanced_hod_approval({dynamic arguments}) => _navigationService!
-      .clearStackAndShow(Routes.advacne_hod_Approval, arguments: arguments);
+      .navigateTo(Routes.advacne_hod_Approval, arguments: arguments);
   static Future<dynamic>? notification({dynamic arguments}) => _navigationService!
       .navigateTo(Routes.notificationView, arguments: arguments);
 

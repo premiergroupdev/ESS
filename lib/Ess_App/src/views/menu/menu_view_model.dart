@@ -1,11 +1,29 @@
 import 'package:ess/Ess_App/src/services/local/base/auth_view_model.dart';
 import 'package:ess/Ess_App/src/services/local/navigation_service.dart';
 import 'package:ess/Ess_App/src/services/remote/base/api_view_model.dart';
+import 'package:ess/Ess_App/src/views/Resignation_form/Hr_one_view.dart';
+import 'package:ess/Ess_App/src/views/Resignation_form/Hr_two_view.dart';
+import 'package:ess/Ess_App/src/views/Resignation_form/fnf_submission_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:package_info/package_info.dart';
 import 'package:stacked/stacked.dart';
+import '../Advance/Advance_list_view.dart';
+import '../Education Aid/Department_head_approval.dart';
+import '../Education Aid/Final_approval.dart';
+import '../Education Aid/Hr_approval.dart';
+import '../Education Aid/Payment_issuance.dart';
+import '../Education Aid/Personal Details/Perosnal_details_view.dart';
+import '../Education Aid/Request_Education/Request_Eduction_view.dart';
+import '../Education Aid/hod_approval.dart';
+import '../Resignation_form/Account_Approval_view.dart';
+import '../Resignation_form/All_Resignation_view.dart';
+import '../Resignation_form/Hod_approval_view.dart';
+import '../Resignation_form/IT_approval_view.dart';
+import '../Resignation_form/Line_managers_Approval_view.dart';
+import '../Traval_expense/My_expense_view.dart';
 import '../login/local/local_db.dart';
+import '../your_attandence/your_attandence_view.dart';
+
 class CustomMenuItem {
   final String label;
   final GestureTapCallback onPress;
@@ -24,7 +42,6 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
   final BuildContext context;
 
   MenuViewModel(this.context);
-
   int collapsedIndex = -1;
   bool? checktabledata;
   String version='';
@@ -34,11 +51,11 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
     print("table data: ${checktabledata}");
     notifyListeners();
   }
-
   void init(BuildContext context){
     checktable();
     version_no();
   }
+
   changeIndex(int index) {
     if (collapsedIndex == index) {
       collapsedIndex = -1;
@@ -48,8 +65,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
     notifyListeners();
   }
 
-  onLogout() async
-  {
+  onLogout() async {
 
    // FlutterBackgroundService().sendData({"action": "stopService"});
     Scaffold.of(context).closeDrawer();
@@ -63,8 +79,6 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
     PackageInfo packageInfo = await PackageInfo.fromPlatform();
      version = packageInfo.version.split('-').first.trim();
   }
-
-
   List<CustomMenuItem> get menuItems => [
         CustomMenuItem(
           label: "Dashboard",
@@ -86,10 +100,26 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
                 label: "Your Attendance",
                 isParent: false,
                 onPress: () {
-                  NavService.yourAttendance();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => YourAttendanceView(check: "1",
+                          ),
+                    ),
+                  );
                   Scaffold.of(context).closeDrawer();
                 },
               ),
+  CustomMenuItem(
+  label: "Team Attendance",
+  isParent: false,
+  onPress: () {
+    Scaffold.of(context).closeDrawer();
+    NavService.team_attendance();
+  },
+  ),
+
+
             ]),
         CustomMenuItem(
             label: "Leaves / Visits",
@@ -194,7 +224,6 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
               ),
             ]
         ),
-
         CustomMenuItem(
             label: "Advance",
             isParent: true,
@@ -212,6 +241,23 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
                 label: "Request Advance",
                 isParent: false,
                 onPress: () {NavService.Request_advance();Scaffold.of(context).closeDrawer();},
+              ),
+              CustomMenuItem(
+                label: "Advance List",
+                isParent: false,
+                onPress: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => Advance_list_view(),
+                    ),
+                  );
+                  // NavService.Request_advance();
+
+                  Scaffold.of(context).closeDrawer();
+
+
+                  },
               ),
               CustomMenuItem(
                 label: "Line Manager / HOD Approval",
@@ -347,8 +393,9 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
 
         ]
     ),
+
     if(authService.user?.is_qms == 1)
-    CustomMenuItem(
+        CustomMenuItem(
         label: "QMS",
         isParent: true,
         onPress: () {
@@ -406,7 +453,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
 
         ]
     ),
-    CustomMenuItem(
+        CustomMenuItem(
         label: "Performance Section",
         isParent: true,
         onPress: () {
@@ -450,7 +497,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
 
         ]
     ),
-    CustomMenuItem(
+        CustomMenuItem(
         label: "Whistle Blowing",
         isParent: true,
         onPress: () {
@@ -475,7 +522,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
 
         ]
     ),
-    CustomMenuItem (
+        CustomMenuItem(
         label: "Resignation",
         isParent: true,
         onPress: () {
@@ -488,6 +535,21 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
         },
         children: [
           CustomMenuItem(
+            label: "All Resignations",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AllResignationView(),
+                ),
+              );
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          if(authService.user!.userId == "99917864" || authService.user!.userId == "99914719"|| authService.user!.userId == "99925048")
+          CustomMenuItem(
             label: "Resignation form",
             isParent: false,
             onPress: () {
@@ -496,10 +558,110 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
               Scaffold.of(context).closeDrawer();
             },
           ),
+  CustomMenuItem(
+  label: "FNF Submission",
+  isParent: false,
+  onPress: () {
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => FnfSubmissionView(),
+      ),
+    );
+  Scaffold.of(context).closeDrawer();
+  },
+  ),
+          CustomMenuItem(
+            label: "HOD Approval",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HodApprovalView(),
+                ),
+              );
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "Line Manager Approval",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => LineManagersApprovalView(),
+                ),
+              );
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "HR Level 1",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HrOneView(),
+                ),
+              );
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "HR Level 2",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => HrTwoView(),
+                ),
+              );
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "IT Approval",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ItApprovalView(),
+                ),
+              );
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "Accounts Approval",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => AccountApprovalView(),
+                ),
+              );
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+
+
         ]
     ),
     if(authService.user?.memberAccess=='yes')
-      CustomMenuItem(
+        CustomMenuItem(
           label: "Members",
           isParent: true,
           onPress: () {
@@ -517,20 +679,151 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
             ),
           ]
       ),
-    CustomMenuItem(
-        label: "Profile",
+        CustomMenuItem(
+        label: "Travel Expense",
         isParent: true,
         onPress: () {
           if(authService.user?.is_qms== 1)
-            {
-              changeIndex(13);
-            }
+          {
+            changeIndex(13);
+          }
           if(authService.user?.memberAccess=='yes' )
           {
             changeIndex(12);
           }
           else {
             changeIndex(11);
+          }
+        },
+        children: [
+          CustomMenuItem(
+            label: "Expense Approval",
+            isParent: false,
+            onPress: () {
+              NavService.expense_approval();
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "My Expense",
+            isParent: false,
+            onPress: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TravelListScreen(),
+                ),
+              );
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          // CustomMenuItem(
+          //   label: "See All Reservation",
+          //   isParent: false,
+          //   onPress: () {NavService.allReservations();Scaffold.of(context).closeDrawer();},
+          // ),
+        ]
+    ),
+    CustomMenuItem(
+        label: "Education Aid",
+        isParent: true,
+        onPress: () {
+          if(authService.user?.is_qms== 1)
+          {
+            changeIndex(14);
+          }
+          if(authService.user?.memberAccess=='yes' )
+          {
+            changeIndex(13);
+          }
+          else {
+            changeIndex(12);
+          }
+        },
+        children: [
+          CustomMenuItem(
+            label: "Request Education Aid",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(context, MaterialPageRoute(builder: (context) => EducationalAidRequestScreen()));
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "My Educational details",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(context, MaterialPageRoute(builder: (context) => AidDataScreen()));
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "HR Approval",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(context, MaterialPageRoute(builder: (context) => HrAidDataScreen()));
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "HOD Approval",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(context, MaterialPageRoute(builder: (context) => HodAidDataScreen()));
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "Department Head Approval",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DepartmentHeadAidDataScreen()));
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+
+          CustomMenuItem(
+            label: "Final Approval",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(context, MaterialPageRoute(builder: (context) => FinalAidDataScreen()));
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "Payment issuance",
+            isParent: false,
+            onPress: () {
+
+              Navigator.push(context, MaterialPageRoute(builder: (context) => Payment_issuranceAidDataScreen()));
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+
+
+
+        ]
+    ),
+        CustomMenuItem(
+        label: "Profile",
+        isParent: true,
+        onPress: () {
+          if(authService.user?.is_qms== 1)
+            {
+              changeIndex(15);
+            }
+          if(authService.user?.memberAccess=='yes' )
+          {
+            changeIndex(14);
+          }
+          else {
+            changeIndex(13);
           }
         },
         children: [
@@ -555,59 +848,23 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
           ),
         ]
     ),
-    CustomMenuItem(
-        label: "Travel Expense",
-        isParent: true,
-        onPress: () {
-          if(authService.user?.is_qms== 1)
-          {
-            changeIndex(14);
-          }
-          if(authService.user?.memberAccess=='yes' )
-          {
-            changeIndex(13);
-          }
-          else {
-            changeIndex(12);
-          }
-        },
-        children: [
-          CustomMenuItem(
-            label: "Expense Approval",
-            isParent: false,
-            onPress: () {
-              NavService.expense_approval();
-              Scaffold.of(context).closeDrawer();
-            },
-          ),
-          // CustomMenuItem(
-          //   label: "See All Reservation",
-          //   isParent: false,
-          //   onPress: () {NavService.allReservations();Scaffold.of(context).closeDrawer();},
-          // ),
-        ]
-    ),
-    CustomMenuItem   (
+        CustomMenuItem(
         label: "All Apps",
         isParent: true,
         onPress: () {
           if(authService.user?.is_qms==1 ) {
-            changeIndex(15);
+            changeIndex(16);
           }
           if(authService.user?.memberAccess=='yes' ) {
-            changeIndex(14);
+            changeIndex(15);
           }
           else {
-            changeIndex(13);
+            changeIndex(14);
           }
           Scaffold.of(context).closeDrawer();
           NavService.appmenu();
         },
 
     ),
-
-
-
-
   ];
 }

@@ -19,7 +19,8 @@ class requestadvance extends StatelessWidget {
     return ViewModelBuilder<requestadvanceViewModel>.reactive(
       builder: (viewModelContext, model, child) => Scaffold(
         resizeToAvoidBottomInset: false,
-        body: SafeArea(
+        body:
+        SafeArea(
           child: Column(
             children: [
               GeneralAppBar(

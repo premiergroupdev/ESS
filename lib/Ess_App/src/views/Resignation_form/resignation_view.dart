@@ -36,7 +36,8 @@ class _LoanState extends State<resignation_form> {
                   key: model.formKey,
                   child:
                 ListView(
-                  children: [
+                  children:
+                  [
                     GeneralAppBar(
                         title: "Resignation Form",
                         onMenuTap: () {
@@ -505,7 +506,8 @@ class _LoanState extends State<resignation_form> {
 
                         ),
                       ),
-                    )],
+                    )
+                  ],
                 ),
               ),
             ),

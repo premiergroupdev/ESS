@@ -6,6 +6,7 @@
 // @dart = 2.19
 
 import 'dart:io'; // flutter_ignore: dart_io_import.
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector_android/file_selector_android.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
 import 'package:flutter_image_compress_common/flutter_image_compress_common.dart';
@@ -19,6 +20,7 @@ import 'package:shared_preferences_android/shared_preferences_android.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher_android/url_launcher_android.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector_ios/file_selector_ios.dart';
 import 'package:flutter_background_service_ios/flutter_background_service_ios.dart';
 import 'package:flutter_image_compress_common/flutter_image_compress_common.dart';
@@ -32,6 +34,7 @@ import 'package:shared_preferences_foundation/shared_preferences_foundation.dart
 import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher_ios/url_launcher_ios.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector_linux/file_selector_linux.dart';
 import 'package:flutter_keyboard_visibility_linux/flutter_keyboard_visibility_linux.dart';
 import 'package:flutter_local_notifications_linux/flutter_local_notifications_linux.dart';
@@ -39,6 +42,7 @@ import 'package:image_picker_linux/image_picker_linux.dart';
 import 'package:path_provider_linux/path_provider_linux.dart';
 import 'package:shared_preferences_linux/shared_preferences_linux.dart';
 import 'package:url_launcher_linux/url_launcher_linux.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector_macos/file_selector_macos.dart';
 import 'package:flutter_image_compress_macos/flutter_image_compress_macos.dart';
 import 'package:flutter_keyboard_visibility_macos/flutter_keyboard_visibility_macos.dart';
@@ -49,6 +53,7 @@ import 'package:path_provider_foundation/path_provider_foundation.dart';
 import 'package:shared_preferences_foundation/shared_preferences_foundation.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:url_launcher_macos/url_launcher_macos.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:file_selector_windows/file_selector_windows.dart';
 import 'package:flutter_keyboard_visibility_windows/flutter_keyboard_visibility_windows.dart';
 import 'package:image_picker_windows/image_picker_windows.dart';
@@ -63,6 +68,15 @@ class _PluginRegistrant {
   @pragma('vm:entry-point')
   static void register() {
     if (Platform.isAndroid) {
+      try {
+        FilePickerIO.registerWith();
+      } catch (err) {
+        print(
+          '`file_picker` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
       try {
         FileSelectorAndroid.registerWith();
       } catch (err) {
@@ -182,6 +196,15 @@ class _PluginRegistrant {
 
     } else if (Platform.isIOS) {
       try {
+        FilePickerIO.registerWith();
+      } catch (err) {
+        print(
+          '`file_picker` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
         FileSelectorIOS.registerWith();
       } catch (err) {
         print(
@@ -300,6 +323,15 @@ class _PluginRegistrant {
 
     } else if (Platform.isLinux) {
       try {
+        FilePickerLinux.registerWith();
+      } catch (err) {
+        print(
+          '`file_picker` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
+      try {
         FileSelectorLinux.registerWith();
       } catch (err) {
         print(
@@ -363,6 +395,15 @@ class _PluginRegistrant {
       }
 
     } else if (Platform.isMacOS) {
+      try {
+        FilePickerMacOS.registerWith();
+      } catch (err) {
+        print(
+          '`file_picker` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
       try {
         FileSelectorMacOS.registerWith();
       } catch (err) {
@@ -454,6 +495,15 @@ class _PluginRegistrant {
       }
 
     } else if (Platform.isWindows) {
+      try {
+        FilePickerWindows.registerWith();
+      } catch (err) {
+        print(
+          '`file_picker` threw an error: $err. '
+          'The app may not function as expected until you remove this plugin from pubspec.yaml'
+        );
+      }
+
       try {
         FileSelectorWindows.registerWith();
       } catch (err) {

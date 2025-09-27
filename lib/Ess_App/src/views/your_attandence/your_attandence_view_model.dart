@@ -21,8 +21,8 @@ class YourAttendanceViewModel extends ReactiveViewModel
   );
   List<AttendenceTableData> data = [];
 
-  init(BuildContext context) async {
-    await getAttendanceData(context);
+  init(BuildContext context, String check, String code) async {
+    await getAttendanceData(context,check, code);
     attendances.toList().forEach((element) {
       var timeInputFormat = DateFormat('hh:mm a');
       var datedInputFormat = DateFormat('EE ,dd-MMM');
@@ -74,10 +74,8 @@ class YourAttendanceViewModel extends ReactiveViewModel
   }
 
 
-    getAttendanceData(
-    BuildContext context,
-  ) async {
-    var newsResponse = await runBusyFuture(apiService.attendance(context));
+    getAttendanceData(BuildContext context,String check,String code) async {
+    var newsResponse = await runBusyFuture(apiService.attendance(context, check, code: code));
     newsResponse.when(success: (data) async {
       if ((data.forms?.length ?? 0) > 0) {
         attendances = data.forms?.toList() ?? [];

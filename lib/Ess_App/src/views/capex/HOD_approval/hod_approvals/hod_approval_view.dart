@@ -29,6 +29,7 @@ class HOD_Capex_approval extends StatelessWidget {
                     :
                 Expanded(
                   child: ListView.builder(
+                    physics: BouncingScrollPhysics(),
                     itemCount: model.datalist.length,
                     padding: EdgeInsets.all(10),
                     itemBuilder: (context, index) {

@@ -57,22 +57,23 @@ class pending_hod_view_model extends ReactiveViewModel with AuthViewModel, ApiVi
 
 
   void calculateMonthlyAmount(int index) {
-    double loanAmount = double.tryParse(New_loan_amt[index].text) ?? 0.0;
-    double repayMonth = double.tryParse(loan_repay_tenure[index].text) ?? 1.0; // Default to 1 if parsing fails or value is 0
+
+    String rawLoan = New_loan_amt[index].text.replaceAll(RegExp(r'[^0-9.]'), '');
+    String rawRepay = loan_repay_tenure[index].text.replaceAll(RegExp(r'[^0-9.]'), '');
+    double loanAmount = double.tryParse(rawLoan) ?? 0.0;
+    double repayMonth = double.tryParse(rawRepay) ?? 1.0;
+    if (repayMonth == 0) repayMonth = 1.0;
     double monthlyAmount = loanAmount / repayMonth;
-    resultController[index].text = monthlyAmount.round().toString(); // Format the result to 2 decimal places
+    resultController[index].text = monthlyAmount.toStringAsFixed(0);
+
   }
 
-  getvisitApprovalData(
-      BuildContext context,
-      ) async {
+  getvisitApprovalData(BuildContext context,) async
+  {
     var newsResponse = await runBusyFuture(apiService.loan_approval_hod());
     newsResponse.when(success: (data) async {
       if ((data?.approvalListvisit.length ?? 0) > 0) {
         loanlistfinal = data.approvalListvisit?.reversed.toList() ?? [];
-
-
-
       } else {
         Constants.customWarningSnack(context, "Loan Approval not found");
       }
@@ -214,7 +215,8 @@ class pending_hod_view_model extends ReactiveViewModel with AuthViewModel, ApiVi
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
-          child: SizedBox(
+          child:
+          SizedBox(
             width: 280, // Increased width for breathing room
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -238,7 +240,7 @@ class pending_hod_view_model extends ReactiveViewModel with AuthViewModel, ApiVi
                   ),
                   const SizedBox(height: 16),
 
-                  // HOD Section
+
                   Text.rich(
                     TextSpan(
                       children: [
@@ -261,33 +263,7 @@ class pending_hod_view_model extends ReactiveViewModel with AuthViewModel, ApiVi
                       ],
                     ),
                   ),
-                  // const SizedBox(height: 12),
-                  //
-                  // // Director Section
-                  // Text.rich(
-                  //   TextSpan(
-                  //     children: [
-                  //       TextSpan(
-                  //         text: 'Director Status:\n',
-                  //         style: GoogleFonts.poppins(
-                  //           fontWeight: FontWeight.bold,
-                  //           fontSize: 13,
-                  //           color: Colors.white,
-                  //         ),
-                  //       ),
-                  //       TextSpan(
-                  //         text:
-                  //         '${data.directorStatus} (${data.directorname})\nDate: ${data.dir_approval_date} \nComment: ${data.dir_comments}',
-                  //         style: GoogleFonts.poppins(
-                  //           fontSize: 13,
-                  //           color: Colors.white,
-                  //         ),
-                  //       ),
-                  //     ],
-                  //   ),
-                  // ),
-                  //
-                  // const SizedBox(height: 20),
+
 
                   Align(
                     alignment: Alignment.centerRight,
