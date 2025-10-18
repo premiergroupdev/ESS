@@ -79,6 +79,7 @@ import 'package:ess/Ess_App/src/views/capex/gm_capex_approval/Gm_capex_approval_
 import 'package:ess/Ess_App/src/views/capex/HOD_approval/hod_approvals/hod_approval_view.dart' as _i60;
 import '../views/capex/Department_head_approval/Department_head_approval_view/Department_head_approval_views.dart'  as _i61;
 import '../views/Team_attendance/Team_attendance_view.dart'  as _i62;
+import 'package:ess/Ess_App/src/views/Dependents/dependent_view.dart' as _i63;
 
 
 
@@ -100,6 +101,8 @@ class Routes {
   static const Team_attendance = '/Team-attendance-view.dart';
   static const advacne_hod_Approval = '/Advance_hod_approval_view';
   static const notificationView = '/notification-view';
+  // ADD THIS LINE
+  static const dependentView = '/dependent-view';
 
   static const dashboardView = '/dashboard-view';
 
@@ -219,7 +222,8 @@ class Routes {
     gmcapexapproval,
     hod_capexapproval,
     department_head_capexapproval,
-    Team_attendance
+    Team_attendance,
+    dependentView, // ADD THIS
   };
 }
 
@@ -472,7 +476,11 @@ class StackedRouter extends _i1.RouterBase {
         Routes.Team_attendance,
         page: _i62.Team_attendance_view
     ),
-
+    // ADD THIS ROUTE DEFINITION
+    _i1.RouteDef(
+      Routes.dependentView,
+      page: _i63.DependentView,
+    ),
 
 
   ];
@@ -540,6 +548,13 @@ class StackedRouter extends _i1.RouterBase {
     _i11.ApplyCapexView: (data) {
       return MaterialPageRoute<dynamic>(
         builder: (context) => _i11.ApplyCapexView(),
+        settings: data,
+      );
+    },
+    // ADD THIS PAGE MAPPING
+    _i63.DependentView: (data) {
+      return MaterialPageRoute<dynamic>(
+        builder: (context) => _i63.DependentView(),
         settings: data,
       );
     },

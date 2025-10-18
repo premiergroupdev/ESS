@@ -1,6 +1,7 @@
 import 'package:ess/Ess_App/generated/assets.dart';
 import 'package:ess/Ess_App/src/views/dashboard/widget/Stats_card.dart';
 import 'package:ess/Ess_App/src/views/notification/notification.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -16,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:stacked/stacked.dart';
 import '../../models/api_response_models/My_smart_goals.dart';
+import '../Dependents/dependent_view.dart';
 import '../local_db.dart';
 import '../menu/menu_view.dart';
 import '../your_attandence/widget/attendence_data_table.dart';
@@ -31,10 +33,85 @@ class DashboardView extends StatefulWidget {
   State<DashboardView> createState() => _DashboardViewState();
 }
 
-class _DashboardViewState extends State<DashboardView> {
+class _DashboardViewState extends State<DashboardView> with SingleTickerProviderStateMixin {
   String status = "";
   DatabaseHelper db = DatabaseHelper();
   final ScrollController scrollController = ScrollController();
+  Offset _fabOffset = Offset(20, 20);
+  late AnimationController _applyVisitController;
+  late Animation<double> _scaleAnimation;
+
+
+
+
+
+  Widget _buildFloatingActionButton(DashboardViewModel model) {
+    // Check if button should be visible from Firebase
+    if (!model.isButtonVisible) {
+      return SizedBox.shrink(); // Hide button
+    }
+
+    return Stack(
+      children: [
+        FloatingActionButton.extended(
+          onPressed: () {
+            Navigator.push(context, MaterialPageRoute(builder: (context) => DependentView()));
+            print('FAB pressed with text: ${model.buttonText}');
+          },
+          backgroundColor: AppColors.primary,
+          foregroundColor: Colors.white,
+          icon: Icon(Icons.group, size: 20),
+          label: Text(
+            model.buttonText,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          elevation: 8,
+          hoverElevation: 16,
+          highlightElevation: 12,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
+          ),
+        ),
+        // Close button (×) on top right
+        Positioned(
+          right: 0,
+          top: 0,
+          child: GestureDetector(
+            onTap: () {
+              // Hide the FAB when close button is tapped
+              setState(() {
+                model.isButtonVisible = false;
+              });
+              // If you want to persist this state, you might want to update it in your ViewModel
+              // model.hideButton();
+            },
+            child: Container(
+              width: 22,
+              height: 22,
+              decoration: BoxDecoration(
+                color: Colors.grey[500],
+                shape: BoxShape.circle,
+                border: Border.all(color: Colors.white, width: 1.5),
+              ),
+              child: Center(
+                child: Text(
+                  '×',
+                  style: TextStyle(
+                    color: Colors.amber[100],
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
 
   DateTime? parseMaxCheckInTime(String? timeString) {
     if (timeString == null) {
@@ -56,10 +133,29 @@ class _DashboardViewState extends State<DashboardView> {
   void initState() {
 
     super.initState();
+
+
+    super.initState();
+    _applyVisitController = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    )..repeat(reverse: true);
+
+    _scaleAnimation =
+        Tween<double>(begin: 1.0, end: 1.1).animate(CurvedAnimation(
+          parent: _applyVisitController,
+          curve: Curves.easeInOut,
+        ));
+
   }
 
   @override
+  void dispose() {
+    _applyVisitController.dispose();
+    super.dispose();
+  }
 
+  @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<DashboardViewModel>.reactive(
       builder: (viewModelContext, model, child) => model.isBusy
@@ -75,6 +171,7 @@ class _DashboardViewState extends State<DashboardView> {
           :
           Scaffold(
             drawer: MenuView(),
+            floatingActionButton: _buildFloatingActionButton(model), // Add this line
             body:
 
               SingleChildScrollView(
@@ -167,60 +264,77 @@ class _DashboardViewState extends State<DashboardView> {
                                                        //   ),
                                                        // ),
 
-                                                       InkWell(
-                                                         onTap: () {
-                                                           NavService.applyVisit();
-                                                         },
-                                                         child: Row(
-                                                           mainAxisAlignment: MainAxisAlignment.center,
-                                                           children: [
-                                                             Image.asset(
-                                                               "assets/images/r.png",
-                                                               height: 150,
-                                                               width: 90,
-                                                             ),
-                                                             Container(
-                                                               height: 50,
+                          InkWell(
+                          onTap: () {
+    NavService.applyVisit();
+    },
+    borderRadius: BorderRadius.circular(18),
+    splashColor: AppColors.primary.withOpacity(0.2),
+    child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+    Image.asset(
+    "assets/images/r.png",
+    height: 150,
+    width: 90,
+    ),
+    AnimatedBuilder(
+    animation: _scaleAnimation,
+    builder: (context, child) {
+    return Transform.scale(
+    scale: _scaleAnimation.value,
+    child: child,
+    );
+    },
+    child: Container(
+    height: 54,
+    margin: EdgeInsets.symmetric(horizontal: 40),
+    padding: EdgeInsets.symmetric(horizontal: 20),
+    decoration: BoxDecoration(
+    gradient: LinearGradient(
+    colors: [
+    AppColors.primary.withOpacity(0.95),
+    AppColors.primary.withOpacity(0.75)
+    ],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+    ),
+    borderRadius: BorderRadius.circular(18),
+    boxShadow: [
+    BoxShadow(
+    color: AppColors.primary.withOpacity(0.4),
+    spreadRadius: 2,
+    blurRadius: 10,
+    offset: Offset(0, 5),
+    ),
+    ],
+    ),
+    child: Row(
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+    Text(
+    "APPLY VISIT",
+    style: TextStyle(
+    color: Colors.white,
+    fontSize: 15,
+    letterSpacing: 1.2,
+    fontWeight: FontWeight.w700,
+    ),
+    ),
+    SizedBox(width: 8),
+    Image.asset(
+    "assets/images/arrow.png",
+    height: 18,
+    width: 18,
+    ),
+    ],
+    ),
+    ),
+    ),
+    ],
+    ),
+    ),
 
-                                                               margin: EdgeInsets.symmetric(horizontal: 50),
-                                                               decoration: BoxDecoration(
-                                                                 gradient: LinearGradient(
-                                                                   colors: [
-                                                                     AppColors.primary,
-                                                                     AppColors.primary
-                                                                   ],
-                                                                   begin: Alignment.topLeft,
-                                                                   end: Alignment.bottomRight,
-                                                                 ),
-                                                                 boxShadow: [
-                                                                   BoxShadow(
-                                                                     color: AppColors.primary.withOpacity(0.5),
-                                                                     spreadRadius: 1,
-                                                                     blurRadius: 4,
-                                                                     offset: Offset(0, 3),
-                                                                   )
-                                                                 ],
-                                                                 borderRadius: BorderRadius.circular(16),
-                                                               ),
-                                                               padding: EdgeInsets.all(6),
-                                                               child: Row(
-                                                                   mainAxisAlignment: MainAxisAlignment.center,
-                                                                   children: [
-                                                                     Text(
-                                                                       "APPLY VISIT",
-                                                                       style: TextStyle(
-                                                                           color: AppColors.white,
-                                                                           fontSize: 13,
-                                                                           fontWeight: FontWeight.bold),
-                                                                     ),
-                                                                     Image.asset("assets/images/arrow.png"),
-                                                                   ],
-                                                                 ),
-                                                               ),
-
-                                                           ],
-                                                         ),
-                                                       ),
                                                        Padding(
                                                          padding: const EdgeInsets.symmetric(horizontal: 20),
                                                          child:
@@ -262,8 +376,11 @@ class _DashboardViewState extends State<DashboardView> {
                                                                        fontSize: 12,
                                                                        fontWeight: FontWeight.bold),
                                                                  ),
+
                                                                ),
+
                                                              ),
+
                                                            ],
                                                          ),
                                                        ),
@@ -271,7 +388,6 @@ class _DashboardViewState extends State<DashboardView> {
                                                        if (model.Goal != null)
                                                          SingleBox(data: model.Goal),
                                 VerticalSpacing(25),
-
                           Padding(
                             padding:  EdgeInsets.symmetric(horizontal: 19),
                             child: Text(
@@ -520,7 +636,7 @@ class _DashboardViewState extends State<DashboardView> {
                       ),
 
                 ],
-        ),
+                      ),
               ),
 
 
@@ -698,6 +814,7 @@ class CustomHeader extends StatelessWidget {
     return Stack(
       children: [
         Container(
+          width: double.infinity, // This ensures it takes full width
           height: 220,
           decoration: BoxDecoration(
             gradient: LinearGradient(

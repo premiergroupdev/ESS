@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
+import 'package:ess/Ess_App/src/services/local/navigation_service.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ess/360_survey_App/Screens/Login/Login_screen_view.dart';
 import 'package:ess/Ess_App/src/styles/app_colors.dart';
@@ -210,9 +210,9 @@ class _AppMenuState extends State<AppMenu> {
 
                         if (version == firebaseversion) {
                           if (currentUser?.userName == null) {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => LoginView()));
+                            NavService.login();
                           } else {
-                            Navigator.push(context, MaterialPageRoute(builder: (context) => DashboardView()));
+                            NavService.dashboard();
                           }
                         } else {
                           showDialog(

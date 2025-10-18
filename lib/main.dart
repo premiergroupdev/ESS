@@ -1,9 +1,11 @@
 import 'dart:convert';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:ess/Ess_App/src/services/local/auth_service.dart';
 import 'package:ess/Ess_App/src/services/remote/api_service.dart';
 import 'package:ess/Ess_App/src/views/dashboard/dashboard_view_model.dart';
 import 'package:ess/Ess_App/src/views/local_db.dart';
 import 'package:ess/Ess_App/src/views/notification/Notification_provider.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:ess/Ess_App/src/app/app_view.dart';
 import 'package:ess/Ess_App/src/configs/app_setup.locator.dart';
@@ -71,11 +73,45 @@ String currentTime = DateTime.now().toIso8601String().substring(11, 16);
 String today = DateTime.now().toIso8601String().split('T')[0];
 DateTime? lastAttendanceCheckTime;
 DatabaseHelpe DBHelper = DatabaseHelpe();
+
+Future<void> checkApiLevel() async {
+  try {
+    DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
+
+    if (defaultTargetPlatform == TargetPlatform.android) {
+      AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
+
+      print('📱 Device Information:');
+      print('──────────────────────');
+      print('🎯 API Level: ${androidInfo.version.sdkInt}');
+      print('🤖 Android Version: ${androidInfo.version.release}');
+      print('📊 Android Codename: ${androidInfo.version.codename}');
+      print('🔧 Device: ${androidInfo.brand} ${androidInfo.model}');
+      print('🏷️ Manufacturer: ${androidInfo.manufacturer}');
+      print('💾 Android ID: ${androidInfo.id}');
+      print('📦 App Build: ${androidInfo.version.incremental}');
+
+    } else if (defaultTargetPlatform == TargetPlatform.iOS) {
+      IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
+      print('📱 iOS Version: ${iosInfo.systemVersion}');
+      print('🍎 Device: ${iosInfo.utsname.machine}');
+
+    } else {
+      print('🌐 Other Platform: $defaultTargetPlatform');
+    }
+  } catch (e) {
+    print('❌ Error getting device info: $e');
+  }
+}
+
+
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp();
   await FirebaseApi().initNotification();
+  await checkApiLevel();
   // FirebaseMessaging.onMessage.listen((RemoteMessage message) async  {
   //   await DBHelper.getNotificationCount();
   // });

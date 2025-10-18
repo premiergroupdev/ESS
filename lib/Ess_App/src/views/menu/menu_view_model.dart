@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:package_info/package_info.dart';
 import 'package:stacked/stacked.dart';
 import '../Advance/Advance_list_view.dart';
+import '../Dependents/dependent_view.dart';
 import '../Education Aid/Department_head_approval.dart';
 import '../Education Aid/Final_approval.dart';
 import '../Education Aid/Hr_approval.dart';
@@ -21,6 +22,7 @@ import '../Resignation_form/Hod_approval_view.dart';
 import '../Resignation_form/IT_approval_view.dart';
 import '../Resignation_form/Line_managers_Approval_view.dart';
 import '../Traval_expense/My_expense_view.dart';
+import '../dashboard/dashboard_view.dart';
 import '../login/local/local_db.dart';
 import '../your_attandence/your_attandence_view.dart';
 
@@ -46,6 +48,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
   bool? checktabledata;
   String version='';
   final dbHelper = DatabaseHelpe();
+
   Future<void> checktable() async {
     checktabledata = await  dbHelper.checkTable();
     print("table data: ${checktabledata}");
@@ -54,6 +57,50 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
   void init(BuildContext context){
     checktable();
     version_no();
+    debugCurrentUser();
+  }
+
+  void debugCurrentUser() {
+    print('=== MENU VIEW MODEL USER DEBUG ===');
+    if (authService.user != null) {
+      print('User Object: ${authService.user}');
+      print('User Type: ${authService.user.runtimeType}');
+      print('User Name: ${authService.user?.userName}');
+      print('User ID: ${authService.user?.userId}');
+      print('AdvFinApp: ${authService.user?.AdvFinApp}');
+      print('is_qms: ${authService.user?.is_qms}');
+      print('memberAccess: ${authService.user?.memberAccess}');
+
+      // Try to see all properties using toJson() if available
+      try {
+        var userJson = (authService.user as dynamic).toJson();
+        print('User JSON properties:');
+        userJson.forEach((key, value) {
+          print('  $key: $value');
+        });
+      } catch (e) {
+        print('Cannot convert user to JSON: $e');
+      }
+
+      // Try common employee code property names
+      print('Checking for employee code properties:');
+      final empCodeProps = ['empCode', 'employeeCode', 'code', 'empId', 'employeeId', 'userCode', 'EMPCODE'];
+      for (var prop in empCodeProps) {
+        try {
+          var value = (authService.user as dynamic)[prop];
+          if (value != null) {
+            print('  ✅ $prop: $value');
+          } else {
+            print('  ❌ $prop: null');
+          }
+        } catch (e) {
+          print('  ❌ $prop: Property does not exist');
+        }
+      }
+    } else {
+      print('User is null in authService');
+    }
+    print('==================================');
   }
 
   changeIndex(int index) {
@@ -831,8 +878,15 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
             label: "Change Password",
             isParent: false,
             onPress: () {
-
               NavService.profile();
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "Check Your Dependents",
+            isParent: false,
+            onPress: () {
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DependentView()));
               Scaffold.of(context).closeDrawer();
             },
           ),

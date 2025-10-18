@@ -20,6 +20,10 @@ class NavService {
   static GlobalKey<NavigatorState>? get nestedNavKey =>
       StackedService.nestedNavigationKey(_splashViewNavigatorId);
 
+  static void back({dynamic result}) {
+    _navigationService?.back(result: result);
+  }
+
   // on generate route
   static Route<dynamic>? Function(RouteSettings) get onGenerateRoute =>
       StackedRouter().onGenerateRoute;
@@ -209,4 +213,7 @@ class NavService {
   static Future<dynamic>? pending_guarantees({dynamic arguments}) =>
       _navigationService!
           .navigateTo(Routes.pending_guarantee, arguments: arguments);
+  static Future<dynamic>? dependentView({dynamic arguments}) =>
+      _navigationService!
+          .navigateTo(Routes.dependentView, arguments: arguments);
 }

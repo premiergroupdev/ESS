@@ -33,11 +33,27 @@ if (keystorePropertiesFile.exists()) {
 
 android {
 
-    compileSdkVersion 34
+    namespace "com.premiergroup.ess"
+    compileSdkVersion 36
+    buildToolsVersion="35.0.0"
     ndkVersion "25.1.8937393"
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'
+    }
+    // YEH ADD KAREIN: Compile Options
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17  // Change to 17
+        targetCompatibility JavaVersion.VERSION_17
+        coreLibraryDesugaringEnabled true  // YEH IMPORTANT LINE HAI
+    }
+
+    kotlinOptions {
+        jvmTarget = '17'  // Change to 17
+    }
+
+    kotlin {
+        jvmToolchain(17)  // Java 17 ke liye set karein
     }
 
     lintOptions {
@@ -48,10 +64,17 @@ android {
     defaultConfig {
         applicationId "com.premiergroup.ess"
         minSdkVersion 21
-        targetSdkVersion 34
+        targetSdkVersion 36
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()
         versionName flutterVersionName
+
+        println "🔧 BUILD CONFIGURATION INFO:"
+        println "🔧 Compile SDK Version: ${compileSdkVersion}"
+        println "🎯 Target SDK Version: ${targetSdkVersion.apiLevel}"
+        println "📱 Min SDK Version: ${minSdkVersion.apiLevel}"
+
+
     }
     signingConfigs {
         release {
@@ -97,6 +120,7 @@ flutter {
 
 dependencies
         {
+            coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:2.0.4'
             implementation 'com.google.android.gms:play-services-location:18.0.0'
             implementation 'com.google.android.play:app-update:2.1.0'
             implementation 'com.google.android.play:app-update-ktx:2.1.0'
@@ -104,3 +128,11 @@ dependencies
             implementation platform('com.google.firebase:firebase-bom:31.1.1')
             implementation 'com.android.support:multidex:2.0.1'
         }
+
+task printApiLevel {
+    doLast {
+        println "Compile SDK Version: ${android.compileSdkVersion}"
+        println "Target SDK Version: ${android.defaultConfig.targetSdkVersion.apiLevel}"
+        println "Min SDK Version: ${android.defaultConfig.minSdkVersion.apiLevel}"
+    }
+}

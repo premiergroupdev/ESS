@@ -1,4 +1,7 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 import 'package:ess/Ess_App/src/base/utils/constants.dart';
 import 'package:ess/Ess_App/src/models/api_response_models/Stats_model.dart';
 import 'package:ess/Ess_App/src/models/api_response_models/dashboard.dart';
@@ -25,18 +28,51 @@ import '../../services/local/navigation_service.dart';
 import '../local_db.dart';
 import '../login/local/local_db.dart';
 
-class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel
+class Dependent {
+  final String type;
+  final String name;
+  final String dob;
+  final String packageType;
 
-{
+  Dependent({
+    required this.type,
+    required this.name,
+    required this.dob,
+    required this.packageType,
+  });
+
+  factory Dependent.fromJson(Map<String, dynamic> json) {
+    print('📝 Parsing dependent JSON: $json');
+
+    return Dependent(
+      // Use the actual field names from API response
+      type: json['dep_type']?.toString() ?? '',
+      name: json['dep_name']?.toString() ?? '',
+      dob: json['dep_dob']?.toString() ?? '',
+      packageType: json['package_type']?.toString() ?? '',
+    );
+  }
+
+  @override
+  String toString() {
+    return 'Dependent{type: $type, name: $name, dob: $dob, packageType: $packageType}';
+  }
+}
+
+
+class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel {
   LoginViewModel login = LoginViewModel();
   Dashboard? dashboard;
 
-   DatabaseHelpe databaseHelper = DatabaseHelpe();
+  // ADD THESE PROPERTIES FOR FAB CONTROL
+  bool isButtonVisible = false;
+  String buttonText = "Default Text";
+
+  DatabaseHelpe databaseHelper = DatabaseHelpe();
   String currentTime = DateTime.now().toIso8601String().substring(11, 16);
   String today = DateTime.now().toIso8601String().split('T')[0];
-  DatabaseHelper database=DatabaseHelper();
-  AttendenceTableData heading =
-  AttendenceTableData(
+  DatabaseHelper database = DatabaseHelper();
+  AttendenceTableData heading = AttendenceTableData(
     date: 'Date',
     checkIn: 'Check In',
     checkOut: 'Check Out',
@@ -53,28 +89,60 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
   List<AttendenceTableData> weekendList = [];
   List<AttendenceTableData> halfDayList = [];
   List<AttendenceTableData> AbsentList = [];
-  List<Forms>storeAttendanceData = [];
+  List<Forms> storeAttendanceData = [];
   StatsModel? statsdata;
   String selectedTitle = "";
   DateTime? maxCheckInTime;
   DateTime? formattedMaxCheckInTime;
   String? maxCheckInFormatted;
   bool? isBirthdayShown;
-  Map<String, dynamic> stats_data={};
-  String stats_status='';
-  Map<String, dynamic> response= {};
+  Map<String, dynamic> stats_data = {};
+  String stats_status = '';
+  Map<String, dynamic> response = {};
+  StreamSubscription? _buttonSettingsSubscription;
 
+  // ADD DEPENDENT PROPERTIES HERE INSIDE THE CLASS
+  List<Dependent> dependents = [];
+  bool loadingDependents = false;
 
-  late Map<String, double> dataMap;
+  Map<String, double> dataMap = {
+    "On Time": 0.0,
+    "Late": 0.0,
+  };
   String? tokens;
 
-  void token () async {
+  void token() async {
     tokens = await FirebaseMessaging.instance.getToken();
     notifyListeners();
   }
 
+  // ADD THIS METHOD FOR FAB SETTINGS
+  Future<void> fetchButtonSettings() async {
+    try {
+      _buttonSettingsSubscription = FirebaseFirestore.instance
+          .collection('app_settings')
+          .doc('button_controls')
+          .snapshots()
+          .listen((doc) {
+        if (doc.exists) {
+          final data = doc.data()!;
+          isButtonVisible = data['button_visible'] ?? false;
+          buttonText = data['button_text'] ?? 'Default Text';
+          notifyListeners();
+          print('✅ FAB Settings updated - Visible: $isButtonVisible, Text: $buttonText');
+        }
+      });
+    } catch (e) {
+      print('❌ Error setting up button settings listener: $e');
+    }
+  }
 
-
+  // Don't forget to cancel in dispose
+  @override
+  void dispose() {
+    _buttonSettingsSubscription?.cancel();
+    super.dispose();
+  }
 
   double targetLatitude = 0.0;
   double targetLongitude = 0.0;
@@ -83,6 +151,114 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
   int selectedIndex = 0;
   List<String> statuses = [];
   List<AttendenceTableData> filteredData = [];
+
+  // ADD DEPENDENT METHOD INSIDE THE CLASS
+  Future<void> fetchDependents() async {
+    try {
+      loadingDependents = true;
+      notifyListeners();
+
+      String empCode = '';
+
+      // Method 1: Use the actual logged-in user's userId
+      if (authService.user?.userId != null) {
+        empCode = authService.user!.userId!.toString();
+        print('✅ Using logged-in user ID: $empCode');
+      }
+
+      // Method 2: Fallback (shouldn't be needed)
+      if (empCode.isEmpty) {
+        empCode = "99963052"; // Current user's ID
+        print('⚠️ Using fallback: $empCode');
+      }
+
+      print('🔄 FETCHING DEPENDENTS for employee: $empCode');
+
+      final response = await http.get(
+        Uri.parse('https://premierspulse.com/ess/scripts/fetch_dependent_list.php?emp_code=$empCode'),
+      );
+
+      print('📡 API Status Code: ${response.statusCode}');
+      print('📦 API Response Body: ${response.body}');
+
+      if (response.statusCode == 200) {
+        final dynamic data = json.decode(response.body);
+
+        print('✅ API Response received');
+
+        dependents = [];
+
+        if (data is Map && data.containsKey('dependent_list')) {
+          List<dynamic> dependentList = data['dependent_list'];
+          print('📊 Number of dependents found: ${dependentList.length}');
+
+          for (var item in dependentList) {
+            if (item is Map) {
+              final Map<String, dynamic> jsonMap = item.map<String, dynamic>((key, value) {
+                return MapEntry(key.toString(), value);
+              });
+
+              Dependent dependent = Dependent.fromJson(jsonMap);
+              dependents.add(dependent);
+              print('✅ Added dependent: ${dependent.name}');
+            }
+          }
+        } else {
+          print('❌ No dependent_list found in response');
+          print('Response structure: $data');
+        }
+
+        print('🎉 Successfully loaded ${dependents.length} dependents');
+
+      } else {
+        print('❌ Failed to load dependents. Status code: ${response.statusCode}');
+        print('Response body: ${response.body}');
+        dependents = [];
+      }
+    } catch (e) {
+      print('💥 Error fetching dependents: $e');
+      dependents = [];
+    } finally {
+      loadingDependents = false;
+      notifyListeners();
+    }
+  }
+
+  // void debugCurrentUser() {
+  //   print('=== CURRENT USER DEBUG ===');
+  //   print('Current User: $currentUser');
+  //   print('Current User Type: ${currentUser?.runtimeType}');
+  //   print('Auth Service User: ${authService.user}');
+  //   print('Auth Service User Type: ${authService.user?.runtimeType}');
+  //
+  //   if (currentUser != null) {
+  //     print('Current User Properties:');
+  //     // Try to access common properties
+  //     try {
+  //       if ((currentUser as dynamic).empCode != null) {
+  //         print('  empCode: ${(currentUser as dynamic).empCode}');
+  //       }
+  //       if ((currentUser as dynamic).employeeCode != null) {
+  //         print('  employeeCode: ${(currentUser as dynamic).employeeCode}');
+  //       }
+  //       if ((currentUser as dynamic).code != null) {
+  //         print('  code: ${(currentUser as dynamic).code}');
+  //       }
+  //       if ((currentUser as dynamic).empId != null) {
+  //         print('  empId: ${(currentUser as dynamic).empId}');
+  //       }
+  //     } catch (e) {
+  //       print('Error accessing properties: $e');
+  //     }
+  //   }
+  //   print('==========================');
+  // }
+  // Add this method to manually test the dependents API
+  // void testDependentsAPI() async {
+  //   print('🧪 TESTING DEPENDENTS API...');
+  //   await fetchDependents();
+  // }
+
   Future<void> locations(double Latitude, double Longitude, double distatnce) async {
     if (currentUser != null) {
       Latitude = double.parse(currentUser!.att_lon.toString());
@@ -101,7 +277,7 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
       response = await runBusyFuture(apiService.fetchStats());
 
       print("Stats: ${response}");
-      stats_status =response["statSection"];
+      stats_status = response["statSection"];
       if (response["statSection"] == "yes") {
         statsdata = StatsModel.fromJson(response);
 
@@ -114,9 +290,6 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
       print("StackTrace: $stacktrace");
     }
   }
-
-
-
 
   void showBirthdayDialog(BuildContext context) {
     showDialog(
@@ -136,7 +309,7 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-               Image.asset("assets/images/cake.png"),
+                Image.asset("assets/images/cake.png"),
                 SizedBox(height: 20),
                 Text(
                   ' Happy Birthday',
@@ -186,43 +359,45 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
     );
   }
 
-
-
-  init(BuildContext context) async
-
-  {
+  init(BuildContext context) async {
     WidgetsFlutterBinding.ensureInitialized();
     setBusy(true);
     token();
+
+    // ADD THIS LINE - Fetch FAB settings from Firebase
+    await fetchButtonSettings();
+
+
     //pushNotificationInstant();
     login.subscribeToken(context);
     await _checkVersion(context);
     await getDashboardData(context);
     await getgoal(context);
     await getAttendanceData(context, 'All');
+
+    // ADD DEPENDENTS FETCH HERE
+    /*await fetchDependents();*/
+
     SharedPreferences prefs = await SharedPreferences.getInstance();
     double lat = prefs.getDouble('lat') ?? 0.0;
 
-    for (int i = 0; i < check.length; i++)
-    {
-      if (maxCheckInTime == null || check[i].checkInTime.isAfter(maxCheckInTime!))
-      {
+    for (int i = 0; i < check.length; i++) {
+      if (maxCheckInTime == null || check[i].checkInTime.isAfter(maxCheckInTime!)) {
         maxCheckInTime = check[i].checkInTime;
       }
     }
-    if (maxCheckInTime != null)
-    {
+    if (maxCheckInTime != null) {
       maxCheckInFormatted = DateFormat('HH:mm').format(maxCheckInTime!);
     }
 
-
-    dataMap =
-    {
+    dataMap = {
       "On Time": double.parse(dashboard?.totalOntime.toString() ?? "0"),
       "Late": double.parse(dashboard?.totalLates.toString() ?? "0"),
     };
 
     setBusy(false);
+
+    //debugCurrentUser(); // Add this
 
     checkbirthday(context);
     filteredData = alldata;
@@ -231,10 +406,10 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
     statuses.insert(0, "All");
     statuses.insert(statuses.length, "Weekend");
     print("Statuss ${statuses}");
-   // await _requestNotificationPermission(context);
+    // await _requestNotificationPermission(context);
     await Fetch_stats(context);
-
   }
+
   int calculateHourDifference(String checkInTime, String checkOutTime) {
     try {
       DateFormat format = DateFormat("h:mm a");
@@ -248,37 +423,27 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
     }
   }
 
-
-  void filterDataByStatus(String status)
-  {
-      if (status == "All")
-      {
-        filteredData = alldata;
-      }
-      else if(status =="Absent") {
-        filteredData = alldata.where((item) => item.Attendstatus == status && item.day != "Sun").toList();
-      }
-      else if(status == "Weekend")
-        {
-          filteredData = alldata.where((e) => e.day == "Sun").toList();
-        }
-      else
-      {
-        filteredData = alldata.where((item) => item.Attendstatus == status).toList();
-      }
+  void filterDataByStatus(String status) {
+    if (status == "All") {
+      filteredData = alldata;
+    } else if (status == "Absent") {
+      filteredData = alldata.where((item) => item.Attendstatus == status && item.day != "Sun").toList();
+    } else if (status == "Weekend") {
+      filteredData = alldata.where((e) => e.day == "Sun").toList();
+    } else {
+      filteredData = alldata.where((item) => item.Attendstatus == status).toList();
+    }
     notifyListeners();
   }
 
-
-void checkbirthday(BuildContext context) async
-{
-  DateTime currentDate = DateTime.now();
-  String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
-  if(authService.user!.dob == formattedDate)
-  {
-    showBirthdayDialog(context);
+  void checkbirthday(BuildContext context) async {
+    DateTime currentDate = DateTime.now();
+    String formattedDate = DateFormat('yyyy-MM-dd').format(currentDate);
+    if (authService.user!.dob == formattedDate) {
+      showBirthdayDialog(context);
+    }
   }
-}
+
   Future<void> clearCoordinates() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('lat');
@@ -287,8 +452,6 @@ void checkbirthday(BuildContext context) async
     notifyListeners();
     print("Coordinates cleared.");
   }
-
-
 
   Future<void> requestPermissions() async {
     var status = await Permission.location.request();
@@ -301,7 +464,6 @@ void checkbirthday(BuildContext context) async
       openAppSettings();
     }
   }
-
 
   getAttendanceData(BuildContext context, String Status) async {
     alldata.clear();
@@ -322,7 +484,7 @@ void checkbirthday(BuildContext context) async
           var date = datedInputFormat.format(DateTime.parse(element.attendDate.toString()));
           var days = day.format(DateTime.parse(element.attendDate.toString()));
           all.add(AttendenceTableData(
-                day: days,
+            day: days,
             date: date,
             checkIn: checkIn,
             checkOut: checkOut,
@@ -333,17 +495,16 @@ void checkbirthday(BuildContext context) async
           alldata.add(
               AttendenceTableData(
                 day: days,
-            date: date,
-            checkIn: checkIn,
-            checkOut: checkOut,
-            Attendstatus: attendstatus,
-            formetedDate: DateTime.parse(element.attendDate.toString()),
-            statusColor: colorSelection(element.attendStatus.toString()),
-          )
+                date: date,
+                checkIn: checkIn,
+                checkOut: checkOut,
+                Attendstatus: attendstatus,
+                formetedDate: DateTime.parse(element.attendDate.toString()),
+                statusColor: colorSelection(element.attendStatus.toString()),
+              )
           );
 
-
-          if(element.attendStatus=="On Time" || element.attendStatus=="Late") {
+          if (element.attendStatus == "On Time" || element.attendStatus == "Late") {
             if (check.length < 7) {
               final DateTime checkInTime = DateFormat('HH:mm').parse(checkIn);
 
@@ -359,14 +520,12 @@ void checkbirthday(BuildContext context) async
     });
   }
 
-  void filterListsByStatus(BuildContext context, String status)
-  {
+  void filterListsByStatus(BuildContext context, String status) {
     setBusy(true);
     alldata.clear();
 
     if (status.trim() == "All") {
-      for (int i = 0; i < all.length; i++)
-      {
+      for (int i = 0; i < all.length; i++) {
         alldata.add(AttendenceTableData(
             date: all[i].date,
             checkIn: all[i].checkIn,
@@ -377,24 +536,21 @@ void checkbirthday(BuildContext context) async
             ))
         );
       }
-    } else
-    {
-      for (int i = 0; i < all.length; i++)
-      {
-        if (all[i].Attendstatus == "${status}")
-        {
+    } else {
+      for (int i = 0; i < all.length; i++) {
+        if (all[i].Attendstatus == "${status}") {
           alldata.add
             (
               AttendenceTableData(
-              date: all[i].date,
-              day: all[i].day,
-              checkIn: all[i].checkIn,
-              checkOut: all[i].checkOut,
-              Attendstatus: all[i].Attendstatus,
-              formetedDate: DateTime.now(),
-              statusColor: colorSelection(
-                all[i].Attendstatus.toString(),
-              )
+                  date: all[i].date,
+                  day: all[i].day,
+                  checkIn: all[i].checkIn,
+                  checkOut: all[i].checkOut,
+                  Attendstatus: all[i].Attendstatus,
+                  formetedDate: DateTime.now(),
+                  statusColor: colorSelection(
+                    all[i].Attendstatus.toString(),
+                  )
               )
           );
         }
@@ -404,10 +560,8 @@ void checkbirthday(BuildContext context) async
     setBusy(false);
   }
 
-  Color colorSelection(String title)
-  {
-    switch (title)
-    {
+  Color colorSelection(String title) {
+    switch (title) {
       case "Late":
         {
           return Colors.red;
@@ -438,14 +592,11 @@ void checkbirthday(BuildContext context) async
     }
   }
 
-  Future<void> getCoordinates(BuildContext context) async
-  {
+  Future<void> getCoordinates(BuildContext context) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var newsResponse = await runBusyFuture(apiService.getcordinantes());
 
-    newsResponse.when(success: (data)
-    async
-    {
+    newsResponse.when(success: (data) async {
       if (data != null) {
         double lat = prefs.getDouble('lat') ?? 0.0;
         double long = prefs.getDouble('long') ?? 0.0;
@@ -469,11 +620,9 @@ void checkbirthday(BuildContext context) async
         double? attradius;
         if (data['radius'] is String) {
           attradius = double.tryParse(data['radius']);
-        } else if (data['radius'] is num)
-        {
+        } else if (data['radius'] is num) {
           attradius = data['radius'].toDouble();
         }
-
 
         bool isLatEqual = lat == attLat;
         bool isLonEqual = long == attLon;
@@ -504,12 +653,10 @@ void checkbirthday(BuildContext context) async
       }
 
       print("data: ${data}");
-
     }, failure: (error) {
       Constants.customErrorSnack(context, error.toString());
     });
   }
-
 
   getDashboardData(BuildContext context) async {
     var newsResponse = await runBusyFuture(apiService.dashboard(context));
@@ -523,18 +670,17 @@ void checkbirthday(BuildContext context) async
       Constants.customErrorSnack(context, error.toString());
     });
   }
+
   getgoal(BuildContext context,) async {
     var newsResponse = await runBusyFuture(apiService.mygoal(context));
     newsResponse.when(success: (data) async {
       Goal = data.approvalListvisit.toList();
-
     }, failure: (error) {
       Constants.customErrorSnack(context, error.toString());
     });
   }
 
-  Future<void> _checkVersion(BuildContext context) async
-  {
+  Future<void> _checkVersion(BuildContext context) async {
     try {
       var status = await InAppUpdate.checkForUpdate();
       if (status.updateAvailability == UpdateAvailability.updateAvailable) {
@@ -542,14 +688,12 @@ void checkbirthday(BuildContext context) async
       } else {
 
       }
-    }
-    catch (e) {
+    } catch (e) {
       print(e);
     }
   }
 
-  void pushNotificationInstant( ) async
-  {
+  void pushNotificationInstant() async {
     FirebaseMessaging.instance.getInitialMessage().then(
           (message) {
         print("FirebaseMessaging.instance.getInitialMessage");
@@ -558,8 +702,7 @@ void checkbirthday(BuildContext context) async
     );
     FirebaseMessaging messaging = FirebaseMessaging.instance;
     RemoteMessage? initialMessage = await messaging.getInitialMessage();
-    if (initialMessage != null)
-    {
+    if (initialMessage != null) {
       String? type = initialMessage.data['type'];
       if (type == "final_advance") {
         NavService.Final_advance();
@@ -594,8 +737,7 @@ void checkbirthday(BuildContext context) async
     FirebaseMessaging.onMessage.listen(
           (RemoteMessage message) async {
         print("FirebaseMessaging.onMessage.listen");
-        if (message.notification != null)
-        {
+        if (message.notification != null) {
           print(message.notification!.title);
           print(message.notification!.body);
           LocalNotificationService.createAndDisplayNotification(message);
@@ -606,9 +748,7 @@ void checkbirthday(BuildContext context) async
           );
 
           await databaseHelper.insertnotification(notification);
-          if (message.data.containsKey('type'))
-          {
-
+          if (message.data.containsKey('type')) {
             String? type = message.data['type'];
             if (type == "final_advance") {
               NavService.Final_advance();
@@ -617,18 +757,14 @@ void checkbirthday(BuildContext context) async
             } else {
               print("Unknown notification type: $type");
             }
-            
-          }
-
-          else {
+          } else {
             print("No type key in notification data");
           }
         }
       },
     );
     FirebaseMessaging.onMessageOpenedApp.listen(
-          (RemoteMessage message)
-      async {
+          (RemoteMessage message) async {
         print("FirebaseMessaging.onMessageOpenedApp.listen");
         if (message.notification != null) {
           print(message.notification!.title);
@@ -642,28 +778,17 @@ void checkbirthday(BuildContext context) async
 
           // Access your database helper instance
           await databaseHelper.insertnotification(notification);
-          if (message.data.containsKey('type'))
-          {
+          if (message.data.containsKey('type')) {
             String? type = message.data['type'];
 
-            if (type == "final_advance")
-            {
+            if (type == "final_advance") {
               NavService.Final_advance();
-            }
-
-            else if (type == "attendence")
-            {
+            } else if (type == "attendence") {
               NavService.yourAttendance();
-            }
-
-            else
-            {
+            } else {
               print("Unknown notification type: $type");
             }
-
-          }
-          else
-          {
+          } else {
             print("No type key in notification data");
           }
         }
@@ -671,13 +796,10 @@ void checkbirthday(BuildContext context) async
     );
   }
 
-
-  Future<void> _requestNotificationPermission(BuildContext context) async
-  {
+  Future<void> _requestNotificationPermission(BuildContext context) async {
     PermissionStatus status = await Permission.notification.status;
 
-    if (status.isDenied || status.isPermanentlyDenied)
-    {
+    if (status.isDenied || status.isPermanentlyDenied) {
       bool userAccepted = await showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -702,17 +824,14 @@ void checkbirthday(BuildContext context) async
           );
         },
       );
-      if (userAccepted)
-      {
+      if (userAccepted) {
         await openAppSettings();
       }
     }
   }
 
-  void getLocation( double attLat, double attLon, double distancce )
-  {
-    if (currentUser != null)
-    {
+  void getLocation(double attLat, double attLon, double distancce) {
+    if (currentUser != null) {
       attLat = double.tryParse(currentUser!.att_lat.toString()) ?? 0.0;
       attLon = double.tryParse(currentUser!.att_lon.toString()) ?? 0.0;
       distancce = double.tryParse(currentUser!.radius.toString()) ?? 0.0;
@@ -720,21 +839,17 @@ void checkbirthday(BuildContext context) async
       print("Latitude: $attLat");
       print("Distance: $distancce");
       notifyListeners();
-    }
-    else
-    {
+    } else {
       print("Current User is null");
     }
   }
 
   updatenumber(BuildContext context, String number) async {
-
     try {
       var newsResponse = await runBusyFuture(apiService.changephonenumber(context, number));
 
       newsResponse.when(
         success: (data) {
-
           Constants.customSuccessSnack(context, data ?? 'Number Updated Successfully');
         },
         failure: (error) {
@@ -743,9 +858,7 @@ void checkbirthday(BuildContext context) async
         },
       );
     } catch (error) {
-
       Constants.customErrorSnack(context, error.toString());
-
     }
   }
 }
