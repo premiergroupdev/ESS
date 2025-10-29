@@ -66,9 +66,10 @@ class MainInputField extends StatelessWidget {
               prefixIcon ?? SizedBox.shrink(),
               Expanded(
                 child: TextFormField(
-                  onTap: () {
+                  onTap: onTap != null
+                      ? () {
                     onTap!();
-                  },
+                  } : null,
                   textInputAction: TextInputAction.next,
                   keyboardType: inputType ?? TextInputType.text,
                   validator: (val) {
@@ -84,9 +85,7 @@ class MainInputField extends StatelessWidget {
                             : null
                         : null;
                   },
-                  onChanged: (val) {
-                    onChanged!(val);
-                  },
+                  onChanged: onChanged,
                   controller: controller,
                   readOnly: (inputType == TextInputType.datetime) ? true : readOnly ?? false,
                   obscureText: isPassword,
@@ -129,23 +128,23 @@ class SecondInputField extends StatelessWidget {
   final double? width;
   final double? height;
 
-  const SecondInputField(
-      {Key? key,
-      this.width,
-      this.height,
-      this.isPassword = false,
-      this.label,
-      required this.hint,
-      required this.controller,
-      this.onTap,
-      this.inputType,
-      this.onChanged,
-      this.isRequired = true,
-      this.suffixIcon,
-      this.prefixIcon,
-      required this.message,
-      this.readOnly})
-      : super(key: key);
+  const SecondInputField({
+    Key? key,
+    this.width,
+    this.height,
+    this.isPassword = false,
+    this.label,
+    required this.hint,
+    required this.controller,
+    this.onTap,
+    this.inputType,
+    this.onChanged,
+    this.isRequired = true,
+    this.suffixIcon,
+    this.prefixIcon,
+    required this.message,
+    this.readOnly,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -163,9 +162,10 @@ class SecondInputField extends StatelessWidget {
           width: width ?? context.screenSize().width,
           height: height ?? 50,
           decoration: BoxDecoration(
-              color: AppColors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(color: AppColors.primary)),
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: AppColors.primary),
+          ),
           padding: EdgeInsets.fromLTRB(10, 0, 10, 5),
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -173,40 +173,42 @@ class SecondInputField extends StatelessWidget {
               prefixIcon ?? SizedBox.shrink(),
               Expanded(
                 child: TextFormField(
-                  onTap: () {
-                    onTap!();
-                  },
+                  onTap: onTap != null
+                      ? () => onTap!()
+                      : null,
                   textInputAction: TextInputAction.next,
                   keyboardType: inputType ?? TextInputType.text,
                   validator: (val) {
                     bool emailValid = true;
                     if (inputType == TextInputType.emailAddress) {
                       emailValid = RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                          .hasMatch(val!);
+                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+                      ).hasMatch(val!);
                     }
                     return isRequired
                         ? (val!.isEmpty || (emailValid == false))
-                            ? message
-                            : null
+                        ? message
+                        : null
                         : null;
                   },
-                  onChanged: (val) {
-                    onChanged!(val);
-                  },
+                  onChanged: onChanged, // ← FIXED: Pass directly without !
                   inputFormatters: [
-                    if(inputType == TextInputType.phone)
-                      MaskedInputFormatter('####-###-####')
+                    if (inputType == TextInputType.phone)
+                      MaskedInputFormatter('####-###-####'),
                   ],
                   controller: controller,
-                  readOnly: (inputType == TextInputType.datetime) ? true : readOnly ?? false,
+                  readOnly: (inputType == TextInputType.datetime)
+                      ? true
+                      : readOnly ?? false,
                   obscureText: isPassword,
                   decoration: InputDecoration(
                     border: InputBorder.none,
-                    hintStyle: TextStyling.bold16.copyWith(color: AppColors.grey),
+                    hintStyle:
+                    TextStyling.bold16.copyWith(color: AppColors.grey),
                     hintMaxLines: 1,
                     labelStyle: TextStyling.bold16,
-                    contentPadding: const EdgeInsetsDirectional.fromSTEB(5, 15, 5, 15),
+                    contentPadding:
+                    const EdgeInsetsDirectional.fromSTEB(5, 15, 5, 15),
                   ),
                   cursorColor: AppColors.primary,
                   cursorHeight: 20,
@@ -221,7 +223,6 @@ class SecondInputField extends StatelessWidget {
     );
   }
 }
-
 class CustomDropDown extends StatelessWidget {
   final String? label;
   final String value;

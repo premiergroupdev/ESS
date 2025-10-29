@@ -22,7 +22,19 @@ class YourAttendanceViewModel extends ReactiveViewModel
   List<AttendenceTableData> data = [];
 
   init(BuildContext context, String check, String code) async {
-    await getAttendanceData(context,check, code);
+    await getAttendanceData(context, check, code);
+
+    // // Clear existing data
+    // data.clear();
+    //
+    // Sort attendances by date before processing
+    attendances.sort((a, b) {
+      DateTime dateA = DateTime.parse(a.attendDate.toString());
+      DateTime dateB = DateTime.parse(b.attendDate.toString());
+      return dateB.compareTo(dateA); // Descending order (newest first)
+      // OR use dateA.compareTo(dateB) for ascending order (oldest first)
+    });
+
     attendances.toList().forEach((element) {
       var timeInputFormat = DateFormat('hh:mm a');
       var datedInputFormat = DateFormat('EE ,dd-MMM');
@@ -31,16 +43,27 @@ class YourAttendanceViewModel extends ReactiveViewModel
       DateTime outTime = DateTime.parse("2020-01-02 ${element.checkOut.toString()}");
       var checkOut = timeInputFormat.format(outTime);
       var date = datedInputFormat.format(DateTime.parse(element.attendDate.toString()));
-      var attendstatus =(element.attendStatus.toString());
+
+      // FIX: Check if it's Sunday and override the status
+      DateTime attendanceDate = DateTime.parse(element.attendDate.toString());
+      String attendstatus;
+      if (attendanceDate.weekday == 7) { // 7 = Sunday
+        attendstatus = "Weekend";
+      } else {
+        attendstatus = element.attendStatus.toString();
+      }
+
       data.add(
           AttendenceTableData(
-              date: date,
-              checkIn: checkIn,
-              checkOut: checkOut,
-              Attendstatus: attendstatus,
-              formetedDate: DateTime.parse(element.attendDate.toString()),
-          statusColor: colorSelection(element.attendStatus.toString(),))
-      );});
+            date: date,
+            checkIn: checkIn,
+            checkOut: checkOut,
+            Attendstatus: attendstatus, // Now shows "Weekend" for Sundays
+            formetedDate: attendanceDate,
+            statusColor: colorSelection(attendstatus), // Use the corrected status
+          )
+      );
+    });
     notifyListeners();
   }
 

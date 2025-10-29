@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:lottie/lottie.dart';
 import '../../../../generated/assets.dart';
 import '../../../styles/text_theme.dart';
+import '../../leaves_and_visits/apply_leave/apply_leave_view.dart';
 import 'attendence_data_table.dart';
 
 class AttendanceScreen extends StatefulWidget {
@@ -139,7 +140,12 @@ class _AttendanceScreenState extends State<AttendanceScreen> {
                     SlidableAction(
                       flex: 2,
                       onPressed: (_) {
-                       NavService.applyLeave();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ApplyLeaveView(
+                            ),
+                          ),
+                        );
                       },
                       backgroundColor: AppColors.primary,
                       foregroundColor: Colors.white,

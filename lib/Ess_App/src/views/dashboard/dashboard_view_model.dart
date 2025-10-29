@@ -425,13 +425,19 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
 
   void filterDataByStatus(String status) {
     if (status == "All") {
-      filteredData = alldata;
+      filteredData = List.from(alldata); // Copy the sorted data
     } else if (status == "Absent") {
       filteredData = alldata.where((item) => item.Attendstatus == status && item.day != "Sun").toList();
+      // Ensure filtered results are also sorted
+      filteredData.sort((a, b) => b.formetedDate.compareTo(a.formetedDate));
     } else if (status == "Weekend") {
       filteredData = alldata.where((e) => e.day == "Sun").toList();
+      // Ensure filtered results are also sorted
+      filteredData.sort((a, b) => b.formetedDate.compareTo(a.formetedDate));
     } else {
       filteredData = alldata.where((item) => item.Attendstatus == status).toList();
+      // Ensure filtered results are also sorted
+      filteredData.sort((a, b) => b.formetedDate.compareTo(a.formetedDate));
     }
     notifyListeners();
   }
@@ -471,6 +477,9 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
     var newsResponse = await runBusyFuture(apiService.attendance(context, "1"));
     newsResponse.when(success: (dataNew) async {
       if ((dataNew.forms?.length ?? 0) > 0) {
+        // Create a temporary list to hold and sort the data
+        List<AttendenceTableData> tempData = [];
+
         dataNew.forms?.forEach((element) {
           var timeInputFormat = DateFormat('hh:mm a');
           var datedInputFormat = DateFormat('EE dd/MM');
@@ -483,35 +492,34 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
           var checkOut = timeInputFormat.format(outTime);
           var date = datedInputFormat.format(DateTime.parse(element.attendDate.toString()));
           var days = day.format(DateTime.parse(element.attendDate.toString()));
-          all.add(AttendenceTableData(
+
+          DateTime formattedDate = DateTime.parse(element.attendDate.toString());
+
+          tempData.add(AttendenceTableData(
             day: days,
             date: date,
             checkIn: checkIn,
             checkOut: checkOut,
             Attendstatus: attendstatus,
-            formetedDate: DateTime.parse(element.attendDate.toString()),
-            statusColor: colorSelection(element.attendStatus.toString()),));
-
-          alldata.add(
-              AttendenceTableData(
-                day: days,
-                date: date,
-                checkIn: checkIn,
-                checkOut: checkOut,
-                Attendstatus: attendstatus,
-                formetedDate: DateTime.parse(element.attendDate.toString()),
-                statusColor: colorSelection(element.attendStatus.toString()),
-              )
-          );
+            formetedDate: formattedDate,
+            statusColor: colorSelection(element.attendStatus.toString()),
+          ));
 
           if (element.attendStatus == "On Time" || element.attendStatus == "Late") {
             if (check.length < 7) {
               final DateTime checkInTime = DateFormat('HH:mm').parse(checkIn);
-
               check.add(BarChartModel(day: date, checkInTime: checkInTime, attendstatus: element.attendStatus!));
             }
           }
         });
+
+        // SORT THE DATA - newest first (most recent dates at top)
+        tempData.sort((a, b) => b.formetedDate.compareTo(a.formetedDate));
+
+        // Add sorted data to alldata and all
+        alldata.addAll(tempData);
+        all.addAll(tempData);
+
       } else {
         Constants.customWarningSnack(context, "Attendance not found");
       }
@@ -520,45 +528,41 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
     });
   }
 
+
   void filterListsByStatus(BuildContext context, String status) {
     setBusy(true);
     alldata.clear();
 
     if (status.trim() == "All") {
-      for (int i = 0; i < all.length; i++) {
-        alldata.add(AttendenceTableData(
-            date: all[i].date,
-            checkIn: all[i].checkIn,
-            checkOut: all[i].checkOut,
-            Attendstatus: all[i].Attendstatus,
-            formetedDate: DateTime.now(),
-            statusColor: colorSelection(all[i].Attendstatus.toString(),
-            ))
-        );
-      }
+      alldata.addAll(all); // Just copy the already sorted 'all' list
     } else {
+      List<AttendenceTableData> tempFiltered = [];
+
       for (int i = 0; i < all.length; i++) {
-        if (all[i].Attendstatus == "${status}") {
-          alldata.add
-            (
+        if (all[i].Attendstatus == status) {
+          tempFiltered.add(
               AttendenceTableData(
-                  date: all[i].date,
-                  day: all[i].day,
-                  checkIn: all[i].checkIn,
-                  checkOut: all[i].checkOut,
-                  Attendstatus: all[i].Attendstatus,
-                  formetedDate: DateTime.now(),
-                  statusColor: colorSelection(
-                    all[i].Attendstatus.toString(),
-                  )
+                date: all[i].date,
+                day: all[i].day,
+                checkIn: all[i].checkIn,
+                checkOut: all[i].checkOut,
+                Attendstatus: all[i].Attendstatus,
+                formetedDate: all[i].formetedDate, // Keep the original date
+                statusColor: colorSelection(all[i].Attendstatus.toString()),
               )
           );
         }
       }
+
+      // Sort the filtered results
+      tempFiltered.sort((a, b) => b.formetedDate.compareTo(a.formetedDate));
+      alldata.addAll(tempFiltered);
+
       print("${alldata.length}");
     }
     setBusy(false);
   }
+
 
   Color colorSelection(String title) {
     switch (title) {

@@ -82,7 +82,7 @@ class YourAttendanceView extends StatelessWidget {
         ),
       ),
       viewModelBuilder: () => YourAttendanceViewModel(),
-      onModelReady: (model) => model.init(context, check.toString(), code.toString()),
+      onViewModelReady : (model) => model.init(context, check.toString(), code.toString()),
     );
   }
 

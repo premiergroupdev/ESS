@@ -27,9 +27,14 @@ class ApplyLeaveViewModel extends ReactiveViewModel with AuthViewModel, ApiViewM
 
   init(BuildContext context) async {
     employeeCode.text = currentUser?.userId.toString() ?? "000000";
-    String? formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.parse(date.toString()));
-    fromDate.text = formattedDate;
-    toDate.text = formattedDate;
+
+
+    if(date!= null) {
+      String? formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.parse(date.toString()));
+      fromDate.text = formattedDate;
+      toDate.text = formattedDate;
+    };
+
   }
 
   clear()

@@ -595,7 +595,7 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
               Scaffold.of(context).closeDrawer();
             },
           ),
-          if(authService.user!.userId == "99917864" || authService.user!.userId == "99914719"|| authService.user!.userId == "99925048")
+          if(authService.user?.userId == "99917864" || authService.user?.userId == "99914719"|| authService.user?.userId == "99925048")
           CustomMenuItem(
             label: "Resignation form",
             isParent: false,
