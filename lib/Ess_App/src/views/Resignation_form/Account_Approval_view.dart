@@ -29,7 +29,6 @@ class _HodApprovalViewState extends State<AccountApprovalView> {
         builder: (viewModelContext, model, child) =>
 
             Scaffold(
-
               body:
               model.isBusy
                   ? Center(child: LoadingIndicator())

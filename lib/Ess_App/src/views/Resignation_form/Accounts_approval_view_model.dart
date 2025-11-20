@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
-
 import '../../base/utils/constants.dart';
 import '../../models/api_response_models/branch.dart';
 import '../../models/api_response_models/region.dart';
@@ -25,7 +25,15 @@ class AccountsApprovalViewModel extends ReactiveViewModel with AuthViewModel, Ap
   }
 
   Future<void> branchdata(BuildContext context) async {
-    var response = await runBusyFuture(apiService.resignations_approval(context, "account"));
+    // ✅ Get emp_code dynamically from SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    final empCode = prefs.getString('emp_code') ?? '';
+
+    if (empCode.isEmpty) {
+      Constants.customErrorSnack(context, "Employee code not found in storage!");
+      return;
+    }
+    var response = await runBusyFuture(apiService.resignations_approval(context, empCode, "account"));
     response.when(
       success: (data) {
         datalist = data['ApprovalList'];

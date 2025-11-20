@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:stacked/stacked.dart';
 
 import '../../base/utils/constants.dart';
@@ -26,7 +27,16 @@ class HrOneViewModel extends ReactiveViewModel with AuthViewModel, ApiViewModel 
   }
 
   Future<void> branchdata(BuildContext context) async {
-    var response = await runBusyFuture(apiService.resignations_approval(context, "hr_level1"));
+    // ✅ Get emp_code dynamically from SharedPreferences
+    final prefs = await SharedPreferences.getInstance();
+    final empCode = prefs.getString('emp_code') ?? '';
+
+    if (empCode.isEmpty) {
+      Constants.customErrorSnack(context, "Employee code not found in storage!");
+      return;
+    }
+
+    var response = await runBusyFuture(apiService.resignations_approval(context, empCode, "hr_level1"));
     response.when(
       success: (data) {
         datalist = data['ApprovalList'];

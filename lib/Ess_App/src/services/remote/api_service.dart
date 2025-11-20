@@ -3017,10 +3017,10 @@ print("Approval Data: ${data}");
 
 
   Future<ApiResult<dynamic>> resignations_approval(
-      BuildContext context, String approval_type) async {
+      BuildContext context, String empCode, String approval_type) async {
     try {
       var response = await _apiClient?.getReq(
-        "/fnf_linemanager_approval.php?emp_code=99923&approval_type=${approval_type}",
+        "/fnf_linemanager_approval.php?emp_code=$empCode&approval_type=$approval_type",
       );
       var data = jsonDecode(response?.data);
       print("Data: ${data}");
@@ -3225,8 +3225,5 @@ print("URl :${url}");
       return e.toString();
     }
   }
-
-
-
 
 }
