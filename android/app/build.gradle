@@ -63,7 +63,7 @@ android {
 
     defaultConfig {
         applicationId "com.premiergroup.ess"
-        minSdkVersion 21
+        minSdkVersion flutter.minSdkVersion
         targetSdkVersion 36
         multiDexEnabled true
         versionCode flutterVersionCode.toInteger()

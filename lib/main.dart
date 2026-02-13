@@ -20,6 +20,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'Ess_App/src/models/api_response_models/Notification.dart';
+import 'Ess_App/src/views/PDMS_survey/product_search_provider.dart';
 import 'Ess_App/src/views/login/local/local_db.dart';
 import 'Ess_App/src/views/notification/notification.dart';
 
@@ -146,6 +147,15 @@ void main() async {
       child: AppView(),
     ),
   );
+  final apiService = ApiService();
+  final productSearchProvider = ProductSearchProvider(apiService);
+
+// Pre-load data when app starts (optional)
+  WidgetsBinding.instance.addPostFrameCallback((_) {
+    productSearchProvider.loadProducts();
+  });
+
+
 }
 
 

@@ -17,6 +17,7 @@ class User {
   String? radius;
   String? dob;
   int? is_qms;
+  int? is_pdms;
 
   User(
       {this.casualLeaves,
@@ -36,7 +37,8 @@ class User {
         this.att_lon,
         this.radius,
         this.dob,
-        this.is_qms
+        this.is_qms,
+        this.is_pdms,
       });
 
   User.fromJson(Map<String, dynamic> json) {
@@ -58,6 +60,7 @@ class User {
     radius=json['radius'];
     dob= json['dob'];
     is_qms= json['is_qms'];
+    is_pdms = json['is_pdms'];
   }
 
   Map<String, dynamic> toJson() {
@@ -80,6 +83,7 @@ class User {
     data['radius']=this.radius;
     data['dob']=this.dob;
     data['is_qms']=this.is_qms;
+    data['is_pdms'] = this.is_pdms;
     return data;
   }
 }

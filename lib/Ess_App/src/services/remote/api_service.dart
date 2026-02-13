@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -53,6 +54,8 @@ import '../../models/api_response_models/plan_approval_model.dart';
 import '../../models/api_response_models/traning_model.dart';
 import '../../models/api_response_models/warehouse_list_model.dart';
 import '../../models/api_response_models/warehouse_model.dart';
+import '../../views/PDMS_survey/product_database.dart';
+import '../../views/PDMS_survey/survey_form_view.dart';
 
 
 class ApiService {
@@ -110,6 +113,7 @@ class ApiService {
   }
 
 
+
   //DashBoard
   Future<ApiResult<Dashboard>> dashboard(BuildContext context) async {
     try {
@@ -127,6 +131,9 @@ class ApiService {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
     }
   }
+
+
+
 
   Future<ApiResult<goalmodel>> mygoal(BuildContext context) async {
     try {
@@ -613,6 +620,8 @@ class ApiService {
       return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
     }
   }
+
+
 
 
   Future<ApiResult<advancelinemanagver>> line_manager_approval_api(
@@ -3226,4 +3235,475 @@ print("URl :${url}");
     }
   }
 
+
+  // new api added for survey
+  // Add these methods to your ApiService class
+  // Survey API Methods
+
+  Future<ApiResult<Map<String, dynamic>>> getSurveyData(String tab) async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+
+      var response = await _apiClient?.getReq(
+        "/get_survey_pivot.php?tab=$tab",
+        headers: headers, // ADD HEADERS
+      );
+
+      print("Survey API Response for $tab: ${response?.data}");
+
+      if (response?.statusCode != 200) {
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(response?.message ?? "Failed to load survey data"),
+        );
+      }
+
+      var data = jsonDecode(response?.data ?? '{}');
+      return ApiResult.success(data: data);
+
+    } catch (e) {
+      print("Error in getSurveyData: $e");
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+
+
+// Even simpler version - let getDioException handle everything
+  Future<ApiResult<Map<String, dynamic>>> submitSurveyForm(Map<String, dynamic> formData) async {
+    try {
+      // Add user info to form data
+      formData['user_name'] = authService.user?.userName?.toString() ?? '';
+      formData['user_id'] = authService.user?.userId?.toString() ?? '';
+
+      print("Submitting survey form with data: $formData");
+
+      // Build query string from form data
+      var queryParams = formData.entries
+          .map((e) => '${e.key}=${Uri.encodeComponent(e.value.toString())}')
+          .join('&');
+
+      print("Survey form query: $queryParams");
+
+      // Use the same headers pattern as your other methods
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        'Cookie': 'PHPSESSID=0qga4kkbhct0q1ejhl93b5oj8p'
+      };
+
+      var response = await _apiClient?.getReq(
+        "/survey_form.php?$queryParams",
+        headers: headers,
+      );
+
+      print("Survey submission response: ${response?.data}");
+      print("Response status code: ${response?.statusCode}");
+
+      // Add more detailed error logging
+      if (response?.statusCode != 200) {
+        print("=== DEBUG ERROR INFO ===");
+        print("Status code: ${response?.statusCode}");
+        print("Status message: ${response?.statusMessage}");
+        print("Response headers: ${response?.headers}");
+        print("Response data type: ${response?.data.runtimeType}");
+        print("Response data raw: ${response?.data}");
+
+        // Try to parse the error response
+        try {
+          if (response?.data != null) {
+            var errorData = jsonDecode(response!.data!);
+            print("Parsed error data: $errorData");
+            print("Error message from server: ${errorData['message']}");
+          }
+        } catch (e) {
+          print("Could not parse error response: $e");
+        }
+        print("=== END DEBUG ===");
+
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(response?.message ?? "Failed to submit survey"),
+        );
+      }
+
+      var data = jsonDecode(response?.data ?? '{}');
+      return ApiResult.success(data: data);
+
+    } catch (e) {
+      print("Error in submitSurveyForm: $e");
+
+      // More detailed Dio error handling
+      if (e is DioException) {
+        print("DioException type: ${e.type}");
+        print("DioException message: ${e.message}");
+        print("DioException response status: ${e.response?.statusCode}");
+        print("DioException response data: ${e.response?.data}");
+        print("DioException response headers: ${e.response?.headers}");
+
+        // Try to get the actual error message from response
+        if (e.response?.data != null) {
+          try {
+            var errorData = jsonDecode(e.response!.data!);
+            print("Server error message: ${errorData['message']}");
+          } catch (_) {
+            print("Raw error response: ${e.response!.data}");
+          }
+        }
+      }
+
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+// Alternative method using your existing ApiClient pattern
+// In ApiService class, find this method:
+  Future<ApiResult<Map<String, dynamic>>> submitSurveyFormPost(Map<String, dynamic> formData) async {
+    try {
+      print("Submitting survey form via POST with data: $formData");
+
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
+      };
+
+      var response = await _apiClient?.postReq(
+        "/survey_form.php",
+        data: formData,
+        headers: headers,
+      );
+
+      print("POST submission response: ${response?.data}");
+      print("Response status code: ${response?.statusCode}");
+
+      // === FIX THIS PART ===
+      // Change from: if (response?.statusCode != 200)
+      // To: Accept both 200 and 201 as success
+      if (response?.statusCode == 200 || response?.statusCode == 201) {
+        var data = jsonDecode(response?.data ?? '{}');
+        return ApiResult.success(data: data);
+      } else {
+        print("POST Error status: ${response?.statusCode}");
+        print("POST Error data: ${response?.data}");
+
+        // Also fix the error message extraction
+        String errorMessage = "Failed to submit survey (Status: ${response?.statusCode})";
+        if (response?.data != null) {
+          try {
+            var errorData = jsonDecode(response!.data!);
+            errorMessage = errorData['message'] ?? errorMessage;
+          } catch (e) {
+            errorMessage = response!.data!.toString();
+          }
+        }
+
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(errorMessage),
+        );
+      }
+      // === END FIX ===
+
+    } catch (e) {
+      print("Error in submitSurveyFormPost: $e");
+      if (e is DioException) {
+        print("DioException in POST: ${e.type}");
+        print("Response status: ${e.response?.statusCode}");
+        print("Response data: ${e.response?.data}");
+      }
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+  // Add this method to ApiService class
+  Future<ApiResult<Map<String, dynamic>>> getSurveyDataWithParams(
+      String tab, {
+        String? search,
+        int? limit,
+      }) async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+
+      // Build query parameters
+      String queryParams = 'tab=$tab';
+
+      if (search != null && search.isNotEmpty) {
+        queryParams += '&search=${Uri.encodeComponent(search)}';
+      }
+
+      if (limit != null) {
+        queryParams += '&limit=$limit';
+      }
+
+      var response = await _apiClient?.getReq(
+        "/get_survey_pivot.php?$queryParams",
+        headers: headers,
+      );
+
+      print("Survey API with params: $queryParams");
+
+      if (response?.statusCode != 200) {
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(response?.message ?? "Failed to load survey data"),
+        );
+      }
+
+      var data = jsonDecode(response?.data ?? '{}');
+      return ApiResult.success(data: data);
+
+    } catch (e) {
+      print("Error in getSurveyDataWithParams: $e");
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+  // In your ApiService class, add these methods:
+
+// Method 1: For backend that supports pagination
+  Future<ApiResult<Map<String, dynamic>>> getProductsWithPagination(int start, int limit) async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+
+      // If backend supports pagination
+      var response = await _apiClient?.getReq(
+        "/get_survey_pivot.php?tab=product&start=$start&limit=$limit",
+        headers: headers,
+      );
+
+      // If backend doesn't support pagination, we'll handle it on frontend
+      if (response?.statusCode != 200) {
+        // Fallback to getting all products
+        return getSurveyData('product');
+      }
+
+      var data = jsonDecode(response?.data ?? '{}');
+      return ApiResult.success(data: data);
+
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+// Method 2: Get all products once and cache them
+  List<SurveyDropdownItem>? _allProductsCache;
+  Future<List<SurveyDropdownItem>> getAllProductsOnce() async {
+    // Return cached products if available
+    if (_allProductsCache != null && _allProductsCache!.isNotEmpty) {
+      return _allProductsCache!;
+    }
+
+    try {
+      final response = await getSurveyData('product');
+
+      return response.when(
+        success: (data) {
+          if (data['status'] == true && data['data'] != null) {
+            final List<dynamic> apiData = data['data'];
+            _allProductsCache = [];
+
+            for (var item in apiData) {
+              final id = item['product_code']?.toString() ?? '';
+              final value = item['product_name']?.toString() ?? '';
+              if (id.isNotEmpty && value.isNotEmpty) {
+                _allProductsCache!.add(SurveyDropdownItem(id: id, value: value));
+              }
+            }
+
+            print("Cached ${_allProductsCache!.length} products");
+            return _allProductsCache!;
+          }
+          return [];
+        },
+        failure: (error) {
+          print("Failed to load products: $error");
+          return [];
+        },
+      );
+    } catch (e) {
+      print("Exception loading products: $e");
+      return [];
+    }
+  }
+
+// Method 3: Get product chunk from cache
+  Future<List<SurveyDropdownItem>> getProductChunk(int startIndex, int chunkSize) async {
+    // First, ensure we have all products
+    final allProducts = await getAllProductsOnce();
+
+    // Calculate the chunk
+    final endIndex = (startIndex + chunkSize).clamp(0, allProducts.length);
+    return allProducts.sublist(startIndex, endIndex);
+  }
+
+  // In ApiService class, add these methods:
+
+  final ProductDatabase _productDb = ProductDatabase();
+  // Add in-memory cache
+  List<SurveyDropdownItem>? _inMemoryProductCache;
+  DateTime? _inMemoryCacheTimestamp;
+  final Duration _cacheValidity = Duration(minutes: 30); // Keep in memory for 30 minutes
+
+// Method to get products with caching
+  Future<List<SurveyDropdownItem>> getProductsWithCache({bool forceRefresh = false}) async {
+    // Check if cache is stale or needs refresh
+    final bool cacheStale = await _productDb.isCacheStale();
+
+    if (!forceRefresh && !cacheStale) {
+      // Try to get from cache first
+      final cachedCount = await _productDb.getCachedCount();
+      if (cachedCount > 0) {
+        print('Loading $cachedCount products from cache');
+        return await _productDb.getAllProducts();
+      }
+    }
+
+    // If cache is stale or empty, fetch from API
+    print('Fetching products from API (cache stale: $cacheStale)');
+    final response = await getSurveyData('product');
+
+    return response.when(
+      success: (data) async {
+        if (data['status'] == true && data['data'] != null) {
+          final List<dynamic> apiData = data['data'];
+          final List<SurveyDropdownItem> products = [];
+
+          for (var item in apiData) {
+            final id = item['product_code']?.toString() ?? '';
+            final value = item['product_name']?.toString() ?? '';
+            if (id.isNotEmpty && value.isNotEmpty) {
+              products.add(SurveyDropdownItem(id: id, value: value));
+            }
+          }
+
+          // Save to cache in background
+          unawaited(_productDb.saveProducts(products));
+
+          return products;
+        }
+        return [];
+      },
+      failure: (error) {
+        print('API failed, trying cache: $error');
+        // If API fails, try cache as fallback
+        return _productDb.getAllProducts();
+      },
+    );
+  }
+
+// Method to get product chunk with cache support
+  Future<List<SurveyDropdownItem>> getProductChunkWithCache(int start, int limit) async {
+    // First check memory cache
+    if (_inMemoryProductCache != null &&
+        _inMemoryCacheTimestamp != null &&
+        DateTime.now().difference(_inMemoryCacheTimestamp!) < _cacheValidity) {
+
+      final end = (start + limit).clamp(0, _inMemoryProductCache!.length);
+      return _inMemoryProductCache!.sublist(start, end);
+    }
+
+    // Fallback to SQLite cache
+    final cachedProducts = await _productDb.getProductsChunk(start, limit);
+
+    if (cachedProducts.isNotEmpty) {
+      return cachedProducts;
+    }
+
+    // If SQLite doesn't have enough, fetch from API
+    final allProducts = await getProductsWithCache();
+
+    // Return the requested chunk
+    final end = (start + limit).clamp(0, allProducts.length);
+    return allProducts.sublist(start, end);
+  }
+// Method to search products with cache support
+  Future<List<SurveyDropdownItem>> searchProductsWithCache(String query, {int limit = 100}) async {
+    // First try local search
+    final localResults = await _productDb.searchProducts(query, limit: limit);
+
+    if (localResults.isNotEmpty || query.isEmpty) {
+      return localResults;
+    }
+
+    // If no local results and query is specific, check if cache is stale
+    final cacheStale = await _productDb.isCacheStale();
+
+    if (cacheStale) {
+      // Refresh cache and search again
+      await getProductsWithCache(forceRefresh: true);
+      return await _productDb.searchProducts(query, limit: limit);
+    }
+
+    return localResults;
+  }
+
+  Future<bool> isProductCacheStale() async {
+    return await _productDb.isCacheStale();
+  }
+
+  // Also add a method to refresh cache
+  Future<void> refreshProductCache() async {
+    await getProductsWithCache(forceRefresh: true);
+  }
+
+  Future<List<SurveyDropdownItem>> getProductsWithMemoryCache({bool forceRefresh = false}) async {
+    // Check if in-memory cache is valid
+    if (!forceRefresh &&
+        _inMemoryProductCache != null &&
+        _inMemoryCacheTimestamp != null &&
+        DateTime.now().difference(_inMemoryCacheTimestamp!) < _cacheValidity) {
+      print('Returning ${_inMemoryProductCache!.length} products from memory cache');
+      return _inMemoryProductCache!;
+    }
+
+    // Get from SQLite cache or API
+    final products = await getProductsWithCache(forceRefresh: forceRefresh);
+
+    // Store in memory
+    _inMemoryProductCache = products;
+    _inMemoryCacheTimestamp = DateTime.now();
+
+    return products;
+  }
+
+  // Add this method to fetch surveys
+  Future<ApiResult<Map<String, dynamic>>> getSurveyList() async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+
+      var response = await _apiClient?.getReq(
+        "/get_survey_list.php",
+        headers: headers,
+      );
+
+      print("Survey List API Response: ${response?.data}");
+
+      if (response?.statusCode != 200) {
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(response?.message ?? "Failed to load survey list"),
+        );
+      }
+
+      var data = jsonDecode(response?.data ?? '{}');
+      return ApiResult.success(data: data);
+
+    } catch (e) {
+      print("Error in getSurveyList: $e");
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
 }

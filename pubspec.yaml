@@ -1,7 +1,7 @@
 name: ess
 description: Employee Management System for Premier Groups
 publish_to: "none"
-version: 50.0.0+50
+version: 51.0.0+51
 
 environment:
   sdk: ">=2.19.0 <3.0.0"
@@ -42,6 +42,8 @@ dependencies:
 
 
   sqflite: ^2.3.2
+  path: ^1.8.0
+  path_provider: ^2.1.0
 #  syncfusion_flutter_charts: ^24.1.41
   pie_chart: ^5.3.2
   file_selector: ^1.0.0
