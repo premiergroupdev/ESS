@@ -88,6 +88,11 @@ class _SurveyFormViewState extends State<SurveyFormView> {
 
   static List<SurveyDropdownItem>? _cachedDialogProducts;
 
+  List<SurveyDropdownItem> companyList = [];
+  final ValueNotifier<String?> selectedCompany = ValueNotifier(null);
+  bool isLoadingCompanies = false;
+  bool isLoadingProducts = false;
+
   // Validation
   Timer? _validationTimer;
   bool isLoading = true;
@@ -97,14 +102,17 @@ class _SurveyFormViewState extends State<SurveyFormView> {
   @override
   void initState() {
     super.initState();
-    _loadDataInStages();
+    _loadInitialData();
   }
 
-  Future<void> _loadDataInStages() async {
+  Future<void> _loadInitialData() async {
     setState(() => isLoading = true);
 
     try {
-      // Load all dropdowns EXCEPT products
+      // First load companies
+      await _fetchCompanies();
+
+      // Then load other dropdowns
       await Future.wait([
         _fetchDropdownData('generic', genericList),
         _fetchDropdownData('dosage', dosageList),
@@ -176,6 +184,97 @@ class _SurveyFormViewState extends State<SurveyFormView> {
     }
   }
 
+  Future<void> _fetchCompanies() async {
+    setState(() => isLoadingCompanies = true);
+
+    try {
+      final response = await _apiService.getSurveyData('company');
+
+      response.when(
+        success: (data) {
+          if (data['status'] == true && data['data'] != null) {
+            companyList.clear();
+            final List<dynamic> apiData = data['data'];
+
+            for (var item in apiData) {
+              final id = item['company_code']?.toString() ?? '';
+              final value = item['company_title']?.toString() ?? '';
+              if (id.isNotEmpty && value.isNotEmpty) {
+                companyList.add(SurveyDropdownItem(id: id, value: value));
+              }
+            }
+
+            print("Loaded ${companyList.length} companies");
+
+            if (mounted) {
+              setState(() {});
+            }
+          }
+        },
+        failure: (error) {
+          print("Error loading companies: $error");
+          Constants.customErrorSnack(context, 'Failed to load companies');
+        },
+      );
+    } catch (e) {
+      print("Exception in _fetchCompanies: $e");
+    } finally {
+      if (mounted) {
+        setState(() => isLoadingCompanies = false);
+      }
+    }
+  }
+
+  Future<void> _fetchProductsForCompany(String companyCode) async {
+    if (companyCode.isEmpty) return;
+
+    setState(() => isLoadingProducts = true);
+
+    // Clear previous product selection
+    selectedProductId = null;
+    selectedProductName = null;
+
+    try {
+      final response = await _apiService.getSurveyDataWithParams('product', companyCode: companyCode);
+
+      response.when(
+        success: (data) {
+          if (data['status'] == true && data['data'] != null) {
+            final List<dynamic> apiData = data['data'];
+            final List<SurveyDropdownItem> products = [];
+
+            for (var item in apiData) {
+              final id = item['product_code']?.toString() ?? '';
+              final value = item['product_name']?.toString() ?? '';
+              if (id.isNotEmpty && value.isNotEmpty) {
+                products.add(SurveyDropdownItem(id: id, value: value));
+              }
+            }
+
+            // Store products in cache for the product search dialog
+            _cachedDialogProducts = products;
+
+            print("Loaded ${products.length} products for company $companyCode");
+
+            if (mounted) {
+              setState(() {});
+            }
+          }
+        },
+        failure: (error) {
+          print("Error loading products: $error");
+          Constants.customErrorSnack(context, 'Failed to load products for selected company');
+        },
+      );
+    } catch (e) {
+      print("Exception in _fetchProductsForCompany: $e");
+    } finally {
+      if (mounted) {
+        setState(() => isLoadingProducts = false);
+      }
+    }
+  }
+
   void _validateFormDebounced() {
     _validationTimer?.cancel();
     _validationTimer = Timer(const Duration(milliseconds: 300), _validateForm);
@@ -193,6 +292,7 @@ class _SurveyFormViewState extends State<SurveyFormView> {
   void _validateForm() {
     final isValid = _formKey.currentState?.validate() ?? false;
     final dropdownsValid = selectedGeneric.value != null &&
+        selectedCompany.value != null &&
         selectedProductId != null &&
         selectedProductName != null &&
         selectedProductName!.isNotEmpty &&
@@ -229,26 +329,45 @@ class _SurveyFormViewState extends State<SurveyFormView> {
           child: Container(
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey[300]!, width: 1.5),
-              color: Colors.white,
+              border: Border.all(
+                color: selectedCompany.value == null
+                    ? Colors.grey[300]!
+                    : Theme.of(context).primaryColor.withOpacity(0.5),
+                width: selectedCompany.value == null ? 1.5 : 2,
+              ),
+              color: selectedCompany.value == null
+                  ? Colors.grey[100]
+                  : Colors.white,
             ),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
             child: Row(
               children: [
-                const Icon(
+                Icon(
                   Icons.search,
-                  color: Colors.grey,
+                  color: selectedCompany.value == null
+                      ? Colors.grey[400]
+                      : Colors.grey[600],
                   size: 20,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
-                  child: Text(
-                    selectedProductName ?? 'Tap to search product...',
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: selectedProductName != null ? Colors.black : Colors.grey,
-                    ),
-                    overflow: TextOverflow.ellipsis,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        selectedProductName ??
+                            (selectedCompany.value == null
+                                ? 'Select a company first'
+                                : 'Tap to search product...'),
+                        style: TextStyle(
+                          fontSize: 15,
+                          color: selectedProductName != null
+                              ? Colors.black
+                              : Colors.grey,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
                 ),
                 if (selectedProductName != null)
@@ -280,9 +399,22 @@ class _SurveyFormViewState extends State<SurveyFormView> {
                 const Icon(Icons.check_circle, color: Colors.green, size: 16),
                 const SizedBox(width: 8),
                 Expanded(
-                  child: Text(
-                    selectedProductName!,
-                    style: const TextStyle(color: Colors.green),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Selected Product:',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.green[700],
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      Text(
+                        selectedProductName!,
+                        style: const TextStyle(color: Colors.green),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -293,32 +425,383 @@ class _SurveyFormViewState extends State<SurveyFormView> {
     );
   }
 
-  void _openProductSearch() async {
+  String _getSelectedCompanyName() {
+    if (selectedCompany.value == null) return '';
+    final company = companyList.firstWhere(
+          (c) => c.id == selectedCompany.value,
+      orElse: () => SurveyDropdownItem(id: '', value: ''),
+    );
+    return company.value;
+  }
+
+  // Helper method to get value from ID
+  String _getValueFromId(List<SurveyDropdownItem> list, String? id) {
+    if (id == null || id.isEmpty) return '';
+    final item = list.firstWhere(
+          (item) => item.id == id,
+      orElse: () => SurveyDropdownItem(id: '', value: ''),
+    );
+    return item.value;
+  }
+
+  void _openCompanySearchDialog() async {
+    final TextEditingController searchController = TextEditingController();
+    List<SurveyDropdownItem> filteredList = List.from(companyList);
+    bool isLoading = false;
+
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              backgroundColor: Colors.transparent,
+              insetPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 40),
+              child: Container(
+                width: 450,
+                constraints: BoxConstraints(
+                  maxHeight: MediaQuery.of(context).size.height * 0.7,
+                  maxWidth: 450,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Compact Header
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: const BorderRadius.only(
+                          topLeft: Radius.circular(20),
+                          topRight: Radius.circular(20),
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: const Icon(
+                              Icons.business,
+                              color: Colors.white,
+                              size: 18,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              'Select Company',
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.close, color: Colors.white, size: 20),
+                            onPressed: () => Navigator.pop(context),
+                            padding: EdgeInsets.zero,
+                            constraints: const BoxConstraints(),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    // Compact Search bar
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Container(
+                        decoration: BoxDecoration(
+                          color: Colors.grey[50],
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey[200]!),
+                        ),
+                        child: TextField(
+                          controller: searchController,
+                          decoration: InputDecoration(
+                            hintText: 'Search company...',
+                            hintStyle: TextStyle(
+                              color: Colors.grey[500],
+                              fontSize: 14,
+                            ),
+                            prefixIcon: Icon(
+                              Icons.search,
+                              color: Theme.of(context).primaryColor,
+                              size: 18,
+                            ),
+                            suffixIcon: searchController.text.isNotEmpty
+                                ? IconButton(
+                              icon: Icon(
+                                Icons.clear,
+                                color: Colors.grey[500],
+                                size: 16,
+                              ),
+                              onPressed: () {
+                                searchController.clear();
+                                setState(() {
+                                  filteredList = List.from(companyList);
+                                });
+                              },
+                              padding: EdgeInsets.zero,
+                              constraints: const BoxConstraints(),
+                            )
+                                : null,
+                            border: InputBorder.none,
+                            contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 10,
+                            ),
+                          ),
+                          style: const TextStyle(fontSize: 14),
+                          autofocus: true,
+                          onChanged: (value) {
+                            setState(() {
+                              filteredList = companyList.where((item) {
+                                final searchLower = value.toLowerCase();
+                                return item.value.toLowerCase().contains(searchLower) ||
+                                    item.id.toLowerCase().contains(searchLower);
+                              }).toList();
+                            });
+                          },
+                        ),
+                      ),
+                    ),
+
+                    // Compact Results count
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            '${filteredList.length} companies',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+
+                    const SizedBox(height: 8),
+
+                    // Company list with compact items
+                    Expanded(
+                      child: filteredList.isEmpty
+                          ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.business_outlined,
+                              size: 32,
+                              color: Colors.grey[400],
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              searchController.text.isEmpty
+                                  ? 'No companies'
+                                  : 'No results found',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                          : ListView.separated(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        itemCount: filteredList.length,
+                        separatorBuilder: (context, index) => const SizedBox(height: 4),
+                        itemBuilder: (context, index) {
+                          final item = filteredList[index];
+                          return Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              onTap: () {
+                                selectedCompany.value = item.id;
+                                Navigator.pop(context);
+                                _fetchProductsForCompany(item.id);
+                                _validateFormDebounced();
+                              },
+                              borderRadius: BorderRadius.circular(8),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 10,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: selectedCompany.value == item.id
+                                      ? Theme.of(context).primaryColor.withOpacity(0.05)
+                                      : Colors.transparent,
+                                  borderRadius: BorderRadius.circular(8),
+                                  border: Border.all(
+                                    color: selectedCompany.value == item.id
+                                        ? Theme.of(context).primaryColor.withOpacity(0.3)
+                                        : Colors.transparent,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Container(
+                                      width: 32,
+                                      height: 32,
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).primaryColor.withOpacity(0.1),
+                                        borderRadius: BorderRadius.circular(6),
+                                      ),
+                                      child: Center(
+                                        child: Text(
+                                          item.value.substring(0, 1).toUpperCase(),
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Theme.of(context).primaryColor,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
+                                    Expanded(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            item.value,
+                                            style: const TextStyle(
+                                              fontSize: 14,
+                                              fontWeight: FontWeight.w500,
+                                              color: Colors.grey,
+                                            ),
+                                            maxLines: 1,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Text(
+                                            'Code: ${item.id}',
+                                            style: TextStyle(
+                                              fontSize: 11,
+                                              color: Colors.grey[500],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    if (selectedCompany.value == item.id)
+                                      Container(
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: Theme.of(context).primaryColor,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(
+                                          Icons.check,
+                                          color: Colors.white,
+                                          size: 12,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+
+                    // Compact Footer
+                    Container(
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[50],
+                        borderRadius: const BorderRadius.only(
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
+                        ),
+                        border: Border(
+                          top: BorderSide(color: Colors.grey[200]!),
+                        ),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            style: TextButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              minimumSize: const Size(0, 0),
+                            ),
+                            child: Text(
+                              'Close',
+                              style: TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
+  void _openProductSearch() {
+    // Check if company is selected
+    if (selectedCompany.value == null) {
+      Constants.customErrorSnack(context, 'Please select a company first');
+      return;
+    }
+
+    // Check if products are loaded
+    if (_cachedDialogProducts == null || _cachedDialogProducts!.isEmpty) {
+      Constants.customErrorSnack(context, 'No products available for this company');
+      return;
+    }
+
     final dialog = CachedProductSearchDialog(
       apiService: _apiService,
       initialProducts: _cachedDialogProducts,
     );
 
-    final result = await showDialog<SurveyDropdownItem>(
+    showDialog<SurveyDropdownItem>(
       context: context,
       builder: (context) => dialog,
-    );
-
-    if (result != null) {
-      print('DEBUG: Product selected - ID: "${result.id}", Name: "${result.value}"');
-      print('DEBUG: Is ID empty? ${result.id.isEmpty}');
-      print('DEBUG: Is Name empty? ${result.value.isEmpty}');
-
-      setState(() {
-        selectedProductId = result.id;
-        selectedProductName = result.value;
-      });
-
-      print('DEBUG: After selection - ID: "$selectedProductId", Name: "$selectedProductName"');
-
-      _validateFormDebounced();
-      _cachedDialogProducts = dialog.getLoadedProducts();
-    }
+    ).then((result) {
+      if (result != null) {
+        setState(() {
+          selectedProductId = result.id;
+          selectedProductName = result.value;
+        });
+        _validateFormDebounced();
+      }
+    });
   }
 
   // Searchable dropdown for generic list
@@ -387,6 +870,144 @@ class _SurveyFormViewState extends State<SurveyFormView> {
             ),
           ),
         ),
+      ],
+    );
+  }
+
+  Widget _buildCompanyDropdown() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Company*',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+            color: Colors.grey,
+          ),
+        ),
+        const SizedBox(height: 8),
+        GestureDetector(
+          onTap: _openCompanySearchDialog,
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey[300]!, width: 1.5),
+              color: Colors.white,
+            ),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.business,
+                  color: Colors.grey[600],
+                  size: 20,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: ValueListenableBuilder<String?>(
+                    valueListenable: selectedCompany,
+                    builder: (context, value, child) {
+                      final selectedItem = companyList.firstWhere(
+                            (item) => item.id == value,
+                        orElse: () => SurveyDropdownItem(id: '', value: ''),
+                      );
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          if (selectedItem.value.isNotEmpty) ...[
+                            Text(
+                              'Selected Company:',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[500],
+                              ),
+                            ),
+                            const SizedBox(height: 2),
+                          ],
+                          Text(
+                            selectedItem.value.isNotEmpty
+                                ? selectedItem.value
+                                : (isLoadingCompanies ? 'Loading companies...' : 'Select a company'),
+                            style: TextStyle(
+                              fontSize: 15,
+                              color: selectedItem.value.isNotEmpty ? Colors.black : Colors.grey,
+                              fontWeight: selectedItem.value.isNotEmpty ? FontWeight.w500 : FontWeight.normal,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                if (selectedCompany.value != null)
+                  Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        width: 1,
+                        height: 24,
+                        color: Colors.grey[300],
+                      ),
+                      const SizedBox(width: 8),
+                      IconButton(
+                        icon: const Icon(Icons.clear, size: 18),
+                        onPressed: () {
+                          selectedCompany.value = null;
+                          // Clear products when company is deselected
+                          _cachedDialogProducts = null;
+                          selectedProductId = null;
+                          selectedProductName = null;
+                          setState(() {});
+                          _validateFormDebounced();
+                        },
+                        padding: EdgeInsets.zero,
+                        constraints: const BoxConstraints(),
+                      ),
+                    ],
+                  ),
+                Icon(
+                  Icons.arrow_drop_down,
+                  color: Colors.grey[400],
+                  size: 24,
+                ),
+              ],
+            ),
+          ),
+        ),
+
+        // Show selected company info
+        if (selectedCompany.value != null) ...[
+          const SizedBox(height: 8),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: Theme.of(context).primaryColor.withOpacity(0.05),
+              borderRadius: BorderRadius.circular(8),
+              border: Border.all(color: Theme.of(context).primaryColor.withOpacity(0.2)),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.check_circle,
+                  color: Theme.of(context).primaryColor,
+                  size: 16,
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    'Company selected. You can now search products.',
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ],
     );
   }
@@ -961,17 +1582,45 @@ class _SurveyFormViewState extends State<SurveyFormView> {
       return;
     }
 
-    if (selectedGeneric.value == null ||
-        selectedProductId == null ||
-        selectedProductName == null ||
-        selectedDosage.value == null ||
-        selectedPackSize.value == null ||
-        selectedCategory.value == null ||
-        selectedClassification.value == null ||
-        selectedRoute.value == null ||
-        selectedStrength.value == null ||
-        selectedVolume.value == null) {
-      Constants.customErrorSnack(context, 'Please fill all required fields including product selection');
+    // Validate all required fields including company
+    List<String> missingFields = [];
+
+    if (selectedCompany.value == null) missingFields.add('Company');
+    if (selectedGeneric.value == null) missingFields.add('Active Ingredients');
+    if (selectedProductId == null || selectedProductName == null) missingFields.add('Product');
+    if (selectedDosage.value == null) missingFields.add('Dosage Form');
+    if (selectedPackSize.value == null) missingFields.add('Pack Size');
+    if (selectedCategory.value == null) missingFields.add('Product Category');
+    if (selectedClassification.value == null) missingFields.add('Product Classification');
+    if (selectedRoute.value == null) missingFields.add('Route of Administration');
+    if (selectedStrength.value == null) missingFields.add('Strength');
+    if (selectedVolume.value == null) missingFields.add('Volume');
+
+    // Check text fields that are required
+    if (distributorSystemCodeController.text.trim().isEmpty) missingFields.add('Distributor System Code');
+    if (registrationNoController.text.trim().isEmpty) missingFields.add('Registration No');
+    if (priceUnitController.text.trim().isEmpty) missingFields.add('Price (Unit)');
+    if (pricePackController.text.trim().isEmpty) missingFields.add('Price (Pack)');
+    if (storageTempController.text.trim().isEmpty) missingFields.add('Storage Temperature');
+    if (manufacturerController.text.trim().isEmpty) missingFields.add('Manufacturer');
+    if (manufacturerAddressController.text.trim().isEmpty) missingFields.add('Manufacturer Address');
+    if (distributorNameController.text.trim().isEmpty) missingFields.add('Distributor Name');
+    if (distributorLicenseController.text.trim().isEmpty) missingFields.add('Distributor License');
+    if (shelfLifeController.text.trim().isEmpty) missingFields.add('Shelf Life');
+    if (cartonSizeController.text.trim().isEmpty) missingFields.add('Carton Size');
+
+    if (missingFields.isNotEmpty) {
+      _showErrorDialog(
+        title: 'Missing Information',
+        message: 'Please fill all required fields',
+        isMissingFieldError: true,
+        missingField: missingFields.first,
+      );
+
+      Constants.customErrorSnack(
+          context,
+          'Required fields missing: ${missingFields.join(', ')}'
+      );
       return;
     }
 
@@ -1001,30 +1650,59 @@ class _SurveyFormViewState extends State<SurveyFormView> {
     setState(() => isSubmitting = true);
 
     try {
+      // Debug dropdown values
+      print('=== DROPDOWN VALUES DEBUG ===');
+      print('Dosage Form - ID: ${selectedDosage.value}, Value: ${_getValueFromId(dosageList, selectedDosage.value)}');
+      print('Route Admin - ID: ${selectedRoute.value}, Value: ${_getValueFromId(routeList, selectedRoute.value)}');
+      print('Strength - ID: ${selectedStrength.value}, Value: ${_getValueFromId(strengthList, selectedStrength.value)}');
+      print('Volume - ID: ${selectedVolume.value}, Value: ${_getValueFromId(volumeList, selectedVolume.value)}');
+      print('Category - ID: ${selectedCategory.value}, Value: ${_getValueFromId(categoryList, selectedCategory.value)}');
+      print('Classification - ID: ${selectedClassification.value}, Value: ${_getValueFromId(classificationList, selectedClassification.value)}');
+      print('Generic - ID: ${selectedGeneric.value}, Value: ${_getValueFromId(genericList, selectedGeneric.value)}');
+      print('=== END DROPDOWN DEBUG ===');
+
       final Map<String, dynamic> formData = {
-        'carton_size': cartonSizeController.text.trim(),
-        'shelf_life': shelfLifeController.text.trim(),
-        'product_clasification': selectedClassification.value ?? '',
-        'product_category': selectedCategory.value ?? '',
-        'dist_license_no': distributorLicenseController.text.trim(),
-        'distributor_name': distributorNameController.text.trim(),
-        'importer_address': importerAddressController.text.trim(),
-        'importer': importerController.text.trim(),
-        'mfr_address': manufacturerAddressController.text.trim(),
-        'manufacturer': manufacturerController.text.trim(),
-        'storage_temp': storageTempController.text.trim(),
-        'price_pack': pricePackController.text.trim(),
-        'price_unit': priceUnitController.text.trim(),
-        'pack_size': selectedPackSize.value ?? '',
-        'volume': selectedVolume.value ?? '',
-        'strength': selectedStrength.value ?? '',
-        'route_admin': selectedRoute.value ?? '',
-        'dosage_form': selectedDosage.value ?? '',
-        'registration_no': registrationNoController.text.trim(),
+        // Company Information
+        'company_code': selectedCompany.value ?? '',
+
+        // Product Information
         'product_code': selectedProductId ?? '',
         'product_name': selectedProductName ?? '',
-        'generic': selectedGeneric.value ?? '',
+
+        // IMPORTANT: Send the actual values, not the IDs
+        'generic': _getValueFromId(genericList, selectedGeneric.value),
+        'dosage_form': _getValueFromId(dosageList, selectedDosage.value),
+        'pack_size': _getValueFromId(packSizeList, selectedPackSize.value),
+        'product_category': _getValueFromId(categoryList, selectedCategory.value),
+        'product_clasification': _getValueFromId(classificationList, selectedClassification.value), // Note: API uses 'product_clasification'
+        'route_admin': _getValueFromId(routeList, selectedRoute.value),
+        'strength': _getValueFromId(strengthList, selectedStrength.value),
+        'volume': _getValueFromId(volumeList, selectedVolume.value),
+
+        // Registration & Pricing
+        'registration_no': registrationNoController.text.trim(),
+        'price_unit': priceUnitController.text.trim(),
+        'price_pack': pricePackController.text.trim(),
+
+        // Storage & Shelf Life
+        'storage_temp': storageTempController.text.trim(),
+        'shelf_life': shelfLifeController.text.trim(),
+        'carton_size': cartonSizeController.text.trim(),
+
+        // Manufacturer Information
+        'manufacturer': manufacturerController.text.trim(),
+        'mfr_address': manufacturerAddressController.text.trim(),
+
+        // Importer Information
+        'importer': importerController.text.trim(),
+        'importer_address': importerAddressController.text.trim(),
+
+        // Distributor Information
         'system_code': distributorSystemCodeController.text.trim(),
+        'distributor_name': distributorNameController.text.trim(),
+        'dist_license_no': distributorLicenseController.text.trim(),
+
+        // User Information
         'user_name': _authService.user?.userName?.toString() ?? '',
         'user_id': _authService.user?.userId?.toString() ?? '',
       };
@@ -1039,7 +1717,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
           if (data['status'] == true) {
             _showSuccessDialog();
           } else {
-            // Handle API returned false status
             _showErrorDialog(
               title: 'Submission Failed',
               message: data['message'] ?? 'Failed to submit survey',
@@ -1048,92 +1725,81 @@ class _SurveyFormViewState extends State<SurveyFormView> {
             );
           }
         },
-          failure: (error) {
-            setState(() => isSubmitting = false);
+        failure: (error) {
+          setState(() => isSubmitting = false);
 
-            // First, print the error type for debugging
-            print('Error type: ${error.runtimeType}');
+          print('Error type: ${error.runtimeType}');
 
-            // The error is already a NetworkExceptions object from the API service
-            // We need to get the original DioException to check status codes
-            if (error is NetworkExceptions) {
-              // Extract the error message
-              final errorMessage = NetworkExceptions.getErrorMessage(error);
-              print('NetworkExceptions error: $errorMessage');
+          if (error is NetworkExceptions) {
+            final errorMessage = NetworkExceptions.getErrorMessage(error);
+            print('NetworkExceptions error: $errorMessage');
 
-              // For specific error types, we can handle differently
-              error.when(
-                conflict: () {
-                  // This is a 409 error (duplicate entry)
+            error.when(
+              conflict: () {
+                _showErrorDialog(
+                  title: 'Duplicate Entry',
+                  message: 'This product code already exists. Duplicate entry not allowed.',
+                  isMissingFieldError: false,
+                  missingField: null,
+                );
+              },
+              unauthorizedRequest: () {
+                _showErrorDialog(
+                  title: 'Missing Information',
+                  message: 'Please check all required fields are filled correctly.',
+                  isMissingFieldError: true,
+                  missingField: null,
+                );
+              },
+              badRequest: () {
+                _showErrorDialog(
+                  title: 'Missing Information',
+                  message: 'Required field is missing. Please fill all required fields.',
+                  isMissingFieldError: true,
+                  missingField: null,
+                );
+              },
+              defaultError: (String defaultError) {
+                if (defaultError.contains('Missing field:')) {
+                  final missingField = _extractMissingField(defaultError);
                   _showErrorDialog(
-                    title: 'Duplicate Entry',
-                    message: 'This product code already exists. Duplicate entry not allowed.',
+                    title: 'Missing Information',
+                    message: defaultError,
+                    isMissingFieldError: true,
+                    missingField: missingField,
+                  );
+                } else {
+                  _showErrorDialog(
+                    title: 'Error',
+                    message: defaultError,
                     isMissingFieldError: false,
                     missingField: null,
                   );
-                },
-                unauthorizedRequest: () {
-                  // This is a 400/401/403 error
-                  _showErrorDialog(
-                    title: 'Missing Information',
-                    message: 'Please check all required fields are filled correctly.',
-                    isMissingFieldError: true,
-                    missingField: null,
-                  );
-                },
-                badRequest: () {
-                  // This is a 400 error
-                  _showErrorDialog(
-                    title: 'Missing Information',
-                    message: 'Required field is missing. Please fill all required fields.',
-                    isMissingFieldError: true,
-                    missingField: null,
-                  );
-                },
-                defaultError: (String defaultError) {
-                  // Check if it contains missing field message
-                  if (defaultError.contains('Missing field:')) {
-                    final missingField = _extractMissingField(defaultError);
-                    _showErrorDialog(
-                      title: 'Missing Information',
-                      message: defaultError,
-                      isMissingFieldError: true,
-                      missingField: missingField,
-                    );
-                  } else {
-                    _showErrorDialog(
-                      title: 'Error',
-                      message: defaultError,
-                      isMissingFieldError: false,
-                      missingField: null,
-                    );
-                  }
-                },
-                // Handle other error types with generic dialog
-                requestCancelled: () => _showGenericError('Request Cancelled'),
-                notFound: (reason) => _showGenericError(reason),
-                methodNotAllowed: () => _showGenericError('Method Not Allowed'),
-                notAcceptable: () => _showGenericError('Not Acceptable'),
-                requestTimeout: () => _showGenericError('Request Timeout'),
-                sendTimeout: () => _showGenericError('Send Timeout'),
-                internalServerError: () => _showGenericError('Internal Server Error'),
-                notImplemented: () => _showGenericError('Not Implemented'),
-                serviceUnavailable: () => _showGenericError('Service Unavailable'),
-                noInternetConnection: () => _showGenericError('No Internet Connection'),
-                formatException: () => _showGenericError('Format Exception'),
-                unableToProcess: () => _showGenericError('Unable to Process Data'),
-                unexpectedError: () => _showGenericError('Unexpected Error'),
-              );
-            } else {
-              // If it's not a NetworkExceptions, show generic error
-              _showErrorDialog(
-                title: 'Error',
-                message: error.toString(),
-                isMissingFieldError: false,
-                missingField: null,
-              );
-            }
-          },
+                }
+              },
+              requestCancelled: () => _showGenericError('Request Cancelled'),
+              notFound: (reason) => _showGenericError(reason),
+              methodNotAllowed: () => _showGenericError('Method Not Allowed'),
+              notAcceptable: () => _showGenericError('Not Acceptable'),
+              requestTimeout: () => _showGenericError('Request Timeout'),
+              sendTimeout: () => _showGenericError('Send Timeout'),
+              internalServerError: () => _showGenericError('Internal Server Error'),
+              notImplemented: () => _showGenericError('Not Implemented'),
+              serviceUnavailable: () => _showGenericError('Service Unavailable'),
+              noInternetConnection: () => _showGenericError('No Internet Connection'),
+              formatException: () => _showGenericError('Format Exception'),
+              unableToProcess: () => _showGenericError('Unable to Process Data'),
+              unexpectedError: () => _showGenericError('Unexpected Error'),
+            );
+          } else {
+            _showErrorDialog(
+              title: 'Error',
+              message: error.toString(),
+              isMissingFieldError: false,
+              missingField: null,
+            );
+          }
+        },
       );
     } catch (e) {
       setState(() => isSubmitting = false);
@@ -1150,7 +1816,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
   String? _extractErrorMessage(dynamic responseData) {
     try {
       if (responseData is String) {
-        // Try to parse as JSON
         final parsed = jsonDecode(responseData);
         if (parsed is Map && parsed.containsKey('message')) {
           return parsed['message'].toString();
@@ -1169,13 +1834,11 @@ class _SurveyFormViewState extends State<SurveyFormView> {
   String? _extractMissingField(String? errorMessage) {
     if (errorMessage == null) return null;
 
-    // Look for patterns like "Missing field: importer"
     final missingFieldMatch = RegExp(r'Missing field:\s*(\w+)').firstMatch(errorMessage);
     if (missingFieldMatch != null) {
       return missingFieldMatch.group(1);
     }
 
-    // Look for patterns like "importer is required"
     final requiredFieldMatch = RegExp(r'(\w+)\s+is required').firstMatch(errorMessage);
     if (requiredFieldMatch != null) {
       return requiredFieldMatch.group(1);
@@ -1213,7 +1876,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // Icon
                 Container(
                   width: 80,
                   height: 80,
@@ -1228,8 +1890,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
                   ),
                 ),
                 const SizedBox(height: 20),
-
-                // Title
                 Text(
                   title,
                   style: const TextStyle(
@@ -1239,8 +1899,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
                   ),
                 ),
                 const SizedBox(height: 12),
-
-                // Message
                 Text(
                   message,
                   textAlign: TextAlign.center,
@@ -1249,8 +1907,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
                     color: Colors.grey,
                   ),
                 ),
-
-                // If missing field, show which field
                 if (isMissingFieldError && missingField != null) ...[
                   const SizedBox(height: 16),
                   Container(
@@ -1281,8 +1937,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
                     ),
                   ),
                 ],
-
-                // If duplicate entry, show suggestion
                 if (title.contains('Duplicate')) ...[
                   const SizedBox(height: 16),
                   Container(
@@ -1313,10 +1967,7 @@ class _SurveyFormViewState extends State<SurveyFormView> {
                     ),
                   ),
                 ],
-
                 const SizedBox(height: 24),
-
-                // Buttons
                 Row(
                   children: [
                     if (isMissingFieldError)
@@ -1324,7 +1975,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
                         child: OutlinedButton(
                           onPressed: () {
                             Navigator.pop(context);
-                            // Auto-focus on the missing field if possible
                             if (missingField != null) {
                               _focusOnMissingField(missingField);
                             }
@@ -1377,14 +2027,11 @@ class _SurveyFormViewState extends State<SurveyFormView> {
 
   // Helper method to focus on the missing field
   void _focusOnMissingField(String fieldName) {
-    // Map field names to focus actions
     final fieldMap = {
       'importer': () {
-        // Focus on importer field
         if (importerFieldKey.currentState != null) {
           FocusScope.of(context).requestFocus(FocusNode());
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            // Scroll to the importer field
             Scrollable.ensureVisible(
               importerFieldKey.currentContext!,
               duration: const Duration(milliseconds: 500),
@@ -1394,15 +2041,12 @@ class _SurveyFormViewState extends State<SurveyFormView> {
         }
       },
       'product_code': () {
-        // Focus on product search
         _openProductSearch();
       },
       'generic': () {
-        // Focus on generic dropdown
         _showGenericSearchDialog();
       },
       'manufacturer': () {
-        // Focus on manufacturer field
         if (manufacturerFieldKey.currentState != null) {
           FocusScope.of(context).requestFocus(FocusNode());
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -1415,7 +2059,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
         }
       },
       'system_code': () {
-        // Focus on system code field
         if (distributorSystemCodeFieldKey.currentState != null) {
           FocusScope.of(context).requestFocus(FocusNode());
           WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -1438,6 +2081,7 @@ class _SurveyFormViewState extends State<SurveyFormView> {
     _formKey.currentState?.reset();
 
     // Reset ValueNotifiers
+    selectedCompany.value = null;
     selectedDosage.value = null;
     selectedGeneric.value = null;
     selectedPackSize.value = null;
@@ -1450,6 +2094,7 @@ class _SurveyFormViewState extends State<SurveyFormView> {
     // Reset product selection
     selectedProductId = null;
     selectedProductName = null;
+    _cachedDialogProducts = null;
 
     // Clear text controllers
     distributorSystemCodeController.clear();
@@ -1477,6 +2122,7 @@ class _SurveyFormViewState extends State<SurveyFormView> {
     _scrollController.dispose();
 
     // Dispose ValueNotifiers
+    selectedCompany.dispose();
     selectedDosage.dispose();
     selectedGeneric.dispose();
     selectedPackSize.dispose();
@@ -1534,7 +2180,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
           ? const Center(child: LoadingIndicator())
           : Column(
         children: [
-          // Form Content
           Expanded(
             child: Form(
               key: _formKey,
@@ -1544,7 +2189,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Product Information Section
                     _buildSectionHeader(
                       title: 'Product Information',
                       subtitle: 'Select product details from dropdowns',
@@ -1553,10 +2197,7 @@ class _SurveyFormViewState extends State<SurveyFormView> {
                     ),
                     const SizedBox(height: 20),
                     ..._buildProductInfoFields(),
-
                     const SizedBox(height: 30),
-
-                    // Additional Information Section
                     _buildSectionHeader(
                       title: 'Additional Information',
                       subtitle: 'Enter product specifications and details',
@@ -1565,15 +2206,12 @@ class _SurveyFormViewState extends State<SurveyFormView> {
                     ),
                     const SizedBox(height: 20),
                     ..._buildAdditionalInfoFields(),
-
                     const SizedBox(height: 40),
                   ],
                 ),
               ),
             ),
           ),
-
-          // Action Buttons
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
@@ -1651,10 +2289,64 @@ class _SurveyFormViewState extends State<SurveyFormView> {
 
   List<Widget> _buildProductInfoFields() {
     return [
-      // Use searchable dropdown instead of regular dropdown
-      _buildSearchableGenericDropdown(),
-      const SizedBox(height: 12),
+      _buildCompanyDropdown(),
+      const SizedBox(height: 16),
+      if (isLoadingProducts)
+        Container(
+          margin: const EdgeInsets.symmetric(vertical: 12),
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.blue[50],
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: Colors.blue[100]!),
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  shape: BoxShape.circle,
+                ),
+                child: SizedBox(
+                  width: 20,
+                  height: 20,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2,
+                    valueColor: AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Loading Products',
+                      style: TextStyle(
+                        fontSize: 15,
+                        fontWeight: FontWeight.w600,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      'Fetching products for ${_getSelectedCompanyName()}...',
+                      style: TextStyle(
+                        fontSize: 13,
+                        color: Colors.grey[600],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
       _buildProductSearchField(),
+      const SizedBox(height: 12),
+      _buildSearchableGenericDropdown(),
       const SizedBox(height: 12),
       _buildOptimizedDropdown(
         label: 'Dosage Form*',

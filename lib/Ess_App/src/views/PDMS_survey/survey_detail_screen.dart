@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../../models/api_form_data_models/pdms_survey_form_model.dart';
 import '../../styles/app_colors.dart';
 
-
 class SurveyDetailScreen extends StatelessWidget {
   final SurveyModel survey;
 
@@ -55,14 +54,13 @@ class SurveyDetailScreen extends StatelessWidget {
         backgroundColor: AppColors.primary,
         title: Center(
           child: Text(
-              "Survey Details",
+            "Survey Details",
             style: TextStyle(
-              color: Colors.white
+                color: Colors.white
             ),
           ),
         ),
         leading: IconButton(
-
           icon: Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () => Navigator.pop(context),
         ),
@@ -118,10 +116,14 @@ class SurveyDetailScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 16),
                     _buildDetailRow("Submitted By", survey.displayUserInfo, icon: Icons.person),
-                    Divider(height: 24),
+
+                    // Company Code - Only show if available
+                    if (survey.companyCode != null && survey.companyCode!.isNotEmpty)
+                      _buildDetailRow("Company Code", survey.companyCode!, icon: Icons.business),
+
+                    // Divider(height: 10),
                     _buildDetailRow("Product Name", survey.productName, icon: Icons.medical_services),
                     _buildDetailRow("Generic Name", survey.generic, icon: Icons.science),
-                    _buildDetailRow("Product Code", survey.productCode, icon: Icons.qr_code),
                   ],
                 ),
               ),

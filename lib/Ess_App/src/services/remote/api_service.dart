@@ -3419,10 +3419,12 @@ print("URl :${url}");
   }
 
   // Add this method to ApiService class
+// Add this method to ApiService class
   Future<ApiResult<Map<String, dynamic>>> getSurveyDataWithParams(
       String tab, {
         String? search,
         int? limit,
+        String? companyCode, // Add companyCode parameter
       }) async {
     try {
       var headers = {
@@ -3434,6 +3436,10 @@ print("URl :${url}");
       // Build query parameters
       String queryParams = 'tab=$tab';
 
+      if (companyCode != null && companyCode.isNotEmpty) {
+        queryParams += '&company_code=$companyCode';
+      }
+
       if (search != null && search.isNotEmpty) {
         queryParams += '&search=${Uri.encodeComponent(search)}';
       }
@@ -3442,12 +3448,12 @@ print("URl :${url}");
         queryParams += '&limit=$limit';
       }
 
+      print("Survey API with params: $queryParams");
+
       var response = await _apiClient?.getReq(
         "/get_survey_pivot.php?$queryParams",
         headers: headers,
       );
-
-      print("Survey API with params: $queryParams");
 
       if (response?.statusCode != 200) {
         return ApiResult.failure(
