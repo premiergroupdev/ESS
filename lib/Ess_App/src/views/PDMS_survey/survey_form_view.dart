@@ -13,8 +13,6 @@ import 'cached_product_search_dialog.dart';
 import 'chunked_product_search_dialog.dart';
 import 'package:dio/dio.dart';
 
-// Add this import if you don't have it
-import 'package:flutter/material.dart';
 
 class SurveyDropdownItem {
   final String id;
@@ -235,6 +233,7 @@ class _SurveyFormViewState extends State<SurveyFormView> {
     selectedProductName = null;
 
     try {
+      // Fetch products for the company
       final response = await _apiService.getSurveyDataWithParams('product', companyCode: companyCode);
 
       response.when(
@@ -255,10 +254,6 @@ class _SurveyFormViewState extends State<SurveyFormView> {
             _cachedDialogProducts = products;
 
             print("Loaded ${products.length} products for company $companyCode");
-
-            if (mounted) {
-              setState(() {});
-            }
           }
         },
         failure: (error) {
@@ -266,12 +261,84 @@ class _SurveyFormViewState extends State<SurveyFormView> {
           Constants.customErrorSnack(context, 'Failed to load products for selected company');
         },
       );
+
+      // Fetch company address
+      await _fetchAndSetCompanyAddress(companyCode);
+
     } catch (e) {
       print("Exception in _fetchProductsForCompany: $e");
     } finally {
       if (mounted) {
         setState(() => isLoadingProducts = false);
       }
+    }
+  }
+
+  Future<void> _fetchAndSetCompanyAddress(String companyCode) async {
+    try {
+      final addressResponse = await _apiService.getCompanyAddress(companyCode);
+
+      addressResponse.when(
+        success: (data) {
+          final address = data['company_address'];
+
+          if (address != null && address.toString().isNotEmpty && address.toString() != 'null') {
+            // Valid address found - auto-populate manufacturer address
+            setState(() {
+              manufacturerAddressController.text = address.toString();
+            });
+
+            // Optional: Show a snackbar to inform user
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Company address loaded automatically'),
+                backgroundColor: Colors.green,
+                duration: Duration(seconds: 2),
+              ),
+            );
+
+            print("Auto-populated manufacturer address: $address");
+          } else {
+            // No address found - clear the field and make it editable
+            setState(() {
+              manufacturerAddressController.clear();
+            });
+
+            // Optional: Show a snackbar to inform user
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('No address found for this company. Please enter manually.'),
+                backgroundColor: Colors.orange,
+                duration: Duration(seconds: 3),
+              ),
+            );
+
+            print("No address found for company: $companyCode");
+          }
+        },
+        failure: (error) {
+          // Error fetching address - clear the field and make it editable
+          setState(() {
+            manufacturerAddressController.clear();
+          });
+
+          print("Error fetching company address: $error");
+
+          // Optional: Show error snackbar
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text('Could not load company address. Please enter manually.'),
+              backgroundColor: Colors.red,
+              duration: Duration(seconds: 3),
+            ),
+          );
+        },
+      );
+    } catch (e) {
+      print("Exception in _fetchAndSetCompanyAddress: $e");
+      setState(() {
+        manufacturerAddressController.clear();
+      });
     }
   }
 
@@ -2079,6 +2146,8 @@ class _SurveyFormViewState extends State<SurveyFormView> {
 
   void _resetForm() {
     _formKey.currentState?.reset();
+
+    manufacturerAddressController.clear();
 
     // Reset ValueNotifiers
     selectedCompany.value = null;

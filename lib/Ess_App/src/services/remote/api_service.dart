@@ -1,8 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 import 'package:http/http.dart' as http;
-import 'package:path/path.dart' as path;
 import 'package:dio/dio.dart';
 import 'package:ess/Ess_App/My_models/final_advancce_model.dart';
 import 'package:ess/Ess_App/My_models/user_model.dart';
@@ -27,7 +25,6 @@ import 'package:ess/Ess_App/src/services/remote/api_client.dart';
 import 'package:ess/Ess_App/src/services/remote/api_result.dart';
 import 'package:ess/Ess_App/src/services/remote/network_exceptions.dart';
 import 'package:flutter/cupertino.dart';
-
 import '../../../My_models/pending_visit_approval.dart';
 import '../../base/utils/constants.dart';
 import '../../models/api_response_models/Batch_model.dart';
@@ -42,7 +39,6 @@ import '../../models/api_response_models/My_smart_goals.dart';
 import '../../models/api_response_models/Training_model.dart';
 import '../../models/api_response_models/Traval_Expense.dart';
 import '../../models/api_response_models/advance_line_manager_approval.dart';
-import '../../models/api_response_models/branch.dart';
 import '../../models/api_response_models/branch.dart';
 import '../../models/api_response_models/ceo_model.dart';
 import '../../models/api_response_models/changepassword_model.dart';
@@ -318,9 +314,9 @@ class ApiService {
           headers: headers
       );
       var data = jsonDecode(response?.data);
-      var datalist = data['Datalist'] as List<dynamic>;
-      var formattedlist = datalist.map((e) => e as Map<String, dynamic>)
-          .toList();
+      // var datalist = data['Datalist'] as List<dynamic>;
+      // var formattedlist = datalist.map((e) => e as Map<String, dynamic>)
+      //     .toList();
       if (response?.statusCode != 200) {
         return ApiResult.failure(
             error:
@@ -738,7 +734,7 @@ class ApiService {
       print("Response data: ${response.body}");
 
 
-      var data = jsonDecode(response.body!);
+      var data = jsonDecode(response.body);
       if (response.statusCode != 200) {
         String responseStatus = data["status"].toString();
         print("Request failed with status code: ${response.statusCode}");
@@ -1359,7 +1355,7 @@ class ApiService {
 
         if (data != null && data.containsKey("status")) {
           // Check if "status" is present in the JSON response
-          String responseStatus = data["status"].toString();
+          // String responseStatus = data["status"].toString();
           return ApiResult.success(data: data);
           // if (responseStatus == "200") {
           //   // Successful status code
@@ -3182,7 +3178,7 @@ print("URl :${url}");
       );
       final data = jsonDecode(response.data);
       return data['Datalist'];
-    } on DioError catch (e) {
+    } on DioException catch (e) {
       print('Error: ${e.message}');
       print('Status Code: ${e.response?.statusCode}');
       rethrow;
@@ -3712,4 +3708,36 @@ print("URl :${url}");
       return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
     }
   }
+
+  // Add this method to ApiService class
+  Future<ApiResult<Map<String, dynamic>>> getCompanyAddress(String companyCode) async {
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+      };
+
+      var response = await _apiClient?.getReq(
+        "/get_company_address.php?company_code=$companyCode",
+        headers: headers,
+      );
+
+      print("Company address API response: ${response?.data}");
+
+      if (response?.statusCode != 200) {
+        return ApiResult.failure(
+          error: NetworkExceptions.notFound(response?.message ?? "Failed to fetch company address"),
+        );
+      }
+
+      var data = jsonDecode(response?.data ?? '{}');
+      return ApiResult.success(data: data);
+
+    } catch (e) {
+      print("Error in getCompanyAddress: $e");
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
 }

@@ -58,13 +58,14 @@ class RequestAdvanceViewModel extends ReactiveViewModel with AuthViewModel, ApiV
   }
 
   // Fetch user details from POST API with query parameter
+// Fetch user details from POST API with query parameter
   Future<void> _fetchUserDetailsFromAPI(String empCode) async {
     try {
       print('🔄 Calling POST API with EmpCode: $empCode');
 
       // POST request with query parameter in URL
       final response = await http.post(
-        Uri.parse('http://pg-ERPBI.premiergroup.com.pk:7060/api/Worker/GetErpEmployees?EmpCode=$empCode'),
+        Uri.parse('http://pg-ERPBI.premiergroup.com.pk:7060/api/Worker/GetErpEmployees?EmpCode=$empCode&EmpType=1'),
         headers: _headers,
         // Empty body since parameter is in URL
         body: json.encode({}),
@@ -77,7 +78,7 @@ class RequestAdvanceViewModel extends ReactiveViewModel with AuthViewModel, ApiV
         final jsonResponse = json.decode(response.body);
         print('✅ API Success - Full Response: $jsonResponse');
 
-        if (jsonResponse['status_Code'] == '200' &&
+        if (jsonResponse['status_Code'] == 200 &&
             jsonResponse['response'] != null &&
             jsonResponse['response'].length > 0) {
           userData = jsonResponse['response'][0];

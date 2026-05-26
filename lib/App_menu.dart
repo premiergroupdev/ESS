@@ -5,25 +5,19 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ess/360_survey_App/Screens/Login/Login_screen_view.dart';
 import 'package:ess/Ess_App/src/styles/app_colors.dart';
 import 'package:ess/Learning_management_system/Screens/Lms_Dashboard/Lms_dashboard_view.dart';
-import 'package:ess/Learning_management_system/Utilis/colors.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:package_info/package_info.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:slide_digital_clock/slide_digital_clock.dart';
 import '360_survey_App/Api_services/data/Local_services/Session.dart';
 import '360_survey_App/Screens/Dashboard/Dashboard_view.dart';
 import 'Ess_App/src/configs/app_setup.locator.dart';
 import 'Ess_App/src/services/local/auth_service.dart';
 import 'Ess_App/src/services/remote/api_service.dart';
-import 'Ess_App/src/styles/text_theme.dart';
 import 'package:http/http.dart' as http;
 import 'Ess_App/src/models/api_response_models/user.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'Ess_App/src/views/dashboard/dashboard_view.dart';
 import 'Ess_App/src/views/local_db.dart';
-import 'Ess_App/src/views/login/login_view.dart';
 import 'Timer.dart';
 
 

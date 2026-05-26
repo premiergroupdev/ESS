@@ -1,8 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
-
 import 'package:dio/dio.dart';
-
 import 'package:ess/Ess_App/src/models/wrappers/response_wrapper.dart';
 import 'package:ess/Ess_App/src/services/local/flavor_service.dart';
 
@@ -229,3 +227,4 @@ class ApiClient {
     }
   }
 }
+

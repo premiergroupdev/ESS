@@ -66,9 +66,23 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
           }
         },
         failure: (error) {
-          setState(() {
-            errorMessage = error.toString();
-          });
+          // Check if this is a "Not Found" error (404)
+          final errorString = error.toString();
+          if (errorString.contains('Not Found') ||
+              errorString.contains('404') ||
+              errorString.contains('NetworkExceptions.notFound')) {
+            // This is a "Not Found" case - treat as empty state, not error
+            setState(() {
+              allSurveys = [];
+              filteredSurveys = [];
+              errorMessage = null; // Clear any error message
+            });
+          } else {
+            // This is a real error
+            setState(() {
+              errorMessage = errorString;
+            });
+          }
         },
       );
     } catch (e) {
@@ -157,17 +171,6 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
 
               SizedBox(height: 12),
 
-              // Product Info
-              // Text(
-              //   survey.displayTitle,
-              //   style: TextStyle(
-              //     fontSize: 16,
-              //     fontWeight: FontWeight.w600,
-              //   ),
-              //   maxLines: 2,
-              //   overflow: TextOverflow.ellipsis,
-              // ),
-
               SizedBox(height: 4),
 
               Text(
@@ -221,7 +224,6 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
                     ),
                   ),
 
-                  // SizedBox(width: 40,),
                   Spacer(),
                   // View Details Button
                   Align(
@@ -255,10 +257,6 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
                   ),
                 ],
               ),
-
-              // SizedBox(height: 12),
-
-
             ],
           ),
         ),
@@ -297,7 +295,7 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
           SizedBox(height: 10),
           Text(
             currentUserId != null
-                ? "No surveys found for your account ($currentUserId)"
+                ? "No surveys found for your account"
                 : "Please log in to view surveys",
             style: TextStyle(
               fontSize: 14,
@@ -384,28 +382,27 @@ class _SurveyListScreenState extends State<SurveyListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          backgroundColor: AppColors.primary,
-          title: Center(
-            child: Text(
-                "My Surveys",
-              style: TextStyle(
+      appBar: AppBar(
+        backgroundColor: AppColors.primary,
+        title: Center(
+          child: Text(
+            "My Surveys",
+            style: TextStyle(
                 color: Colors.white
-              ),
             ),
           ),
-          leading: IconButton(
-
-            icon: Icon(Icons.arrow_back, color: Colors.white),
-            onPressed: () => Navigator.pop(context),
-          ),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.notifications),
-              onPressed: () {},
-            ),
-          ],
         ),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: () => Navigator.pop(context),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {},
+          ),
+        ],
+      ),
       body: Center(
         child: isLoading
             ? LoadingIndicator()
