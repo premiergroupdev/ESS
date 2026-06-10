@@ -1,7 +1,7 @@
 name: ess
 description: Employee Management System for Premier Groups
 publish_to: "none"
-version: 52.0.0+52
+version: 53.0.0+53
 
 environment:
   sdk: ">=2.19.0 <3.0.0"

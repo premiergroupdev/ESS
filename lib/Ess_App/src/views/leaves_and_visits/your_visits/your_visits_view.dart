@@ -8,7 +8,6 @@ import 'package:ess/Ess_App/src/views/leaves_and_visits/your_visits/widget/your_
 import 'package:ess/Ess_App/src/views/leaves_and_visits/your_visits/your_visits_view_model.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
-
 import '../../dashboard/widget/title_widget.dart';
 
 class VisitsView extends StatelessWidget {

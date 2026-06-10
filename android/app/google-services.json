@@ -2,7 +2,7 @@
   "project_info": {
     "project_number": "774011643451",
     "project_id": "ess-portal-d4c51",
-    "storage_bucket": "ess-portal-d4c51.appspot.com"
+    "storage_bucket": "ess-portal-d4c51.firebasestorage.app"
   },
   "client": [
     {
@@ -12,25 +12,15 @@
           "package_name": "com.premiergroup.ess"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "774011643451-0gteb5kqp43j6kfe6did7qg2ths7sgff.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCD2SqHTJ2HsDklYeVN0ei4KFv2xKUMQHs"
+          "current_key": ""
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "774011643451-0gteb5kqp43j6kfe6did7qg2ths7sgff.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

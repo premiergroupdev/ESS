@@ -144,7 +144,7 @@ void main() async {
   runApp(
     ChangeNotifierProvider(
       create: (_) => NotificationProvider(),
-      child: AppView(),
+      child: SafeArea(child: AppView()),
     ),
   );
   final apiService = ApiService();
@@ -343,7 +343,7 @@ Future<void> _requestPermissions() async {
   var status = await Permission.location.request();
   if (status.isGranted)
   {
-    print("Location permission grantehttps://www.upwork.com/freelancers/~01490e5b60e828b46ed");
+    print("Location permission granted");
   }
   else if (status.isDenied)
   {
