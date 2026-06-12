@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'dart:io';
+
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:ess/Ess_App/src/services/local/auth_service.dart';
 import 'package:ess/Ess_App/src/services/remote/api_service.dart';
@@ -7,125 +9,58 @@ import 'package:ess/Ess_App/src/views/local_db.dart';
 import 'package:ess/Ess_App/src/views/notification/Notification_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:package_info/package_info.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:ess/Ess_App/src/app/app_view.dart';
 import 'package:ess/Ess_App/src/configs/app_setup.locator.dart';
 import 'package:ess/Ess_App/src/services/local/flavor_service.dart';
-import 'package:flutter/services.dart';
-import 'package:package_info/package_info.dart';
-import 'package:permission_handler/permission_handler.dart';
-import 'package:provider/provider.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'dart:async';
-import 'package:http/http.dart' as http;
-import 'Ess_App/src/models/api_response_models/Notification.dart';
+
+import 'Ess_App/src/services/remote/app_update_wrapper.dart';
 import 'Ess_App/src/views/PDMS_survey/product_search_provider.dart';
 import 'Ess_App/src/views/login/local/local_db.dart';
-import 'Ess_App/src/views/notification/notification.dart';
-
 
 DateTime? lastApiCallTime;
-DatabaseHelper databse=DatabaseHelper();
- DatabaseHelpe databaseHelper = DatabaseHelpe();
-Future<void> backgroundHandler(RemoteMessage message) async {
-  try {
-    print("Handling a background message: ${message.messageId}");
-
-    if (message.notification != null) {
-      print('Notification Title: ${message.notification!.title}');
-      print('Notification Body: ${message.notification!.body}');
-
-      Notification_model notification = Notification_model(
-        title: message.notification!.title,
-        body: message.notification!.body,
-        timestamp: message.sentTime ?? DateTime.now(), // Use sentTime or current time
-      );
-
-      // Access your database helper instance
-     // await databaseHelper.insertnotification(notification);
-    }
-
-    print('Payload data: ${message.data}');
-  } catch (e) {
-    print('Error handling background message: $e');
-    // Handle the exception as needed, such as logging it or reporting it.
-  }
-}
-
-Future<void> resetBirthdayFlag() async {
-
-  final prefs = await SharedPreferences.getInstance();
-  DateTime now = DateTime.now();
-  if (now.month == 1 && now.day == 1) {
-    await prefs.remove('birthday');
-  }
-
-}
-ApiService api = ApiService();
-DashboardViewModel dashboard =DashboardViewModel();
-DateTime?  lastLocationUpdateTime;
 
 DatabaseHelper database = DatabaseHelper();
-
-String? userid;
-final currentTimes = DateTime.now();
-String currentTime = DateTime.now().toIso8601String().substring(11, 16);
-String today = DateTime.now().toIso8601String().split('T')[0];
-DateTime? lastAttendanceCheckTime;
 DatabaseHelpe DBHelper = DatabaseHelpe();
 
+ApiService api = ApiService();
+DashboardViewModel dashboard = DashboardViewModel();
+
+/// ============================
+/// DEVICE INFO
+/// ============================
 Future<void> checkApiLevel() async {
   try {
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
 
     if (defaultTargetPlatform == TargetPlatform.android) {
       AndroidDeviceInfo androidInfo = await deviceInfo.androidInfo;
-
-      print('📱 Device Information:');
-      print('──────────────────────');
+      print('📱 Android: ${androidInfo.brand} ${androidInfo.model}');
       print('🎯 API Level: ${androidInfo.version.sdkInt}');
-      print('🤖 Android Version: ${androidInfo.version.release}');
-      print('📊 Android Codename: ${androidInfo.version.codename}');
-      print('🔧 Device: ${androidInfo.brand} ${androidInfo.model}');
-      print('🏷️ Manufacturer: ${androidInfo.manufacturer}');
-      print('💾 Android ID: ${androidInfo.id}');
-      print('📦 App Build: ${androidInfo.version.incremental}');
-
     } else if (defaultTargetPlatform == TargetPlatform.iOS) {
       IosDeviceInfo iosInfo = await deviceInfo.iosInfo;
-      print('📱 iOS Version: ${iosInfo.systemVersion}');
-      print('🍎 Device: ${iosInfo.utsname.machine}');
-
-    } else {
-      print('🌐 Other Platform: $defaultTargetPlatform');
+      print('📱 iOS: ${iosInfo.systemVersion}');
     }
   } catch (e) {
-    print('❌ Error getting device info: $e');
+    print('Device info error: $e');
   }
 }
 
-
-
+/// ============================
+/// MAIN
+/// ============================
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  await Firebase.initializeApp();
-  await FirebaseApi().initNotification();
   await checkApiLevel();
-  // FirebaseMessaging.onMessage.listen((RemoteMessage message) async  {
-  //   await DBHelper.getNotificationCount();
-  // });
-  //
-  // FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) async  {
-  //   await DBHelper.getNotificationCount();
-  // });
   await DBHelper.getNotificationCount();
 
   SharedPreferences prefs = await SharedPreferences.getInstance();
   await prefs.remove('isDialogShown');
-
-  await FirebaseMessaging.instance.requestPermission();
 
   AuthService.prefs = await SharedPreferences.getInstance();
 
@@ -138,219 +73,16 @@ void main() async {
   setupLocator();
   FlavorService.init(package);
 
-  String? token = await FirebaseMessaging.instance.getToken();
-  print('Firebase Token: $token');
-
   runApp(
     ChangeNotifierProvider(
       create: (_) => NotificationProvider(),
-      child: SafeArea(child: AppView()),
+      child: MaterialApp(                   // ✅ MaterialApp at the top
+        debugShowCheckedModeBanner: false,
+        home: AppUpdateWrapper(             // ✅ wrapper is home, inside MaterialApp
+          checkInterval: Duration(seconds: 10),
+          child: AppView(),
+        ),
+      ),
     ),
   );
-  final apiService = ApiService();
-  final productSearchProvider = ProductSearchProvider(apiService);
-
-// Pre-load data when app starts (optional)
-  WidgetsBinding.instance.addPostFrameCallback((_) {
-    productSearchProvider.loadProducts();
-  });
-
-
-}
-
-
-
-
-
-// @pragma('vm:entry-point')
-// Future<void> start() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await Firebase.initializeApp();
-//
-//
-//   Future<void> printcordinantes() async
-//   {
-//     SharedPreferences prefs = await SharedPreferences.getInstance();
-//     double lat = prefs.getDouble('lat') ?? 0.0;
-//     double long = prefs.getDouble('long') ?? 0.0;
-//     double radius = prefs.getDouble('radius') ?? 0.0;
-//     String userId = prefs.getString('userid') ?? '';
-//
-//     print(" Api latitude: ${lat}, longitude : ${long} , radius: ${radius}");
-//   }
-//
-//   SharedPreferences prefs = await SharedPreferences.getInstance();
-//
-//   double lat = prefs.getDouble('lat') ?? 0.0;
-//   double long = prefs.getDouble('long') ?? 0.0;
-//   double radius = prefs.getDouble('radius') ?? 0.0;
-//   String userId = prefs.getString('userid') ?? '';
-//
-//   final settings = AndroidSettings(
-//     accuracy: LocationAccuracy.high,
-//     intervalDuration: Duration(seconds: 20),
-//     distanceFilter: 0,
-//   );
-//
-//   await Geolocator.getPositionStream(
-//       locationSettings: settings).listen
-//     (
-//           (pos) async
-//
-//
-//   {
-//     print("-------------------------");
-//     await Future.delayed(Duration(seconds: 2));
-//     print("lat:${pos.latitude} long:${pos.longitude}");
-//     print("target_lat:${lat} target_long:${long} distance:${radius}");
-//     await _checkAttendance(pos.latitude, pos.longitude, lat, long, radius, userId);
-//   }
-//
-//
-//   );
-//
-//
-//
-//
-//
-//   FlutterBackgroundService().onDataReceived.listen((event) async {
-//
-//     print("Received event: $event");
-//
-//     if (event is Map) {
-//       if (event!.containsKey('lat')) {
-//         await _updatePreferences(event!);
-//         await printcordinantes();
-//
-//         double lat = prefs.getDouble('lat') ?? 0.0;
-//         double long = prefs.getDouble('long') ?? 0.0;
-//         double radius = prefs.getDouble('radius') ?? 0.0;
-//         String userId = prefs.getString('userid') ?? '';
-//
-//         final settings = AndroidSettings(
-//           accuracy: LocationAccuracy.high,
-//           intervalDuration: Duration(seconds: 20),
-//           distanceFilter: 0,
-//         );
-//
-//         await Geolocator.getPositionStream(locationSettings: settings).listen((pos) async {
-//
-//           await Future.delayed(Duration(seconds: 2));
-//           print("lat:${pos.latitude} long:${pos.longitude}");
-//           print("target_lat:${lat} target_long:${long} distance:${radius}");
-//           await _checkAttendance(pos.latitude, pos.longitude, lat, long, radius, userId);
-//           print("event: ${event}");
-//         });
-//
-//
-//       } else if (event!.containsKey('action') && event['action'] == 'stopService') {
-//         FlutterBackgroundService().stopBackgroundService();
-//         print("Background service stopped");
-//       }
-//
-//     } else {
-//       print("Received event is null or not a Map: $event"); // Log the received event
-//     }
-//   }
-//   );
-// }
-// Future<void> _checkAttendance(double latitude, double longitude, double targetLat, double targetLong, double distance, String userId)
-// async
-// {
-//   double distanceInMeters = Geolocator.distanceBetween(
-//     targetLat,
-//     targetLong,
-//     latitude,
-//     longitude,
-//   );
-//   bool hasCheckedIn = await database.hasCheckedIn(DateTime.now().toIso8601String().split('T')[0]);
-//   if (!hasCheckedIn)
-//   {
-//     if (distanceInMeters <= distance)
-//     {
-//       if (!hasCheckedIn)
-//       {
-//         await getAttendance(latitude.toString(), longitude.toString(), userId,targetLat.toString(),targetLong.toString());
-//         print("Attendance marked at distance: $distanceInMeters meters");
-//         lastApiCallTime = DateTime.now();
-//       }
-//     }
-//     else
-//     {
-//       print("Attendance not marked, too far. Distance: $distanceInMeters meters, Allowed Distance: $distance meters");
-//     }
-//   }
-//   else
-//   {
-//     print("Attendance already marked for today.");
-//   }
-// }
-
-
-Future<void> getAttendance(String latitude, String longitude, String userid, String targetlat, String targetlong) async {
-  try {
-    final response = await http.get(
-      Uri.parse('https://premierspulse.com/ess/scripts/mark_attendance.php?code=${userid}&lat=${latitude}&lon=${longitude}&time=${DateTime.now().toIso8601String().substring(11, 16)}'),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    );
-
-    if (response.statusCode == 200) {
-      var data = jsonDecode(response.body);
-      if(data['data']['code'] != '200') {
-        bool hasCheckedIn = await database.hasCheckedIn(DateTime.now().toIso8601String().split('T')[0]);
-        if (!hasCheckedIn) {
-          await database.insercheckin(currentTime, targetlat, targetlong,
-              DateTime.now().toIso8601String().split('T')[0],
-              DateTime.now().toIso8601String().substring(11, 16), latitude,longitude);
-          print("Save data in local sucessfully");
-        }
-        else
-          {
-            print("Attendannce has been marked");
-          }
-        print("Save data in firebabse sucessfully");
-        lastApiCallTime = currentTimes;
-        print("Attendance data: ${data['data']}");
-      }
-      else {
-        print("Attendance is already marked");
-      }
-    } else {
-
-      print("Failed to fetch attendance: ${response.statusCode}");
-    }
-  }
-  catch (e)
-  {
-    print("Error fetching attendance: $e");
-  }
-}
-
-Future<void> _updatePreferences(Map<String, dynamic> event) async {
-
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  await prefs.setDouble('lat', double.tryParse(event['lat'].toString()) ?? 0.0);
-  await prefs.setDouble('long', double.tryParse(event['long'].toString()) ?? 0.0);
-  await prefs.setDouble('radius', double.tryParse(event['radius'].toString()) ?? 0.0);
-  await prefs.setString('userid', event['userid']);
-
-}
-
-Future<void> _requestPermissions() async {
-
-  var status = await Permission.location.request();
-  if (status.isGranted)
-  {
-    print("Location permission granted");
-  }
-  else if (status.isDenied)
-  {
-        print("Location permission denied");
-        } else if (status.isPermanentlyDenied)
-        {
-          print("Location permission permanently denied");
-          openAppSettings();
-        }
 }

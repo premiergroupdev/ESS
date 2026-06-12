@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:ess/Ess_App/src/services/local/navigation_service.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:ess/360_survey_App/Screens/Login/Login_screen_view.dart';
 import 'package:ess/Ess_App/src/styles/app_colors.dart';
 import 'package:ess/Learning_management_system/Screens/Lms_Dashboard/Lms_dashboard_view.dart';
@@ -196,55 +196,55 @@ class _AppMenuState extends State<AppMenu> {
                     onTap: () async {
                       // Your onTap logic
                       if (datalist['menu_name'] == "ESS") {
-                        FirebaseFirestore firestore = FirebaseFirestore.instance;
-                        PackageInfo packageInfo = await PackageInfo.fromPlatform();
-                        DocumentSnapshot doc = await firestore.collection('version_controlling').doc('G27Xr3d0efCHgf2QUSYW').get();
-                        String version = packageInfo.version.split('-').first.trim();
-                        String firebaseversion = Platform.isAndroid ? doc['andriod'] : doc['ios'];
+                        // FirebaseFirestore firestore = FirebaseFirestore.instance;
+                        // PackageInfo packageInfo = await PackageInfo.fromPlatform();
+                        // DocumentSnapshot doc = await firestore.collection('version_controlling').doc('G27Xr3d0efCHgf2QUSYW').get();
+                        // String version = packageInfo.version.split('-').first.trim();
+                        // String firebaseversion = Platform.isAndroid ? doc['andriod'] : doc['ios'];
 
-                        if (version == firebaseversion) {
+                        // if (version == firebaseversion) {
                           if (currentUser?.userName == null) {
                             NavService.login();
                           } else {
                             NavService.dashboard();
                           }
-                        } else {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              backgroundColor: AppColors.primary,
-                              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                              title: Text(
-                                "Update Application",
-                                style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                                textAlign: TextAlign.center,
-                              ),
-                              content: Text(
-                                "Latest Version is available at Store\nNew App Version: ($firebaseversion)",
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: Text("Update Now", style: TextStyle(color: Colors.white)),
-                                  onPressed: () async {
-                                    String url ='';
-                                    if(Platform.isAndroid) {
-                                       url = "https://play.google.com/store/apps/details?id=com.premiergroup.ess";
-                                    }
-                                    else {
-                                       url = "https://apps.apple.com/app/id6746352124";
-                                    }
-                                    if (await canLaunchUrl(Uri.parse(url))) {
-                                      await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
-                                    } else {
-                                      print("Could not launch $url");
-                                    }
-                                  },
-                                ),
-                              ],
-                            ),
-                          );
-                        }
+                        // } else {
+                        //   showDialog(
+                        //     context: context,
+                        //     builder: (context) => AlertDialog(
+                        //       backgroundColor: AppColors.primary,
+                        //       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        //       title: Text(
+                        //         "Update Application",
+                        //         style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                        //         textAlign: TextAlign.center,
+                        //       ),
+                        //       content: Text(
+                        //         "Latest Version is available at Store\nNew App Version: ($firebaseversion)",
+                        //         style: TextStyle(color: Colors.white),
+                        //       ),
+                        //       actions: <Widget>[
+                        //         TextButton(
+                        //           child: Text("Update Now", style: TextStyle(color: Colors.white)),
+                        //           onPressed: () async {
+                        //             String url ='';
+                        //             if(Platform.isAndroid) {
+                        //                url = "https://play.google.com/store/apps/details?id=com.premiergroup.ess";
+                        //             }
+                        //             else {
+                        //                url = "https://apps.apple.com/app/id6746352124";
+                        //             }
+                        //             if (await canLaunchUrl(Uri.parse(url))) {
+                        //               await launchUrl(Uri.parse(url), mode: LaunchMode.externalApplication);
+                        //             } else {
+                        //               print("Could not launch $url");
+                        //             }
+                        //           },
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   );
+                        // }
                       }
 
                       if (datalist['menu_name'] == "360 Feedback") {

@@ -1,6 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
-import 'package:cloud_firestore/cloud_firestore.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:http/http.dart' as http;
 import 'package:ess/Ess_App/src/base/utils/constants.dart';
 import 'package:ess/Ess_App/src/models/api_response_models/Stats_model.dart';
@@ -12,7 +12,7 @@ import 'package:ess/Ess_App/src/styles/app_colors.dart';
 import 'package:ess/Ess_App/src/views/dashboard/widget/br.dart';
 import 'package:ess/Ess_App/src/views/login/login_view_model.dart';
 import 'package:ess/Ess_App/src/views/your_attandence/widget/attendence_data_table.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:in_app_update/in_app_update.dart';
@@ -111,31 +111,31 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
   };
   String? tokens;
 
-  void token() async {
-    tokens = await FirebaseMessaging.instance.getToken();
-    notifyListeners();
-  }
+  // void token() async {
+  //   tokens = await FirebaseMessaging.instance.getToken();
+  //   notifyListeners();
+  // }
 
   // ADD THIS METHOD FOR FAB SETTINGS
-  Future<void> fetchButtonSettings() async {
-    try {
-      _buttonSettingsSubscription = FirebaseFirestore.instance
-          .collection('app_settings')
-          .doc('button_controls')
-          .snapshots()
-          .listen((doc) {
-        if (doc.exists) {
-          final data = doc.data()!;
-          isButtonVisible = data['button_visible'] ?? false;
-          buttonText = data['button_text'] ?? 'Default Text';
-          notifyListeners();
-          print('✅ FAB Settings updated - Visible: $isButtonVisible, Text: $buttonText');
-        }
-      });
-    } catch (e) {
-      print('❌ Error setting up button settings listener: $e');
-    }
-  }
+  // Future<void> fetchButtonSettings() async {
+  //   try {
+  //     _buttonSettingsSubscription = FirebaseFirestore.instance
+  //         .collection('app_settings')
+  //         .doc('button_controls')
+  //         .snapshots()
+  //         .listen((doc) {
+  //       if (doc.exists) {
+  //         final data = doc.data()!;
+  //         isButtonVisible = data['button_visible'] ?? false;
+  //         buttonText = data['button_text'] ?? 'Default Text';
+  //         notifyListeners();
+  //         print('✅ FAB Settings updated - Visible: $isButtonVisible, Text: $buttonText');
+  //       }
+  //     });
+  //   } catch (e) {
+  //     print('❌ Error setting up button settings listener: $e');
+  //   }
+  // }
 
   // Don't forget to cancel in dispose
   @override
@@ -362,14 +362,14 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
   init(BuildContext context) async {
     WidgetsFlutterBinding.ensureInitialized();
     setBusy(true);
-    token();
+    // token();
 
     // ADD THIS LINE - Fetch FAB settings from Firebase
-    await fetchButtonSettings();
+    // await fetchButtonSettings();
 
 
     //pushNotificationInstant();
-    login.subscribeToken(context);
+    // login.subscribeToken(context);
     await _checkVersion(context);
     await getDashboardData(context);
     await getgoal(context);
@@ -697,108 +697,108 @@ class DashboardViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMo
     }
   }
 
-  void pushNotificationInstant() async {
-    FirebaseMessaging.instance.getInitialMessage().then(
-          (message) {
-        print("FirebaseMessaging.instance.getInitialMessage");
-        print("New Notification Navigator");
-      },
-    );
-    FirebaseMessaging messaging = FirebaseMessaging.instance;
-    RemoteMessage? initialMessage = await messaging.getInitialMessage();
-    if (initialMessage != null) {
-      String? type = initialMessage.data['type'];
-      if (type == "final_advance") {
-        NavService.Final_advance();
-      } else if (type == "attendence") {
-        NavService.yourAttendance();
-      }
-    }
-    // Future<void> backgroundMessageHandler(RemoteMessage message) async {
-    //   try {
-    //     print("Handling a background message: ${message.messageId}");
-    //
-    //     if (message.notification != null) {
-    //       print('Notification Title: ${message.notification!.title}');
-    //       print('Notification Body: ${message.notification!.body}');
-    //
-    //       Notification_model notification = Notification_model(
-    //         title: message.notification!.title,
-    //         body: message.notification!.body,
-    //         timestamp: message.sentTime ?? DateTime.now(), // Use sentTime or current time
-    //       );
-    //
-    //       // Access your database helper instance
-    //       await databaseHelper.insertnotification(notification);
-    //     }
-    //
-    //     print('Payload data: ${message.data}');
-    //   } catch (e) {
-    //     print('Error handling background message: $e');
-    //     // Handle the exception as needed, such as logging it or reporting it.
-    //   }
-    // }
-    FirebaseMessaging.onMessage.listen(
-          (RemoteMessage message) async {
-        print("FirebaseMessaging.onMessage.listen");
-        if (message.notification != null) {
-          print(message.notification!.title);
-          print(message.notification!.body);
-          LocalNotificationService.createAndDisplayNotification(message);
-          Notification_model notification = Notification_model(
-            title: message.notification!.title,
-            body: message.notification!.body,
-            timestamp: message.sentTime ?? DateTime.now(), // Use sentTime or current time
-          );
-
-          await databaseHelper.insertnotification(notification);
-          if (message.data.containsKey('type')) {
-            String? type = message.data['type'];
-            if (type == "final_advance") {
-              NavService.Final_advance();
-            } else if (type == "attendence") {
-              NavService.yourAttendance();
-            } else {
-              print("Unknown notification type: $type");
-            }
-          } else {
-            print("No type key in notification data");
-          }
-        }
-      },
-    );
-    FirebaseMessaging.onMessageOpenedApp.listen(
-          (RemoteMessage message) async {
-        print("FirebaseMessaging.onMessageOpenedApp.listen");
-        if (message.notification != null) {
-          print(message.notification!.title);
-          print(message.notification!.body);
-          print("message.data");
-          Notification_model notification = Notification_model(
-            title: message.notification!.title,
-            body: message.notification!.body,
-            timestamp: message.sentTime ?? DateTime.now(), // Use sentTime or current time
-          );
-
-          // Access your database helper instance
-          await databaseHelper.insertnotification(notification);
-          if (message.data.containsKey('type')) {
-            String? type = message.data['type'];
-
-            if (type == "final_advance") {
-              NavService.Final_advance();
-            } else if (type == "attendence") {
-              NavService.yourAttendance();
-            } else {
-              print("Unknown notification type: $type");
-            }
-          } else {
-            print("No type key in notification data");
-          }
-        }
-      },
-    );
-  }
+  // void pushNotificationInstant() async {
+  //   FirebaseMessaging.instance.getInitialMessage().then(
+  //         (message) {
+  //       print("FirebaseMessaging.instance.getInitialMessage");
+  //       print("New Notification Navigator");
+  //     },
+  //   );
+  //   FirebaseMessaging messaging = FirebaseMessaging.instance;
+  //   RemoteMessage? initialMessage = await messaging.getInitialMessage();
+  //   if (initialMessage != null) {
+  //     String? type = initialMessage.data['type'];
+  //     if (type == "final_advance") {
+  //       NavService.Final_advance();
+  //     } else if (type == "attendence") {
+  //       NavService.yourAttendance();
+  //     }
+  //   }
+  //   // Future<void> backgroundMessageHandler(RemoteMessage message) async {
+  //   //   try {
+  //   //     print("Handling a background message: ${message.messageId}");
+  //   //
+  //   //     if (message.notification != null) {
+  //   //       print('Notification Title: ${message.notification!.title}');
+  //   //       print('Notification Body: ${message.notification!.body}');
+  //   //
+  //   //       Notification_model notification = Notification_model(
+  //   //         title: message.notification!.title,
+  //   //         body: message.notification!.body,
+  //   //         timestamp: message.sentTime ?? DateTime.now(), // Use sentTime or current time
+  //   //       );
+  //   //
+  //   //       // Access your database helper instance
+  //   //       await databaseHelper.insertnotification(notification);
+  //   //     }
+  //   //
+  //   //     print('Payload data: ${message.data}');
+  //   //   } catch (e) {
+  //   //     print('Error handling background message: $e');
+  //   //     // Handle the exception as needed, such as logging it or reporting it.
+  //   //   }
+  //   // }
+  //   FirebaseMessaging.onMessage.listen(
+  //         (RemoteMessage message) async {
+  //       print("FirebaseMessaging.onMessage.listen");
+  //       if (message.notification != null) {
+  //         print(message.notification!.title);
+  //         print(message.notification!.body);
+  //         LocalNotificationService.createAndDisplayNotification(message);
+  //         Notification_model notification = Notification_model(
+  //           title: message.notification!.title,
+  //           body: message.notification!.body,
+  //           timestamp: message.sentTime ?? DateTime.now(), // Use sentTime or current time
+  //         );
+  //
+  //         await databaseHelper.insertnotification(notification);
+  //         if (message.data.containsKey('type')) {
+  //           String? type = message.data['type'];
+  //           if (type == "final_advance") {
+  //             NavService.Final_advance();
+  //           } else if (type == "attendence") {
+  //             NavService.yourAttendance();
+  //           } else {
+  //             print("Unknown notification type: $type");
+  //           }
+  //         } else {
+  //           print("No type key in notification data");
+  //         }
+  //       }
+  //     },
+  //   );
+  //   FirebaseMessaging.onMessageOpenedApp.listen(
+  //         (RemoteMessage message) async {
+  //       print("FirebaseMessaging.onMessageOpenedApp.listen");
+  //       if (message.notification != null) {
+  //         print(message.notification!.title);
+  //         print(message.notification!.body);
+  //         print("message.data");
+  //         Notification_model notification = Notification_model(
+  //           title: message.notification!.title,
+  //           body: message.notification!.body,
+  //           timestamp: message.sentTime ?? DateTime.now(), // Use sentTime or current time
+  //         );
+  //
+  //         // Access your database helper instance
+  //         await databaseHelper.insertnotification(notification);
+  //         if (message.data.containsKey('type')) {
+  //           String? type = message.data['type'];
+  //
+  //           if (type == "final_advance") {
+  //             NavService.Final_advance();
+  //           } else if (type == "attendence") {
+  //             NavService.yourAttendance();
+  //           } else {
+  //             print("Unknown notification type: $type");
+  //           }
+  //         } else {
+  //           print("No type key in notification data");
+  //         }
+  //       }
+  //     },
+  //   );
+  // }
 
   Future<void> _requestNotificationPermission(BuildContext context) async {
     PermissionStatus status = await Permission.notification.status;

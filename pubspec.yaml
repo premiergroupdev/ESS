@@ -1,7 +1,7 @@
 name: ess
 description: Employee Management System for Premier Groups
 publish_to: "none"
-version: 53.0.0+53
+version: 54.0.0+54
 
 environment:
   sdk: ">=2.19.0 <3.0.0"
@@ -56,10 +56,10 @@ dependencies:
   geolocator: ^10.1.0
   geocoding: ^2.2.0
   google_maps_flutter: ^2.6.0
-  cloud_firestore: ^5.4.0
-  firebase_core:
+  #cloud_firestore: ^5.4.0
+  #firebase_core:
   image: ^4.1.7
-  firebase_messaging:
+  #firebase_messaging:
   flutter_local_notifications: ^17.1.2
   permission_handler: ^11.3.1
   in_app_update: ^4.2.1

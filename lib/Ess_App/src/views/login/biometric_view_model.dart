@@ -2,7 +2,7 @@ import 'package:ess/Ess_App/src/base/utils/constants.dart';
 import 'package:ess/Ess_App/src/services/local/base/auth_view_model.dart';
 import 'package:ess/Ess_App/src/services/local/navigation_service.dart';
 import 'package:ess/Ess_App/src/services/remote/base/api_view_model.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
@@ -79,7 +79,7 @@ class biometricViewModel extends ReactiveViewModel
       success: (data) async {
         if (data.email != null) {
           authService.user = data;
-          await subscribeToken(context);
+          // await subscribeToken(context);
           NavService.dashboard();
           Constants.customSuccessSnack(context, "Welcome Back ${data.userName}");
         } else {
@@ -92,24 +92,24 @@ class biometricViewModel extends ReactiveViewModel
     );
   }
 
-  Future<void> subscribeToken(BuildContext context) async {
-    try {
-      String? token = await FirebaseMessaging.instance.getToken();
-      print("Token: $token");
-      var newsResponse = await runBusyFuture(apiService.tokenSubscribe(context, token ?? ""));
-      newsResponse.when(
-        success: (data) {
-          print("Subscription successful: $data");
-        },
-        failure: (error) {
-          Constants.customErrorSnack(context, error.toString());
-        },
-      );
-    } catch (e) {
-      print("Error subscribing token: $e");
-      Constants.customErrorSnack(context, "Token subscription failed");
-    }
-  }
+  // Future<void> subscribeToken(BuildContext context) async {
+  //   try {
+  //     String? token = await FirebaseMessaging.instance.getToken();
+  //     print("Token: $token");
+  //     var newsResponse = await runBusyFuture(apiService.tokenSubscribe(context, token ?? ""));
+  //     newsResponse.when(
+  //       success: (data) {
+  //         print("Subscription successful: $data");
+  //       },
+  //       failure: (error) {
+  //         Constants.customErrorSnack(context, error.toString());
+  //       },
+  //     );
+  //   } catch (e) {
+  //     print("Error subscribing token: $e");
+  //     Constants.customErrorSnack(context, "Token subscription failed");
+  //   }
+  // }
 
   void checkButtonValidate(BuildContext context) {
     if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email.text)) {

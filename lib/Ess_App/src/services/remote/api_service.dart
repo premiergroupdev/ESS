@@ -3740,4 +3740,23 @@ print("URl :${url}");
     }
   }
 
+  Future<Map<String, dynamic>?> getLiveVersion() async {
+    try {
+      final response = await http.get(
+        Uri.parse("https://premierspulse.com/ess/scripts/fetch_live_version.php"),
+      );
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        return data;
+      } else {
+        print("Failed to fetch version: ${response.statusCode}");
+        return null;
+      }
+    } catch (e) {
+      print("Version API error: $e");
+      return null;
+    }
+  }
+
 }

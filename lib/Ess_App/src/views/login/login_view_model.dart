@@ -3,7 +3,7 @@ import 'package:ess/Ess_App/src/base/utils/constants.dart';
 import 'package:ess/Ess_App/src/services/local/base/auth_view_model.dart';
 import 'package:ess/Ess_App/src/services/local/navigation_service.dart';
 import 'package:ess/Ess_App/src/services/remote/base/api_view_model.dart';
-import 'package:firebase_messaging/firebase_messaging.dart';
+// import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:local_auth/local_auth.dart';
@@ -66,7 +66,7 @@ class LoginViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel 
         print('Login successful for user: ${data.userName}');
         authService.user = data;
 
-        subscribeToken(context);
+        // subscribeToken(context);
         NavService.dashboard();
         if (data.att_lat != null && data.att_lon != null)
         {
@@ -128,7 +128,7 @@ class LoginViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel 
         } else {
           print('Invalid location data: $data');
         }
-        subscribeToken(context);
+        // subscribeToken(context);
         if(isSwitched == true)
           {
             await dbHelper.insertUser(email.value.text.trim(), password.value.text.trim());
@@ -169,17 +169,17 @@ class LoginViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel 
     }
 
   }
-  subscribeToken(BuildContext context) async {
-    String? token = await FirebaseMessaging.instance.getToken();
-    print("token: ${token}");
-    var newsResponse = await runBusyFuture(apiService.tokenSubscribe(context, token ?? ""));
-    newsResponse.when(success: (data) async {
-      print("data: ${data}");
-
-    }, failure: (error) {
-      Constants.customErrorSnack(context, error.toString());
-    });
-  }
+  // subscribeToken(BuildContext context) async {
+  //   String? token = await FirebaseMessaging.instance.getToken();
+  //   print("token: ${token}");
+  //   var newsResponse = await runBusyFuture(apiService.tokenSubscribe(context, token ?? ""));
+  //   newsResponse.when(success: (data) async {
+  //     print("data: ${data}");
+  //
+  //   }, failure: (error) {
+  //     Constants.customErrorSnack(context, error.toString());
+  //   });
+  // }
   checkButtonValidate(BuildContext context) {
     if (RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+").hasMatch(email.value.text)) {
       if (password.value.text.length > 3) {
