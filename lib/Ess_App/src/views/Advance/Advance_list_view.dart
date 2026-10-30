@@ -1,5 +1,6 @@
+import 'package:ess/Ess_App/src/shared/app_widgets.dart';
 import 'package:ess/Ess_App/src/styles/app_colors.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:ess/Ess_App/src/styles/text_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
@@ -16,45 +17,50 @@ class Advance_list_view extends StatefulWidget {
 
 class _Advance_list_viewState extends State<Advance_list_view> {
   @override
-
-
   Widget build(BuildContext context) {
-    return
-      ViewModelBuilder<AdvanceViewModel>.reactive(
-          builder: (viewModelContext, model, child) =>
-              Scaffold(
-                  resizeToAvoidBottomInset: false,
-                  body:
-                  model.isBusy
-                      ? Center(child: LoadingIndicator())
-                      :
-                  Column(
-                    children: [
-                      SizedBox(height: 15,),
-                      GeneralAppBar(
-                          title: "Advance List",
-                          onMenuTap: () {
-                            Scaffold.of(context).openDrawer();
-                          },
-                          onNotificationTap: () {}),
-                      Expanded(
-                        child: ListView.builder(
-                          padding: EdgeInsets.all(16),
-                          itemCount: model.dataList.length,
-                          itemBuilder: (context, index) {
-                            final item = model.dataList[index];
-                            return _buildAdvanceCard(item);
-                          },
-                        ),
-                      ),
-                    ],
+    return ViewModelBuilder<AdvanceViewModel>.reactive(
+        builder: (viewModelContext, model, child) => Scaffold(
+          resizeToAvoidBottomInset: false,
+          body: SafeArea(
+            child: Column(
+              children: [
+                GeneralAppBar(
+                    title: "Advance List",
+                    onMenuTap: () {
+                      Scaffold.of(context).openDrawer();
+                    },
+                    onNotificationTap: () {}),
+                Expanded(
+                  child: model.isBusy
+                      ? const Center(child: LoadingIndicator())
+                      : model.dataList.isEmpty
+                      ? const Center(
+                    child: EmptyState(
+                      title: 'No advances found',
+                      subtitle:
+                      'You have no advance records yet. Your requests will appear here.',
+                      icon: Icons.payments_outlined,
+                    ),
+                  )
+                      : ListView.builder(
+                    physics: const BouncingScrollPhysics(),
+                    padding:
+                    const EdgeInsets.fromLTRB(18, 4, 18, 24),
+                    itemCount: model.dataList.length,
+                    itemBuilder: (context, index) {
+                      final item = model.dataList[index];
+                      return _buildAdvanceCard(item);
+                    },
                   ),
-              ),
-          viewModelBuilder: () => AdvanceViewModel(),
-          onModelReady: (model) => model.init(context));
+                ),
+              ],
+            ),
+          ),
+        ),
+        viewModelBuilder: () => AdvanceViewModel(),
+        onModelReady: (model) => model.init(context));
   }
 }
-
 
 Widget _buildAdvanceCard(Map<String, dynamic> item) {
   String formatAmount(dynamic amount) {
@@ -68,64 +74,47 @@ Widget _buildAdvanceCard(Map<String, dynamic> item) {
       return amount.toString();
     }
   }
-  return Card(
-    margin: EdgeInsets.only(bottom: 16),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-    elevation: 4,
-    child: Padding(
-      padding: const EdgeInsets.all(16),
+
+  final bool closed = item['status'] == 'Closed';
+
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 12),
+    child: AppCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header: Name + Date
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                item['member_name'],
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              ),
-              Chip(
-                label: Text(
-                  item['status'],
-                  style: TextStyle(color: Colors.white),
+              Expanded(
+                child: Text(
+                  item['member_name'],
+                  style: TextStyling.bold16,
                 ),
-                backgroundColor: item['status'] == 'Closed'
-                    ? Colors.green
-                    : Colors.orange,
+              ),
+              StatusChip(
+                label: item['status'],
+                tone: closed ? StatusTone.success : StatusTone.warning,
               ),
             ],
           ),
-          SizedBox(height: 8),
-
-          // Date & Amount Row
+          const SizedBox(height: 12),
           Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildIconRow(Icons.calendar_today, item['case_date']),
+              Expanded(
+                child: _buildIconRow(Icons.calendar_today_rounded, item['case_date']),
+              ),
               Text(
                 "Rs. ${formatAmount(item['amount'])}",
-                style: TextStyle(
-                  fontSize: 15,
-                  fontWeight: FontWeight.w600, // makes it slightly bold
-                  color: AppColors.black,
-                ),
-              )
-
-              //_buildIconRow(Icons.abc_rounded, "${item['amount']}"),
+                style: TextStyling.title.copyWith(color: AppColors.primary),
+              ),
             ],
           ),
-
-          SizedBox(height: 8),
-
-          // Advance ID
-          _buildIconRow(Icons.receipt, "Advance ID: ${item['adv_id']}"),
-
-          // ERP Remarks if any
+          const SizedBox(height: 8),
+          _buildIconRow(Icons.receipt_long_rounded, "Advance ID: ${item['adv_id']}"),
           if (item['erp_remarks'] != null)
             Padding(
-              padding: const EdgeInsets.only(top: 10),
-              child: _buildIconRow(Icons.info_outline, item['erp_remarks']),
+              padding: const EdgeInsets.only(top: 8),
+              child: _buildIconRow(Icons.info_outline_rounded, item['erp_remarks']),
             ),
         ],
       ),
@@ -136,12 +125,9 @@ Widget _buildAdvanceCard(Map<String, dynamic> item) {
 Widget _buildIconRow(IconData icon, String text) {
   return Row(
     children: [
-      Icon(icon, size: 16, color: Colors.grey[700]),
-      SizedBox(width: 6),
-      Text(
-        text,
-        style: TextStyle(fontSize: 14, color: Colors.black87),
-      ),
+      Icon(icon, size: 16, color: AppColors.darkGrey),
+      const SizedBox(width: 6),
+      Expanded(child: Text(text, style: TextStyling.body.copyWith(fontSize: 13))),
     ],
   );
 }

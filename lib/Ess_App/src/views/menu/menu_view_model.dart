@@ -24,6 +24,7 @@ import '../Resignation_form/Hod_approval_view.dart';
 import '../Resignation_form/IT_approval_view.dart';
 import '../Resignation_form/Line_managers_Approval_view.dart';
 import '../Traval_expense/My_expense_view.dart';
+import '../Traval_expense/Travel_expense_form_view.dart';
 import '../dashboard/dashboard_view.dart';
 import '../login/local/local_db.dart';
 import '../your_attandence/your_attandence_view.dart';
@@ -693,6 +694,19 @@ class MenuViewModel extends ReactiveViewModel with ApiViewModel, AuthViewModel {
                 context,
                 MaterialPageRoute(
                   builder: (context) => TravelListScreen(),
+                ),
+              );
+              Scaffold.of(context).closeDrawer();
+            },
+          ),
+          CustomMenuItem(
+            label: "Travelling Expense Form",
+            isParent: false,
+            onPress: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TravelExpenseFormView(),
                 ),
               );
               Scaffold.of(context).closeDrawer();

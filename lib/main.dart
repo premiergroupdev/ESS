@@ -13,8 +13,8 @@ import 'package:flutter/services.dart';
 import 'package:package_info/package_info.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:ess/Ess_App/src/app/app_view.dart';
+import 'package:ess/Ess_App/src/styles/app_theme.dart';
 import 'package:ess/Ess_App/src/configs/app_setup.locator.dart';
 import 'package:ess/Ess_App/src/services/local/flavor_service.dart';
 
@@ -78,6 +78,7 @@ void main() async {
       create: (_) => NotificationProvider(),
       child: MaterialApp(                   // ✅ MaterialApp at the top
         debugShowCheckedModeBanner: false,
+        theme: AppTheme.light(),
         home: AppUpdateWrapper(             // ✅ wrapper is home, inside MaterialApp
           checkInterval: Duration(seconds: 10),
           child: AppView(),

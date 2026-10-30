@@ -1,4 +1,4 @@
-import 'package:ess/Ess_App/src/base/utils/utils.dart';
+import 'package:ess/Ess_App/src/shared/app_widgets.dart';
 import 'package:ess/Ess_App/src/styles/app_colors.dart';
 import 'package:ess/Ess_App/src/styles/text_theme.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +27,8 @@ class LeaveApplicationsTableData {
   });
 }
 
+/// Card list of leave applications. Same constructor as before; `heading` is
+/// kept for compatibility (column headings are no longer needed in card form).
 class LeaveApplicationsDataTable extends StatelessWidget {
   final LeaveApplicationsTableData heading;
   final List<LeaveApplicationsTableData> data;
@@ -41,153 +43,89 @@ class LeaveApplicationsDataTable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      physics: BouncingScrollPhysics(),
-      child: Container(
-        width: context.screenSize().width,
-        decoration: BoxDecoration(
-          color: AppColors.white,
-          border: Border.all(color: AppColors.secondary, width: 2),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        margin: EdgeInsets.fromLTRB(18, 15, 18, 10),
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 15, 10, 10),
+    if (data.isEmpty) {
+      return const EmptyState(
+        title: 'Data not available',
+        subtitle: 'You have not applied for any leave yet.',
+        icon: Icons.beach_access_outlined,
+      );
+    }
+
+    return ListView.builder(
+      physics: const BouncingScrollPhysics(),
+      padding: const EdgeInsets.fromLTRB(18, 6, 18, 24),
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        final item = data[index];
+        final accent = item.statusColor ?? AppColors.primary;
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: AppCard(
+            padding: EdgeInsets.zero,
+            onTap: () => onTap(index),
+            child: IntrinsicHeight(
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Expanded(
-                    flex: 2,
-                    child: RichText(
-                      textAlign: TextAlign.start,
-                      text: TextSpan(
-                        text: heading.appliedDate,
-                        style: TextStyling.bold16
-                            .copyWith(fontSize: 15, color: AppColors.primary),
+                  Container(
+                    width: 5,
+                    decoration: BoxDecoration(
+                      color: accent,
+                      borderRadius: const BorderRadius.horizontal(
+                        left: Radius.circular(18),
                       ),
                     ),
                   ),
                   Expanded(
-                    flex: 2,
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: heading.startDate,
-                        style: TextStyling.bold16
-                            .copyWith(fontSize: 15, color: AppColors.primary),
+                    child: Padding(
+                      padding: const EdgeInsets.fromLTRB(14, 14, 14, 14),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  '${item.startDate}  →  ${item.endDate}',
+                                  style: TextStyling.bold14,
+                                ),
+                              ),
+                              if (item.status != null)
+                                StatusChip(
+                                  label: item.status!,
+                                  color: item.statusColor,
+                                ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Row(
+                            children: [
+                              const Icon(Icons.event_note_rounded,
+                                  size: 15, color: AppColors.darkGrey),
+                              const SizedBox(width: 5),
+                              Text('Applied ${item.appliedDate}',
+                                  style: TextStyling.caption),
+                              const Spacer(),
+                              Text(
+                                '${item.totalDays} day${item.totalDays.toString() == '1' ? '' : 's'}',
+                                style: TextStyling.bold14
+                                    .copyWith(color: AppColors.primary),
+                              ),
+                              const SizedBox(width: 6),
+                              const Icon(Icons.chevron_right_rounded,
+                                  color: AppColors.grey, size: 20),
+                            ],
+                          ),
+                        ],
                       ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 2,
-                    child: RichText(
-                      textAlign: TextAlign.center,
-                      text: TextSpan(
-                        text: heading.endDate,
-                        style: TextStyling.bold18
-                            .copyWith(fontSize: 15, color: AppColors.primary),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Icon(
-                      Icons.remove_red_eye_outlined,
-                      color: Colors.transparent,
                     ),
                   ),
                 ],
               ),
             ),
-            Padding(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: Divider(
-                color: AppColors.darkGrey,
-                thickness: 0.4,
-              ),
-            ),
-            (data.length > 0)
-                ? ListView.separated(
-                    physics: NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemCount: data.length,
-                    itemBuilder: (context, index) {
-                      return InkWell(
-                        onTap: () {
-                          onTap(index);
-                        },
-                        child: Padding(
-                          padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                          child: Column(children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    data[index].appliedDate,
-                                    style: TextStyling.text14.copyWith(
-                                        color: data[index].statusColor ??
-                                            AppColors.primary),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    data[index].startDate,
-                                    style: TextStyling.text14.copyWith(
-                                        color: data[index].statusColor ??
-                                            AppColors.primary),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 2,
-                                  child: Text(
-                                    data[index].endDate,
-                                    style: TextStyling.text14.copyWith(
-                                        color: data[index].statusColor ??
-                                            AppColors.primary),
-                                    textAlign: TextAlign.center,
-                                  ),
-                                ),
-                                Expanded(
-                                  flex: 1,
-                                  child: Icon(
-                                    Icons.remove_red_eye_outlined,
-                                    color: AppColors.primary,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ]),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (BuildContext context, int index) {
-                      return Padding(
-                        padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-                        child: Divider(
-                          color: AppColors.grey,
-                          thickness: 0.4,
-                        ),
-                      );
-                    },
-                  )
-                : Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Text(
-                      "Data Not Available",
-                      style: TextStyling.bold18
-                          .copyWith(color: AppColors.darkGrey),
-                    ),
-                  ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 }

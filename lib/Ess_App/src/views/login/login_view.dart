@@ -2,7 +2,6 @@ import 'package:ess/Ess_App/generated/assets.dart';
 import 'package:ess/Ess_App/src/base/utils/utils.dart';
 import 'package:ess/Ess_App/src/shared/bottons.dart';
 import 'package:ess/Ess_App/src/shared/input_field.dart';
-import 'package:ess/Ess_App/src/shared/spacing.dart';
 import 'package:ess/Ess_App/src/styles/app_colors.dart';
 import 'package:ess/Ess_App/src/styles/text_theme.dart';
 import 'package:ess/Ess_App/src/views/login/login_view_model.dart';
@@ -15,40 +14,33 @@ import 'Login_with_biometric.dart';
 
 class LoginView extends StatefulWidget {
   final String? msg;
-  LoginView({ Key? key, this.msg }) :super( key: key );
+  LoginView({Key? key, this.msg}) : super(key: key);
   @override
-  State<LoginView> createState( ) => _LoginViewState( );
+  State<LoginView> createState() => _LoginViewState();
 }
 
 class _LoginViewState extends State<LoginView> {
-
   final LocalAuthentication auth = LocalAuthentication();
   SupportState supportState = SupportState.unknown;
   List<BiometricType>? availableBiometrics;
   LoginViewModel model = LoginViewModel();
 
-
   @override
-  void initState()
-  {
-    auth.isDeviceSupported().then((bool isSupported) => setState(() => supportState = isSupported ? SupportState.supported : SupportState.unSupported ));
+  void initState() {
+    auth.isDeviceSupported().then((bool isSupported) => setState(
+            () => supportState = isSupported
+            ? SupportState.supported
+            : SupportState.unSupported));
     super.initState();
     checkBiometric();
     getAvailableBiometrics();
   }
 
-
-  Future<void> checkBiometric() async
-  {
+  Future<void> checkBiometric() async {
     late bool canCheckBiometric;
-    try
-    {
+    try {
       canCheckBiometric = await auth.canCheckBiometrics;
-      print("Biometric supported: $canCheckBiometric");
-    }
-    on
-      PlatformException catch (e)
-    {
+    } on PlatformException catch (e) {
       print(e);
       canCheckBiometric = false;
     }
@@ -58,216 +50,283 @@ class _LoginViewState extends State<LoginView> {
     late List<BiometricType> biometricTypes;
     try {
       biometricTypes = await auth.getAvailableBiometrics();
-      print("supported biometrics $biometricTypes");
     } on PlatformException catch (e) {
       print(e);
     }
-
-    if (!mounted) {
-      return;
-    }
+    if (!mounted) return;
     setState(() {
       availableBiometrics = biometricTypes;
     });
   }
+
   Future<void> authenticateWithBiometrics() async {
     try {
       final authenticated = await auth.authenticate(
-          localizedReason: 'Authenticate with fingerprint or Face ID',
-          options: const AuthenticationOptions(
-            stickyAuth: true,
-            biometricOnly: true,
-          )
+        localizedReason: 'Authenticate with fingerprint or Face ID',
+        options: const AuthenticationOptions(
+          stickyAuth: true,
+          biometricOnly: true,
+        ),
       );
-
-      if (!mounted) {
-        return;
-      }
-
+      if (!mounted) return;
       if (authenticated) {
         model.LogIn(context);
-
       }
     } on PlatformException catch (e) {
       print(e);
       return;
     }
   }
+
   @override
-  Widget build(BuildContext context)
-  {
+  Widget build(BuildContext context) {
     return ViewModelBuilder<LoginViewModel>.reactive(
+      builder: (context, model, child) => Scaffold(
+        body: Stack(
+          children: [
+            // ── Gradient background ─────────────────────────────────────────
+            Container(
+              height: context.screenSize().height * 0.45,
+              width: double.infinity,
+              decoration: const BoxDecoration(
+                gradient: AppColors.headerGradient,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(40),
+                  bottomRight: Radius.circular(40),
+                ),
+              ),
+            ),
 
-      builder: (context, model, child) =>
-          Scaffold(
-
-        resizeToAvoidBottomInset: true,
-        extendBodyBehindAppBar: true,
-            body: SafeArea(
+            SafeArea(
               child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Container(
-                  padding: const EdgeInsets.fromLTRB(28, 30, 28, 30),
-                  height: MediaQuery.of(context).size.height,
+                physics: const BouncingScrollPhysics(),
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              NavService.appmenu();
-                            },
-                            child: Icon(Icons.arrow_back),
+                      const SizedBox(height: 20),
+                      // Back arrow
+                      Align(
+                        alignment: Alignment.centerLeft,
+                        child: InkWell(
+                          onTap: () => NavService.appmenu(),
+                          borderRadius: BorderRadius.circular(12),
+                          child: Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                  color: Colors.white.withOpacity(0.3)),
+                            ),
+                            child: const Icon(Icons.arrow_back_ios_new,
+                                color: Colors.white, size: 18),
                           ),
-                        ],
+                        ),
                       ),
-                    //  Spacer(),
+                      const SizedBox(height: 24),
+
+                      // Logo
                       Image.asset(
                         Assets.imagesPremierlogo,
-                        width: context.screenSize().width,
+                        height: 90,
                       ),
-                      VerticalSpacing(3),
+                      const SizedBox(height: 8),
                       Text(
-                        "Please Login To Continue The App",
-                        style: TextStyling.text16.copyWith(color: AppColors.darkGrey),
-                        textAlign: TextAlign.center,
+                        'Welcome Back!',
+                        style: TextStyling.bold22.copyWith(color: Colors.white),
                       ),
-                     // Spacer(),
-                      Column(
-                        children: [
-                          MainInputField(
-                            hint: 'Enter Email Address',
-                            controller: model.email,
-                            inputType: TextInputType.emailAddress,
-                            onChanged: (val) {
-                              model.checkButtonValidate(context);
-                            },
-                            message: 'Please enter email address',
-                            prefixIcon: Icon(
-                              Icons.email_outlined,
-                              color: AppColors.primary,
-                              size: 24,
-                            ),
-                          ),
-                          VerticalSpacing(24),
-                          MainInputField(
-                            hint: 'Enter Password',
-                            controller: model.password,
-                            isPassword: (model.isShowPassword) ? false : true,
-                            onChanged: (val) {
-                              model.checkButtonValidate(context);
-                            },
-                            message: 'Please enter password',
-                            prefixIcon: Icon(
-                              Icons.lock_outline,
-                              color: AppColors.primary,
-                              size: 24,
-                            ),
-                            suffixIcon: InkWell(
-                              onTap: () {
-                                model.isShowPassword = !model.isShowPassword;
-                                model.notifyListeners();
-                              },
-                              child: Icon(
-                                Icons.remove_red_eye,
-                                color: AppColors.primary,
-                                size: 24,
-                              ),
-                            ),
-                          ),
-                        ],
+                      const SizedBox(height: 4),
+                      Text(
+                        'Sign in to continue',
+                        style: TextStyling.text14
+                            .copyWith(color: Colors.white.withOpacity(0.75)),
                       ),
-                      SizedBox(height: 10),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(''),
-                          if (model.checktabledata == false)
-                            Row(
-                              children: [
-                                Text(
-                                  'Enable thumb Recognition',
-                                  style:
-                                  TextStyle(fontSize: 10, fontWeight: FontWeight.bold),
-                                ),
-                                Switch(
-                                  value: model.isSwitched,
-                                  onChanged: (value) {
-                                    model.isSwitched = value;
-                                    model.notifyListeners();
-                                  },
-                                  activeColor: AppColors.primary,
-                                  inactiveThumbColor: Colors.black,
-                                  inactiveTrackColor: Colors.grey,
-                                ),
-                              ],
+                      const SizedBox(height: 32),
+
+                      // ── Glass login card ──────────────────────────────────
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(28),
+                          boxShadow: [
+                            BoxShadow(
+                              color: AppColors.primary.withOpacity(0.12),
+                              blurRadius: 30,
+                              offset: const Offset(0, 10),
                             ),
-                        ],
-                      ),
-                      SizedBox(height: 10),
-                      if (widget.msg != null)
-                        Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(8),
-                            color: Colors.red,
-                          ),
-                          child: Text(
-                            widget.msg!,
-                            style:
-                            TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                          ),
+                          ],
                         ),
-                      if (model.checktabledata == true && widget.msg == null)
-                        InkWell(
-                          onTap: () {
-                            authenticateWithBiometrics();
-                          },
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.all(4),
-                                decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8),
-                                    border: Border.all(width: 2, color: AppColors.primary)),
-                                child: Image.asset(
-                                  'assets/images/file.png',
-                                  height: 50,
-                                  width: 50,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Email Address',
+                              style: TextStyling.bold14
+                                  .copyWith(color: AppColors.darkGrey),
+                            ),
+                            const SizedBox(height: 8),
+                            MainInputField(
+                              hint: 'your@email.com',
+                              controller: model.email,
+                              inputType: TextInputType.emailAddress,
+                              onChanged: (val) =>
+                                  model.checkButtonValidate(context),
+                              message: 'Please enter email address',
+                              prefixIcon: Icon(Icons.email_outlined,
+                                  color: AppColors.primary, size: 20),
+                            ),
+                            const SizedBox(height: 20),
+                            Text(
+                              'Password',
+                              style: TextStyling.bold14
+                                  .copyWith(color: AppColors.darkGrey),
+                            ),
+                            const SizedBox(height: 8),
+                            MainInputField(
+                              hint: '••••••••',
+                              controller: model.password,
+                              isPassword: !model.isShowPassword,
+                              onChanged: (val) =>
+                                  model.checkButtonValidate(context),
+                              message: 'Please enter password',
+                              prefixIcon: Icon(Icons.lock_outline,
+                                  color: AppColors.primary, size: 20),
+                              suffixIcon: InkWell(
+                                onTap: () {
+                                  model.isShowPassword = !model.isShowPassword;
+                                  model.notifyListeners();
+                                },
+                                child: Icon(
+                                  model.isShowPassword
+                                      ? Icons.visibility_outlined
+                                      : Icons.visibility_off_outlined,
+                                  color: AppColors.primary,
+                                  size: 20,
                                 ),
                               ),
-                              SizedBox(height: 8),
-                              Text(
-                                "Login with Touch Id",
-                                style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            const SizedBox(height: 16),
+
+                            // Biometric toggle
+                            if (model.checktabledata == false)
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Enable Touch ID',
+                                    style: TextStyling.text12
+                                        .copyWith(color: AppColors.darkGrey),
+                                  ),
+                                  Transform.scale(
+                                    scale: 0.85,
+                                    child: Switch(
+                                      value: model.isSwitched,
+                                      onChanged: (value) {
+                                        model.isSwitched = value;
+                                        model.notifyListeners();
+                                      },
+                                      activeColor: AppColors.primary,
+                                      inactiveThumbColor: AppColors.grey,
+                                      inactiveTrackColor:
+                                      AppColors.lightGrey,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                            // Error message
+                            if (widget.msg != null) ...[
+                              const SizedBox(height: 12),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 14, vertical: 10),
+                                decoration: BoxDecoration(
+                                  color: AppColors.error.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: AppColors.error.withOpacity(0.4)),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.error_outline,
+                                        color: AppColors.error, size: 18),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        widget.msg!,
+                                        style: TextStyling.text12.copyWith(
+                                            color: AppColors.error),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
-                          ),
+
+                            // Biometric login button
+                            if (model.checktabledata == true &&
+                                widget.msg == null) ...[
+                              const SizedBox(height: 16),
+                              Center(
+                                child: InkWell(
+                                  onTap: authenticateWithBiometrics,
+                                  borderRadius: BorderRadius.circular(16),
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 20, vertical: 12),
+                                    decoration: BoxDecoration(
+                                      color: AppColors.primary.withOpacity(0.08),
+                                      borderRadius: BorderRadius.circular(16),
+                                      border: Border.all(
+                                          color: AppColors.primary
+                                              .withOpacity(0.3)),
+                                    ),
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(Icons.fingerprint,
+                                            color: AppColors.primary, size: 28),
+                                        const SizedBox(width: 10),
+                                        Text(
+                                          'Login with Touch ID',
+                                          style: TextStyling.bold14.copyWith(
+                                              color: AppColors.primary),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+
+                            const SizedBox(height: 12),
+
+                            // Login button
+                            if (widget.msg == null)
+                              MainButton(
+                                text: 'Sign In',
+                                isEnabled: model.isSignInButtonEnable,
+                                isBusy: model.isBusy,
+                                onTap: () => model.onLogIn(context),
+                                icon: const Icon(Icons.login_rounded,
+                                    color: Colors.white, size: 20),
+                              ),
+                          ],
                         ),
-                     VerticalSpacing(10),
-                     // Spacer(),
-                      if (widget.msg == null)
-                        MainButton(
-                          text: "Log In",
-                          isEnabled: model.isSignInButtonEnable,
-                          isBusy: model.isBusy,
-                          onTap: () {
-                            model.onLogIn(context);
-                          },
-                        ),
+                      ),
+                      const SizedBox(height: 40),
                     ],
                   ),
                 ),
               ),
             ),
-
-          ),
-
+          ],
+        ),
+      ),
       viewModelBuilder: () => LoginViewModel(),
       onModelReady: (model) => model.init(context),
     );

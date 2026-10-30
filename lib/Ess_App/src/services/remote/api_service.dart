@@ -27,6 +27,7 @@ import 'package:ess/Ess_App/src/services/remote/network_exceptions.dart';
 import 'package:flutter/cupertino.dart';
 import '../../../My_models/pending_visit_approval.dart';
 import '../../base/utils/constants.dart';
+import '../../models/api_form_data_models/Travel_expense_form_model.dart';
 import '../../models/api_response_models/Batch_model.dart';
 import '../../models/api_response_models/Capex_approval_model.dart';
 import '../../models/api_response_models/Capex_details.dart';
@@ -44,6 +45,7 @@ import '../../models/api_response_models/ceo_model.dart';
 import '../../models/api_response_models/changepassword_model.dart';
 import '../../models/api_response_models/director_model.dart';
 import '../../models/api_response_models/fetch_loan_approval.dart';
+import '../../models/api_response_models/loan_employee.dart';
 import '../../models/api_response_models/loan_model.dart';
 import '../../models/api_response_models/pending_guaranted.dart';
 import '../../models/api_response_models/plan_approval_model.dart';
@@ -52,6 +54,7 @@ import '../../models/api_response_models/warehouse_list_model.dart';
 import '../../models/api_response_models/warehouse_model.dart';
 import '../../views/PDMS_survey/product_database.dart';
 import '../../views/PDMS_survey/survey_form_view.dart';
+import 'package:intl/intl.dart';
 
 
 class ApiService {
@@ -1010,6 +1013,98 @@ class ApiService {
       print("Error occurred: $e");
       return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
     }
+  }
+
+
+
+  String? loanEmployeeError;
+
+  Future<ApiResult<T>> _loanEmployeeCall<T>(
+      String query, T Function(dynamic data) parse) async {
+    loanEmployeeError = null;
+    try {
+      var headers = {
+        'Authorization': 'Basic RVNTOngyRnN0VnN5eg==',
+      };
+      var response = await _apiClient?.getReq(
+        "/loan_employee.php?$query",
+        headers: headers,
+      );
+
+      if (response == null || response.data == null) {
+        return ApiResult.failure(
+            error: NetworkExceptions.notFound("Empty response received"));
+      }
+
+      // loan_employee.php answers with a JSON content type, so Dio has already
+      // decoded it into a Map. Older scripts return text, which is a String.
+      // Accept both.
+      final raw = response.data;
+      final dynamic data = raw is String ? jsonDecode(raw) : raw;
+
+      // The script reports its own status inside the body ("status": 200).
+      if (response.statusCode != 200 || data['status'].toString() != '200') {
+        loanEmployeeError = data['status_message']?.toString();
+        return ApiResult.failure(
+            error: NetworkExceptions.notFound(
+                data['status_message']?.toString() ??
+                    response.message ??
+                    "Incorrect"));
+      }
+      return ApiResult.success(data: parse(data['data']));
+    } catch (e) {
+      print("Error occurred (loan_employee): $e");
+
+      // Dio throws on any non-2xx status (e.g. 404) before the body is read.
+      // The script may still explain why in a JSON body, so show that message
+      // instead of the generic Dio text.
+      if (e is DioException) {
+        print("loan_employee error body: ${e.response?.data}");
+        try {
+          final body = e.response?.data;
+          final decoded = body is String ? jsonDecode(body) : body;
+          final msg =
+          decoded is Map ? decoded['status_message']?.toString() : null;
+          if (msg != null && msg.isNotEmpty) {
+            loanEmployeeError = msg;
+            return ApiResult.failure(error: NetworkExceptions.notFound(msg));
+          }
+        } catch (_) {
+          // body was not JSON: fall through to the generic error
+        }
+      }
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+  /// action=self - details of the logged-in employee.
+  Future<ApiResult<LoanEmployee>> loanEmployeeSelf(BuildContext context) {
+    return _loanEmployeeCall<LoanEmployee>(
+      "action=self&membercode=${authService.user?.userId ?? 000000}",
+          (d) => LoanEmployee.fromJson(Map<String, dynamic>.from(d)),
+    );
+  }
+
+  /// action=list - all employees that can be picked in "For Employee".
+  Future<ApiResult<List<LoanEmployee>>> loanEmployeeList(
+      BuildContext context) {
+    return _loanEmployeeCall<List<LoanEmployee>>(
+      "action=list&membercode=${authService.user?.userId ?? 000000}",
+          (d) => (d as List)
+          .map((e) => LoanEmployee.fromJson(Map<String, dynamic>.from(e)))
+          .toList(),
+    );
+  }
+
+  /// action=details - full details of the employee picked from the list.
+  /// membercode = logged-in user, emp_code = the selected employee.
+  Future<ApiResult<LoanEmployee>> loanEmployeeDetails(
+      BuildContext context, String empCode) {
+    return _loanEmployeeCall<LoanEmployee>(
+      "action=details&membercode=${authService.user?.userId ?? 000000}"
+          "&emp_code=${Uri.encodeComponent(empCode)}",
+          (d) => LoanEmployee.fromJson(Map<String, dynamic>.from(d)),
+    );
   }
 
 
@@ -3759,4 +3854,112 @@ print("URl :${url}");
     }
   }
 
+  Future<ApiResult<TravelFormModel>> getTravelForm(BuildContext context) async {
+    try {
+      var response = await _apiClient?.getReq(
+        "/get_travel_form.php?emp_code=${authService.user?.userId ?? 000000}",
+      );
+
+      if (response?.statusCode != 200) {
+        return ApiResult.failure(
+            error: NetworkExceptions.notFound(response?.message ?? "Incorrect"));
+      }
+
+      var data = response?.data as Map<String, dynamic>;
+      return ApiResult.success(data: TravelFormModel.fromJson(data));
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
+
+  Future<ApiResult<Map<String, dynamic>>> submitTravelExpense({
+    required String empName,
+    required String designation,
+    required String department,
+    required String reasonOfTravel,
+    required String travelType,
+    required String tripType,
+    required String origin,
+    required String destination,
+    required double distanceKm,
+    required bool isKmExceed,
+    required DateTime departureDateTime,
+    required DateTime arrivalDateTime,
+    required int durationDays,
+    required int durationNights,
+    required double daCharges,
+    required double kmRate,
+    required double totalLiters,
+    required double kmLtr,
+    String? attachmentPath,
+  }) async {
+    try {
+      final dateFmt = DateFormat('yyyy-MM-dd');
+      final timeFmt = DateFormat('HH:mm:ss');
+
+      final uri = Uri.parse('https://premierspulse.com/ess/scripts/submit_travel.php');
+      var request = http.MultipartRequest('POST', uri);
+
+      request.fields.addAll({
+        'emp_code': authService.user?.userId?.toString() ?? '',
+        'Name': empName,
+        'designation': designation,
+        'Dept': department,
+        'posted_date': dateFmt.format(DateTime.now()),
+
+        'total_travel': distanceKm.toStringAsFixed(0),
+        'totalKmRate': kmRate.toString(),
+        'total_ltr': totalLiters.toStringAsFixed(0),
+        'rate_per_ltr': kmLtr.toString(),
+
+        'mob_all': '0',
+        'entertainment': '0',
+        'bike_all': '0',
+        'courier': '0',
+        'photocopy': '0',
+        'stationary': '0',
+        'toll_tax': '0',
+
+        'isKmExceed': isKmExceed ? 'yes' : 'no',
+        'final_status': 'pending',
+        'totalda': daCharges.toStringAsFixed(0),
+        'traveltype': travelType,
+        'reason_of_travel': reasonOfTravel,
+        'dep_date': dateFmt.format(departureDateTime),
+        'dep_time': timeFmt.format(departureDateTime),
+        'arr_date': dateFmt.format(arrivalDateTime),
+        'arr_time': timeFmt.format(arrivalDateTime),
+        'duration_days': durationDays.toString(),
+        'duration_night': durationNights.toString(),
+        'da_charges': daCharges.toStringAsFixed(0),
+        'trip_type': tripType,
+        'origin': origin,
+        'destination': destination,
+        'distance': distanceKm.toStringAsFixed(0),
+      });
+
+      request.headers.addAll({'Authorization': 'Basic RVNTOngyRnN0VnN5eg=='});
+
+      if (attachmentPath != null) {
+        request.files.add(await http.MultipartFile.fromPath('mob_all_upload', attachmentPath));
+      }
+
+      var streamed = await request.send();
+      var response = await http.Response.fromStream(streamed);
+      http.Client().close();
+
+      print('submit_travel.php response: ${response.body}');
+
+      var data = jsonDecode(response.body) as Map<String, dynamic>;
+
+      if (response.statusCode == 200 && (data['status'] == true || data['status'] == 'true')) {
+        return ApiResult.success(data: data);
+      }
+      return ApiResult.failure(
+        error: NetworkExceptions.notFound(data['message']?.toString() ?? 'Submission failed'),
+      );
+    } catch (e) {
+      return ApiResult.failure(error: NetworkExceptions.getDioException(e)!);
+    }
+  }
 }

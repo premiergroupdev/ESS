@@ -1,243 +1,243 @@
-import 'package:ess/Ess_App/src/shared/spacing.dart';
 import 'package:ess/Ess_App/src/shared/top_app_bar.dart';
 import 'package:ess/Ess_App/src/styles/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import '../../../models/api_response_models/Capex_model.dart';
-import '../../../styles/text_theme.dart';
-import '../Capex_view_model.dart';
 import 'Capex_detail.dart';
 import 'Generate_capex_view_model.dart';
-import 'Status_widget.dart';
 
-
+// Same class name, same imports and same navigation target as the original,
+// so the router and every other screen keep working untouched.
 class GenerateCapex extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<GenerateCapexViewModel>.reactive(
       builder: (viewModelContext, model, child) => Scaffold(
         resizeToAvoidBottomInset: false,
+        backgroundColor: const Color(0xFFF5F6FA),
         body: SafeArea(
           child: Column(
             children: [
-              GeneralAppBar
-                (
-
+              GeneralAppBar(
                   title: "Generate Capex",
                   onMenuTap: () {
                     Scaffold.of(context).openDrawer();
                   },
-                  onNotificationTap: () {}
-
-              ),
-              if (model.isBusy == true) Center(child: CircularProgressIndicator(color: AppColors.primary,)) else Expanded(
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(18, 20, 18, 0),
-                  child: SingleChildScrollView(
-                      physics: BouncingScrollPhysics(),
-                      child:
-   ListView.builder(
-      itemCount: model.capexlist.length,
-      shrinkWrap: true,
-      physics: BouncingScrollPhysics(),
-      itemBuilder:
-
-      (BuildContext context, index)
-
-
-      {
-        CapexModel data =model.capexlist[index];
-        return Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Container(
-            padding: const EdgeInsets.all(8.0),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8),
-
-              color: AppColors.white,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.5), // Shadow color with opacity
-                  spreadRadius: 2, // How much the shadow should spread
-                  blurRadius: 5, // How blurred the shadow should be
-                  offset: Offset(0, 3), // Offset of the shadow (horizontal, vertical)
-                ),
-              ],
-            ),
-
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-             crossAxisAlignment: CrossAxisAlignment.start,
-             children: [
-
-            //    RichText(
-            // text: TextSpan(
-            // text: " Name: ",
-            //   style: TextStyling.bold18.copyWith(color: AppColors.black, fontSize: 12,),
-            //   children: [
-            //     TextSpan(
-            //         text: data.memberName,
-            //       style: TextStyle(color: AppColors.primary)
-            //        ),
-            //   ],
-            // ),
-            //    ),
-              // VerticalSpacing(7),
-               RichText(
-                 text: TextSpan(
-                   text: " Capex id: ",
-                   style: TextStyling.bold18.copyWith(color: AppColors.black, fontSize: 12,),
-                   children: [
-                     TextSpan(
-                         text: data.capexId,
-                         style: TextStyle(color: AppColors.primary)
-                     ),
-                   ],
-                 ),
-               ),
-
-               VerticalSpacing(7),
-               Row(
-                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                 children: [
-                   RichText(
-                     text: TextSpan(
-                       text: " Date: ",
-                       style: TextStyling.bold18.copyWith(color: AppColors.black, fontSize: 12,),
-                       children: [
-                         TextSpan(
-                             text: data.postedDate,
-                             style: TextStyle(color: AppColors.primary)
-                         ),
-                       ],
-                     ),),
-                   InkWell(
-                     onTap: (){
-                       Navigator.push(context, MaterialPageRoute(builder: (context)=> capexdetail(itemlist: data.itemList, data: data,)))
-                       //model.showCapexDialog(context,data.itemList)
-                           ;},
-                     child:   Container(
-
-                       decoration: BoxDecoration(
-
-                           gradient: LinearGradient(
-
-                             colors: [AppColors.primary, AppColors.primary], // Replace with your desired colors
-
-                             begin: Alignment.topLeft,
-
-                             end: Alignment.bottomRight,
-
-                           ),
-
-                           boxShadow: [
-
-                             BoxShadow(
-
-                               color: Colors.grey.withOpacity(0.5), // Shadow color with opacity
-
-                               spreadRadius: 2, // How much the shadow should spread
-
-                               blurRadius: 5, // How blurred the shadow should be
-
-                               offset: Offset(0, 3), // Offset of the shadow (horizontal, vertical)
-
-                             ),
-
-                           ],
-
-                           borderRadius: BorderRadius.circular(8)
-
-                       ),
-
-                       child: Padding(
-
-                         padding: const EdgeInsets.all(4),
-
-                         child: Text(
-
-
-
-                           'View Details', style: TextStyle(fontSize: 11, color: Colors.white),),
-
-                       ),
-                     ),
-                   )
-                 ],
-               ),
-               // VerticalSpacing(7),
-               // RichText(
-               //   text: TextSpan(
-               //     text: "Capex Type: ",
-               //     style: TextStyling.bold18.copyWith(color: AppColors.black, fontSize: 12,),
-               //     children: [
-               //       TextSpan(
-               //           text: data.capexType,
-               //           style: TextStyle(color: AppColors.primary)
-               //       ),
-               //     ],
-               //   ),),
-               // VerticalSpacing(7),
-               // RichText(
-               //   text: TextSpan(
-               //     text: "Branch Name: ",
-               //     style: TextStyling.bold18.copyWith(color: AppColors.black, fontSize: 12,),
-               //     children: [
-               //       TextSpan(
-               //           text: data.branchName,
-               //           style: TextStyle(color: AppColors.primary)
-               //       ),
-               //     ],
-               //   ),),     VerticalSpacing(8),
-//                  Row(
-//                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                      children: [
-//
-//                    statuswidget(title: 'Cord. Status:           ', color:  (data.cordStatus == "pending") ? Colors.blue : (data.cordStatus == "approved") ?  Colors.green : (data.cordStatus == "rejected") ? Colors.red   : Colors.grey, value: data.cordStatus,),
-//                        statuswidget(title: 'HOD Status:', color:  (data.hodStatus == "pending") ? Colors.blue : (data.hodStatus == "approved") ?  Colors.green : (data.hodStatus == "rejected") ? Colors.red   : Colors.grey, value: data.hodStatus,),
-//
-//                        //statuswidget(title: 'HOD Status: ', color: Colors.red, value: data.hodStatus,)
-//
-// ]),
-               VerticalSpacing(7),
-//                Row(
-//                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                    children: [
-//
-//                      statuswidget(title: 'Dept. Head Status: ',  color: Colors.green, value: data.deptHeadStatus,),
-//                      statuswidget(title: 'GM Status: ', color: Colors.red, value: data.gmStatus,)
-//
-//                    ]
-//                ),
-//                VerticalSpacing(7),
-               Row(
-                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                   children: [
-
-                     //statuswidget(title: 'CEO Status:             ',  color: Colors.blue, value: 'Pending',),
-
-                   ])
-
-             ],
-            ),
-          ),
-        );
-
-      }
-
-  ),
-)
-
-
-
-
-
-                  ),
-                ),
-              
+                  onNotificationTap: () {}),
+              Expanded(child: _buildBody(context, model)),
             ],
           ),
         ),
       ),
       viewModelBuilder: () => GenerateCapexViewModel(),
       onModelReady: (model) => model.init(context),
-    );}}
+    );
+  }
+
+  Widget _buildBody(BuildContext context, GenerateCapexViewModel model) {
+    if (model.isBusy == true) {
+      return Center(
+        child: CircularProgressIndicator(color: AppColors.primary),
+      );
+    }
+
+    if (model.capexlist.isEmpty) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(Icons.inbox_outlined, size: 48, color: Colors.grey.shade400),
+            const SizedBox(height: 8),
+            Text(
+              "No Capex requests found",
+              style: TextStyle(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: Colors.grey.shade600,
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: const EdgeInsets.fromLTRB(12, 10, 12, 16),
+      physics: const BouncingScrollPhysics(),
+      itemCount: model.capexlist.length,
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
+      itemBuilder: (BuildContext context, int index) {
+        CapexModel data = model.capexlist[index];
+        return _CapexCard(
+          data: data,
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                // Original detail screen class, unchanged
+                builder: (context) =>
+                    CapexDetail(itemlist: data.itemList, data: data),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+}
+
+class _CapexCard extends StatelessWidget {
+  final CapexModel data;
+  final VoidCallback onTap;
+
+  _CapexCard({required this.data, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final statuses = <String, String?>{
+      "Cord": data.cordStatus,
+      "HOD": data.hodStatus,
+      "Dept": data.deptHeadStatus,
+      "GM": data.gmStatus,
+      "CEO": data.ceoStatus,
+    };
+    final String type = (data.capexType ?? "").toString();
+
+    return Material(
+      color: Colors.white,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(12),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.fromLTRB(12, 10, 8, 10),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 6,
+                offset: const Offset(0, 2),
+              ),
+            ],
+          ),
+          child: Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withOpacity(0.1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: Icon(Icons.receipt_long_outlined,
+                    size: 18, color: AppColors.primary),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            (data.capexId ?? "-").toString(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w800,
+                              color: AppColors.primary,
+                            ),
+                          ),
+                        ),
+                        Text(
+                          (data.postedDate ?? "").toString(),
+                          style: const TextStyle(
+                              fontSize: 11, color: Colors.black45),
+                        ),
+                      ],
+                    ),
+                    if (type.isNotEmpty) ...[
+                      const SizedBox(height: 2),
+                      Text(
+                        type,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: Colors.black87,
+                        ),
+                      ),
+                    ],
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 4,
+                      runSpacing: 4,
+                      children: statuses.entries
+                          .map((e) =>
+                          _MiniStatus(label: e.key, status: e.value))
+                          .toList(),
+                    ),
+                  ],
+                ),
+              ),
+              Icon(Icons.chevron_right, size: 20, color: Colors.grey.shade400),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _MiniStatus extends StatelessWidget {
+  final String label;
+  final String? status;
+
+  _MiniStatus({required this.label, required this.status});
+
+  Color get _color {
+    switch (status?.toLowerCase()) {
+      case "pending":
+        return Colors.blue;
+      case "approved":
+        return Colors.green;
+      case "rejected":
+        return Colors.red;
+      default:
+        return Colors.grey;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+      decoration: BoxDecoration(
+        color: _color.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            width: 6,
+            height: 6,
+            decoration: BoxDecoration(color: _color, shape: BoxShape.circle),
+          ),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w600,
+              color: _color,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

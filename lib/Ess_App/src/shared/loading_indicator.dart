@@ -1,5 +1,7 @@
+import 'package:ess/Ess_App/src/styles/app_colors.dart';
 import 'package:flutter/material.dart';
 
+/// Same API as before; default colour is now the brand navy instead of black.
 class LoadingIndicator extends StatelessWidget {
   final double size;
   final double strokeWidth;
@@ -10,7 +12,7 @@ class LoadingIndicator extends StatelessWidget {
     Key? key,
     this.size = 30,
     this.strokeWidth = 3,
-    this.color = Colors.black,
+    this.color = AppColors.primary,
     this.value,
   }) : super(key: key);
 

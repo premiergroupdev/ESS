@@ -12,7 +12,7 @@ class AdvanceViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMode
   List<dynamic> dataList= [];
   init(BuildContext context) async {
     setBusy(true);
-    applyrequest_advanced(context);
+    await applyrequest_advanced(context);
     setBusy(false);
   }
   clear(){
@@ -23,9 +23,12 @@ class AdvanceViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMode
     var newsResponse = await runBusyFuture(apiService.advanc_list(context));
     newsResponse.when(
         success: (data) {
-          if(data['Datalist'] != []) {
-            dataList = data['Datalist'];
-            print(data);
+          // The server can answer with JSON `null` (or a body without
+          // "Datalist") when there are no advances, so never index into
+          // `data` directly.
+          final list = (data is Map) ? data['Datalist'] : null;
+          if (list is List && list.isNotEmpty) {
+            dataList = list;
           }
           else {
             Constants.customWarningSnack(context, "Advance not found");
@@ -35,11 +38,7 @@ class AdvanceViewModel extends ReactiveViewModel with AuthViewModel, ApiViewMode
         failure: (error) {
           Constants.customErrorSnack(context, error.toString());
         });
+    notifyListeners();
   }
 
-
-
-
 }
-
-
